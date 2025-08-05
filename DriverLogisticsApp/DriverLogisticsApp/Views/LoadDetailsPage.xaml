@@ -47,11 +47,20 @@
                 Text="Delivery Date" />
             <Label Text="{Binding Load.DeliveryDate, StringFormat='{0:D}'}" />
 
-            <Button
+            <HorizontalStackLayout
                 Margin="0,30,0,0"
-                BackgroundColor="Red"
-                Command="{Binding DeleteLoadCommand}"
-                Text="Delete Load" />
+                HorizontalOptions="Center"
+                Spacing="10">
+                <Button
+                    BackgroundColor="{StaticResource Primary}"
+                    Command="{Binding GoToEditCommand}"
+                    Text="Edit Load" />
+
+                <Button
+                    BackgroundColor="Red"
+                    Command="{Binding DeleteLoadCommand}"
+                    Text="Delete Load" />
+            </HorizontalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 

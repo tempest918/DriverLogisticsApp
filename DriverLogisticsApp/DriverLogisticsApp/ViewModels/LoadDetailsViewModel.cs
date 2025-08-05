@@ -42,7 +42,7 @@ namespace DriverLogisticsApp.ViewModels
         /// used by OnLoadIdChanged to load the full details of the load
         /// </summary>
         /// <returns></returns>
-        private async Task LoadDataAsync()
+        public async Task LoadDataAsync()
         {
             try
             {
@@ -56,6 +56,23 @@ namespace DriverLogisticsApp.ViewModels
             {
                 Debug.WriteLine($"Failed to load data: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// use add load page to edit the current load
+        /// </summary>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task GoToEditAsync()
+        {
+            if (Load is null)
+                return;
+
+            // pass load ID as a query parameter to the AddLoadPage
+            await Shell.Current.GoToAsync(nameof(Views.AddLoadPage), new Dictionary<string, object>
+            {
+                { "LoadId", Load.Id }
+            });
         }
 
         /// <summary>
