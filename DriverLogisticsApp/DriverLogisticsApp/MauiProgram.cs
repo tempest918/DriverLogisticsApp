@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using DriverLogisticsApp.Services;
 using DriverLogisticsApp.ViewModels;
+using DriverLogisticsApp.Views;
 using DriverLogisticsApp;
 
 namespace DriverLogisticsApp
@@ -27,10 +28,12 @@ namespace DriverLogisticsApp
             // view models
             builder.Services.AddTransient<MainPageViewModel>();
             builder.Services.AddTransient<AddLoadViewModel>();
+            builder.Services.AddTransient<LoadDetailsViewModel>();
 
             // views/pages
             builder.Services.AddTransient<MainPage>();
-            builder.Services.AddTransient<AddLoadViewModel>();
+            builder.Services.AddTransient<AddLoadPage>();
+            builder.Services.AddTransient<LoadDetailsPage>();
 
             return builder.Build();
         }

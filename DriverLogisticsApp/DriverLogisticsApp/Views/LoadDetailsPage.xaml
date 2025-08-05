@@ -1,0 +1,58 @@
+<ContentPage
+    x:Class="DriverLogisticsApp.Views.LoadDetailsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+    Title="Load Details"
+    x:DataType="viewmodels:LoadDetailsViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <Label FontAttributes="Bold" Text="Load Number" />
+            <Label Text="{Binding Load.LoadNumber}" />
+
+            <Label
+                Margin="0,10,0,0"
+                FontAttributes="Bold"
+                Text="Shipper" />
+            <Label Text="{Binding Load.ShipperName}" />
+
+            <Label
+                Margin="0,10,0,0"
+                FontAttributes="Bold"
+                Text="Consignee" />
+            <Label Text="{Binding Load.ConsigneeName}" />
+
+            <Label
+                Margin="0,10,0,0"
+                FontAttributes="Bold"
+                Text="Status" />
+            <Label Text="{Binding Load.Status}" />
+
+            <Label
+                Margin="0,10,0,0"
+                FontAttributes="Bold"
+                Text="Freight Rate" />
+            <Label Text="{Binding Load.FreightRate, StringFormat='{0:C}'}" />
+
+            <Label
+                Margin="0,10,0,0"
+                FontAttributes="Bold"
+                Text="Pickup Date" />
+            <Label Text="{Binding Load.PickupDate, StringFormat='{0:D}'}" />
+
+            <Label
+                Margin="0,10,0,0"
+                FontAttributes="Bold"
+                Text="Delivery Date" />
+            <Label Text="{Binding Load.DeliveryDate, StringFormat='{0:D}'}" />
+
+            <Button
+                Margin="0,30,0,0"
+                BackgroundColor="Red"
+                Command="{Binding DeleteLoadCommand}"
+                Text="Delete Load" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

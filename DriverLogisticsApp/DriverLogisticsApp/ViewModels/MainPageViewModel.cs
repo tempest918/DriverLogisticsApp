@@ -49,5 +49,23 @@ namespace DriverLogisticsApp.ViewModels
         {
             await Shell.Current.GoToAsync("AddLoadPage");
         }
+
+        /// <summary>
+        /// load details page for the selected load
+        /// </summary>
+        /// <param name="load"></param>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task GoToDetailsAsync(Load load)
+        {
+            if (load is null)
+                return;
+
+            // pass load ID as a query parameter to the LoadDetailsPage
+            await Shell.Current.GoToAsync(nameof(Views.LoadDetailsPage), new Dictionary<string, object>
+            {
+                { "LoadId", load.Id }
+            });
+        }
     }
 }

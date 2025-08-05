@@ -8,6 +8,7 @@
 
             // routing for navigation
             Routing.RegisterRoute("AddLoadPage", typeof(Views.AddLoadPage));
+            Routing.RegisterRoute("LoadDetailsPage", typeof(Views.LoadDetailsPage));
         }
     }
 }
