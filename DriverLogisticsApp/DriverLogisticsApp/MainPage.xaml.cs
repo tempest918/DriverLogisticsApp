@@ -1,24 +1,29 @@
-﻿namespace DriverLogisticsApp
+﻿using DriverLogisticsApp.ViewModels;
+
+namespace DriverLogisticsApp
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
+        private readonly MainPageViewModel _viewModel;
 
-        public MainPage()
+        /// <summary>
+        /// initialize the main page with the view model
+        /// </summary>
+        /// <param name="viewModel"></param>
+        public MainPage(MainPageViewModel viewModel)
         {
             InitializeComponent();
+            _viewModel = viewModel;
+            BindingContext = _viewModel;
         }
 
-        private void OnCounterClicked(object? sender, EventArgs e)
+        /// <summary>
+        /// invoke viewmodel command to get loads when the page appears
+        /// </summary>
+        protected override async void OnAppearing()
         {
-            count++;
-
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            base.OnAppearing();
+            await _viewModel.GetLoadsCommand.ExecuteAsync(null);
         }
     }
 }

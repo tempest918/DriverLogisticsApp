@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using DriverLogisticsApp.Services;
+using DriverLogisticsApp.ViewModels;
+using DriverLogisticsApp;
 
 namespace DriverLogisticsApp
 {
@@ -18,6 +21,16 @@ namespace DriverLogisticsApp
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            // services
+            builder.Services.AddSingleton<DatabaseService>();
+
+            // view models
+            builder.Services.AddTransient<MainPageViewModel>();
+            builder.Services.AddTransient<AddLoadViewModel>();
+
+            // views/pages
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<AddLoadViewModel>();
 
             return builder.Build();
         }

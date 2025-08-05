@@ -1,0 +1,39 @@
+<ContentPage
+    x:Class="DriverLogisticsApp.Views.AddLoadPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+    Title="Add New Load"
+    x:DataType="viewmodels:AddLoadViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <Label Text="Load Number" />
+            <Entry Placeholder="e.g., ABC12345" Text="{Binding LoadNumber}" />
+
+            <Label Text="Shipper Name" />
+            <Entry Placeholder="e.g., Main Street Shipping" Text="{Binding ShipperName}" />
+
+            <Label Text="Consignee Name (Optional)" />
+            <Entry Placeholder="e.g., Downtown Receiving" Text="{Binding ConsigneeName}" />
+
+            <Label Text="Freight Rate ($)" />
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="e.g., 1500"
+                Text="{Binding FreightRate}" />
+
+            <Label Text="Pickup Date" />
+            <DatePicker Date="{Binding PickupDate}" />
+
+            <Label Text="Delivery Date" />
+            <DatePicker Date="{Binding DeliveryDate}" />
+
+            <Button
+                Margin="0,20,0,0"
+                Command="{Binding SaveLoadCommand}"
+                Text="Save Load" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

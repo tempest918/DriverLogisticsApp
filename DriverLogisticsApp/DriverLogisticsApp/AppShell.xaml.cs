@@ -5,6 +5,9 @@
         public AppShell()
         {
             InitializeComponent();
+
+            // routing for navigation
+            Routing.RegisterRoute("AddLoadPage", typeof(Views.AddLoadPage));
         }
     }
 }
