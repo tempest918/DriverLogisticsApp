@@ -6,6 +6,10 @@ using System.Diagnostics;
 
 namespace DriverLogisticsApp.ViewModels
 {
+    // disable annoying warnings that are not relevant to this project
+    #pragma warning disable MVVMTK0034
+    #pragma warning disable MVVMTK0045
+
     [QueryProperty(nameof(ExpenseId), "ExpenseId")]
     public partial class ExpenseDetailsViewModel : ObservableObject
     {

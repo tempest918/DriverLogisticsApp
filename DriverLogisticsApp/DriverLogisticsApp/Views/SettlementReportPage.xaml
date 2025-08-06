@@ -1,0 +1,139 @@
+<ContentPage
+    x:Class="DriverLogisticsApp.Views.SettlementReportPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:expenseTypes="clr-namespace:DriverLogisticsApp.Models.ExpenseTypes"
+    xmlns:models="clr-namespace:DriverLogisticsApp.Models"
+    xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+    Title="Settlement Report"
+    x:DataType="viewmodels:SettlementReportViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <VerticalStackLayout>
+                    <Label Text="Start Date" />
+                    <DatePicker Date="{Binding StartDate}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="End Date" />
+                    <DatePicker Date="{Binding EndDate}" />
+                </VerticalStackLayout>
+            </Grid>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button
+                    Grid.Column="0"
+                    Command="{Binding GenerateReportCommand}"
+                    Text="Generate Report" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding ExportPdfCommand}"
+                    Text="Export to PDF" />
+            </Grid>
+
+            <Border
+                Margin="0,20"
+                Padding="15"
+                Stroke="LightGray"
+                StrokeShape="RoundRectangle 10">
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                    <Label FontAttributes="Bold" Text="Total Revenue:" />
+                    <Label
+                        Grid.Column="1"
+                        HorizontalTextAlignment="End"
+                        Text="{Binding TotalRevenue, StringFormat='{0:C}'}" />
+                    <Label
+                        Grid.Row="1"
+                        FontAttributes="Bold"
+                        Text="Total Expenses:" />
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalTextAlignment="End"
+                        Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
+                    <Label
+                        Grid.Row="2"
+                        FontAttributes="Bold"
+                        FontSize="Large"
+                        Text="Net Pay:" />
+                    <Label
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        FontSize="Large"
+                        HorizontalTextAlignment="End"
+                        Text="{Binding NetPay, StringFormat='{0:C}'}" />
+                </Grid>
+            </Border>
+
+            <Label
+                FontAttributes="Bold"
+                FontSize="Title"
+                Text="Earnings" />
+            <CollectionView ItemsSource="{Binding CompletedLoads}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Load">
+                        <Grid Padding="0,5" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding LoadNumber}" />
+                            <Label Grid.Column="1" Text="{Binding FreightRate, StringFormat='{0:C}'}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label
+                Margin="0,20,0,0"
+                FontAttributes="Bold"
+                FontSize="Title"
+                Text="Deductions" />
+            <CollectionView IsGrouped="True" ItemsSource="{Binding GroupedExpenses}">
+
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate x:DataType="models:LoadExpenseGroup">
+                        <Grid
+                            Padding="0,10,0,5"
+                            BackgroundColor="LightGray"
+                            ColumnDefinitions="*,Auto">
+                            <Label
+                                Margin="10,0"
+                                FontAttributes="Bold"
+                                Text="{Binding LoadNumber}"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="1"
+                                Margin="10,0"
+                                FontAttributes="Bold"
+                                Text="{Binding TotalForLoad, StringFormat='Subtotal: {0:C}'}"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="expenseTypes:Expense">
+                        <Grid Padding="10,5" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding Category}" />
+                            <Label Grid.Column="1" Text="{Binding Amount, StringFormat='{0:C}'}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label
+                Margin="0,20,0,0"
+                FontAttributes="Bold"
+                FontSize="Title"
+                Text="Deduction Summary" />
+            <CollectionView ItemsSource="{Binding DeductionSummaries}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:CategoryTotal">
+                        <Grid Padding="0,5" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding CategoryName}" />
+                            <Label Grid.Column="1" Text="{Binding TotalAmount, StringFormat='{0:C}'}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

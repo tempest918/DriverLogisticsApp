@@ -6,6 +6,10 @@ using System.Collections.ObjectModel;
 
 namespace DriverLogisticsApp.ViewModels
 {
+    // disable annoying warnings that are not relevant to this project
+    #pragma warning disable MVVMTK0034
+    #pragma warning disable MVVMTK0045
+
     public partial class MainPageViewModel : ObservableObject
     {
         private readonly IDatabaseService _databaseService;
@@ -99,6 +103,16 @@ namespace DriverLogisticsApp.ViewModels
             {
                 { "LoadId", load.Id }
             });
+        }
+
+        /// <summary>
+        /// load settlement report page
+        /// </summary>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task GoToSettlementReportAsync()
+        {
+            await _navigationService.NavigateToAsync(nameof(Views.SettlementReportPage));
         }
     }
 }

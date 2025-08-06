@@ -13,6 +13,10 @@ namespace DriverLogisticsApp.ViewModels
 
     public partial class LoadDetailsViewModel : ObservableObject
     {
+        // disable annoying warnings that are not relevant to this project
+        #pragma warning disable MVVMTK0034
+        #pragma warning disable MVVMTK0045
+
         private readonly IDatabaseService _databaseService;
         private readonly IAlertService _alertService;
         private readonly INavigationService _navigationService;

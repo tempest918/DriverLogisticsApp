@@ -13,6 +13,7 @@ namespace DriverLogisticsApp
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
+
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
@@ -36,6 +37,7 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<LoadDetailsViewModel>();
             builder.Services.AddTransient<AddExpenseViewModel>();
             builder.Services.AddTransient<ExpenseDetailsViewModel>();
+            builder.Services.AddTransient<SettlementReportViewModel>();
 
             // views/pages
             builder.Services.AddTransient<MainPage>();
@@ -43,6 +45,7 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<LoadDetailsPage>();
             builder.Services.AddTransient<AddExpensePage>();
             builder.Services.AddTransient<ExpenseDetailsPage>();
+            builder.Services.AddTransient<SettlementReportPage>();
 
             // popups
             builder.Services.AddTransient<ZoomedImagePopup>();

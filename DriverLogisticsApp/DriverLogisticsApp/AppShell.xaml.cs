@@ -11,6 +11,7 @@
             Routing.RegisterRoute("LoadDetailsPage", typeof(Views.LoadDetailsPage));
             Routing.RegisterRoute("AddExpensePage", typeof(Views.AddExpensePage));
             Routing.RegisterRoute("ExpenseDetailsPage", typeof(Views.ExpenseDetailsPage));
+            Routing.RegisterRoute("SettlementReportPage", typeof(Views.SettlementReportPage));
         }
     }
 }

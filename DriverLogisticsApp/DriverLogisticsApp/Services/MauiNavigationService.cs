@@ -1,5 +1,4 @@
-﻿// In Services/MauiNavigationService.cs
-namespace DriverLogisticsApp.Services
+﻿namespace DriverLogisticsApp.Services
 {
     public class MauiNavigationService : INavigationService
     {

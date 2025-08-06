@@ -102,9 +102,18 @@ namespace DriverLogisticsApp.Services
         public async Task<List<Models.ExpenseTypes.Expense>> GetExpensesForLoadAsync(int loadId)
         {
             await Init();
+            List<Models.Expense> dbExpenses;
 
-            // get all expenses for the specified load
-            var dbExpenses = await _database!.Table<Models.Expense>().Where(e => e.LoadId == loadId).ToListAsync();
+            if (loadId != 0)
+            {
+                // get all expenses for the specified load
+                dbExpenses = await _database!.Table<Models.Expense>().Where(e => e.LoadId == loadId).ToListAsync();
+            }
+            else
+            {
+                // get all expenses for all loads if loadId is 0
+                dbExpenses = await _database!.Table<Models.Expense>().ToListAsync();
+            }
 
             var expenseList = new List<Models.ExpenseTypes.Expense>();
 
