@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:DriverLogisticsApp.Models"
     xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+    x:Name="mainPage"
     Title="Active Loads"
     x:DataType="viewmodels:MainPageViewModel">
 

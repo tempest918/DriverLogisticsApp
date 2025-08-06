@@ -2,6 +2,8 @@
     x:Class="DriverLogisticsApp.Views.LoadDetailsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:expenseTypes="clr-namespace:DriverLogisticsApp.Models.ExpenseTypes"
+    xmlns:models="clr-namespace:DriverLogisticsApp.Models"
     xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
     Title="Load Details"
     x:DataType="viewmodels:LoadDetailsViewModel">
@@ -47,6 +49,51 @@
                 Text="Delivery Date" />
             <Label Text="{Binding Load.DeliveryDate, StringFormat='{0:D}'}" />
 
+            <Grid Margin="0,20,0,10" ColumnDefinitions="*,Auto">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="Title"
+                    Text="Expenses"
+                    VerticalOptions="Center" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding GoToAddExpenseCommand}"
+                    Text="+ Add Expense" />
+            </Grid>
+            <CollectionView ItemsSource="{Binding Expenses}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="expenseTypes:Expense">
+                        <Border
+                            Margin="0,0,0,5"
+                            Padding="10"
+                            Stroke="LightGray"
+                            StrokeShape="RoundRectangle 5">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <VerticalStackLayout>
+                                    <Label FontAttributes="Bold" Text="{Binding FormattedDetails}" />
+                                    <Label FontSize="Small" Text="{Binding Description}" />
+                                </VerticalStackLayout>
+                                <Label
+                                    Grid.Column="1"
+                                    Text="{Binding Amount, StringFormat='{0:C}'}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label
+                        Padding="20"
+                        HorizontalOptions="Center"
+                        Text="No expenses have been added for this load." />
+                </CollectionView.EmptyView>
+            </CollectionView>
+
+
+            <HorizontalStackLayout
+                Margin="0,30,0,0"
+                HorizontalOptions="Center"
+                Spacing="10" />
             <HorizontalStackLayout
                 Margin="0,30,0,0"
                 HorizontalOptions="Center"

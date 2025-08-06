@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using DriverLogisticsApp.Models.ExpenseTypes;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -19,6 +21,9 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private Load _load;
 
+        [ObservableProperty]
+        private ObservableCollection<Models.ExpenseTypes.Expense> _expenses;
+
         /// <summary>
         /// initialize the view model for the load details page
         /// </summary>
@@ -26,8 +31,10 @@ namespace DriverLogisticsApp.ViewModels
         public LoadDetailsViewModel(DatabaseService databaseService)
         {
             _databaseService = databaseService;
+            _expenses = new ObservableCollection<Models.ExpenseTypes.Expense>();
         }
 
+        #region Load Related Methods
         /// <summary>
         /// invoked when LoadId changes, loads data for the specified load
         /// </summary>
@@ -50,6 +57,15 @@ namespace DriverLogisticsApp.ViewModels
                 if (load != null)
                 {
                     Load = load;
+
+                    // load expenses for this load
+                    var expensesFromDb = await _databaseService.GetExpensesForLoadAsync(LoadId);
+
+                    Expenses.Clear();
+                    foreach (var expense in expensesFromDb)
+                    {
+                        Expenses.Add(expense);
+                    }
                 }
             }
             catch (Exception ex)
@@ -92,5 +108,25 @@ namespace DriverLogisticsApp.ViewModels
             // navigate back to the main list
             await Shell.Current.GoToAsync("..");
         }
+        #endregion
+
+        #region Expense Related Methods
+
+        /// <summary>
+        /// navigate to the Add Expense page, passing the current Load's Id
+        /// </summary>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task GoToAddExpenseAsync()
+        {
+            if (Load is null) return;
+
+            await Shell.Current.GoToAsync(nameof(Views.AddExpensePage), new Dictionary<string, object>
+            {
+                { "LoadId", Load.Id }
+            });
+        }
+        #endregion
+
     }
 }

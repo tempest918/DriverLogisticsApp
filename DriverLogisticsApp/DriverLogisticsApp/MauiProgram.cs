@@ -29,11 +29,13 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<MainPageViewModel>();
             builder.Services.AddTransient<AddLoadViewModel>();
             builder.Services.AddTransient<LoadDetailsViewModel>();
+            builder.Services.AddTransient<AddExpenseViewModel>();
 
             // views/pages
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<AddLoadPage>();
             builder.Services.AddTransient<LoadDetailsPage>();
+            builder.Services.AddTransient<AddExpensePage>();
 
             return builder.Build();
         }
