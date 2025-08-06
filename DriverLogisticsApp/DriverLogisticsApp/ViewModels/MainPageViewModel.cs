@@ -9,9 +9,13 @@ namespace DriverLogisticsApp.ViewModels
     public partial class MainPageViewModel : ObservableObject
     {
         private readonly DatabaseService _databaseService;
+        private List<Load> _allLoads;
 
         [ObservableProperty]
         private ObservableCollection<Load> _loads;
+
+        [ObservableProperty]
+        private string _searchText;
 
         /// <summary>
         /// initialize the view model for the main page
@@ -20,21 +24,47 @@ namespace DriverLogisticsApp.ViewModels
         public MainPageViewModel(DatabaseService databaseService)
         {
             _databaseService = databaseService;
-            Loads = new ObservableCollection<Load>();
+            _loads = new ObservableCollection<Load>();
+            _allLoads = new List<Load>();
         }
 
         /// <summary>
-        /// load all loads from the database
+        /// monitor search text, used to filter loads
+        /// </summary>
+        /// <param name="value"></param>
+        partial void OnSearchTextChanged(string value)
+        {
+            FilterLoads();
+        }
+
+        /// <summary>
+        /// get loads by calling the filter loads method
         /// </summary>
         /// <returns></returns>
         [RelayCommand]
         private async Task GetLoadsAsync()
         {
-            var loadsFromDb = await _databaseService.GetLoadsAsync();
+            _allLoads = await _databaseService.GetLoadsAsync();
 
-            // clear the existing loads and add the new ones
+            FilterLoads();
+        }
+
+        /// <summary>
+        /// get all loads from the database and store them in a list for filtering
+        /// </summary>
+        private void FilterLoads()
+        {
+            // if search text is empty, return all loads
+            var filteredLoads = string.IsNullOrWhiteSpace(SearchText)
+                ? _allLoads
+                // otherwise filter loads based on search text, look in LoadNumber, ShipperName
+                : _allLoads.Where(load =>
+                    load.LoadNumber.ToLower().Contains(SearchText.ToLower()) ||
+                    load.ShipperName.ToLower().Contains(SearchText.ToLower()));
+
+            // clear the current loads collection and add the filtered loads
             Loads.Clear();
-            foreach (var load in loadsFromDb)
+            foreach (var load in filteredLoads)
             {
                 Loads.Add(load);
             }

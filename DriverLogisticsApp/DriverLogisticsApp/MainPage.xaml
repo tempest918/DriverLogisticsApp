@@ -12,18 +12,26 @@
         <ToolbarItem Command="{Binding GoToAddLoadCommand}" Text="Add" />
     </ContentPage.ToolbarItems>
 
-    <Grid RowDefinitions="*">
-        <CollectionView ItemsSource="{Binding Loads}">
+    <Grid RowDefinitions="Auto, *">
+
+        <SearchBar
+            Grid.Row="0"
+            Margin="10"
+            Placeholder="Search by Load # or Shipper..."
+            Text="{Binding SearchText, Mode=TwoWay}" />
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Loads}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Load">
                     <Border
-                        Margin="10"
+                        Margin="10,5"
                         Padding="15"
                         Stroke="LightGray"
                         StrokeShape="RoundRectangle 10">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=GoToDetailsCommand}" CommandParameter="{Binding .}" />
+                            <TapGestureRecognizer Command="{Binding Source={x:Reference mainPage}, Path=BindingContext.GoToDetailsCommand}" CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
+
                         <VerticalStackLayout Spacing="5">
                             <Label
                                 FontAttributes="Bold"
