@@ -13,7 +13,10 @@ namespace DriverLogisticsApp.ViewModels
 
     public partial class LoadDetailsViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IDatabaseService _databaseService;
+        private readonly IAlertService _alertService;
+        private readonly INavigationService _navigationService;
+
         private List<Models.ExpenseTypes.Expense> _allExpenses;
 
         [ObservableProperty]
@@ -32,10 +35,13 @@ namespace DriverLogisticsApp.ViewModels
         /// initialize the view model for the load details page
         /// </summary>
         /// <param name="databaseService"></param>
-        public LoadDetailsViewModel(DatabaseService databaseService)
+        public LoadDetailsViewModel(IDatabaseService databaseService, IAlertService alertService, INavigationService navigationService)
         {
             _databaseService = databaseService;
-            _expenses = new ObservableCollection<Models.ExpenseTypes.Expense>();
+            _alertService = alertService;
+            _navigationService = navigationService;
+
+            Expenses = new ObservableCollection<Models.ExpenseTypes.Expense>();
             _allExpenses = new List<Models.ExpenseTypes.Expense>();
         }
 
@@ -44,10 +50,10 @@ namespace DriverLogisticsApp.ViewModels
         /// invoked when LoadId changes, loads data for the specified load
         /// </summary>
         /// <param name="value"></param>
-        partial void OnLoadIdChanged(int value)
+        async partial void OnLoadIdChanged(int value)
         {
             // Load the full details of the load from the database
-            LoadDataAsync();
+            await LoadDataAsync();
         }
 
         /// <summary>
@@ -87,7 +93,7 @@ namespace DriverLogisticsApp.ViewModels
                 return;
 
             // pass load ID as a query parameter to the AddLoadPage
-            await Shell.Current.GoToAsync(nameof(Views.AddLoadPage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(Views.AddLoadPage), new Dictionary<string, object>
             {
                 { "LoadId", Load.Id }
             });
@@ -101,14 +107,14 @@ namespace DriverLogisticsApp.ViewModels
         private async Task DeleteLoadAsync()
         {
             // ask for confirmation before deleting
-            bool confirmed = await Shell.Current.DisplayAlert("Confirm Delete", $"Are you sure you want to delete Load #{Load.LoadNumber}?", "Yes", "No");
+            bool confirmed = await _alertService.DisplayAlert("Confirm Delete", $"Are you sure you want to delete Load #{Load.LoadNumber}?", "Yes", "No");
             if (!confirmed)
                 return;
 
             await _databaseService.DeleteLoadAsync(Load);
 
             // navigate back to the main list
-            await Shell.Current.GoToAsync("..");
+            await _navigationService.GoBackAsync();
         }
         #endregion
 
@@ -132,7 +138,7 @@ namespace DriverLogisticsApp.ViewModels
         {
             if (Load is null) return;
 
-            await Shell.Current.GoToAsync(nameof(Views.AddExpensePage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(Views.AddExpensePage), new Dictionary<string, object>
             {
                 { "LoadId", Load.Id }
             });
@@ -149,7 +155,7 @@ namespace DriverLogisticsApp.ViewModels
             if (expense is null)
                 return;
 
-            await Shell.Current.GoToAsync(nameof(Views.AddExpensePage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(Views.ExpenseDetailsPage), new Dictionary<string, object>
             {
                 { "ExpenseId", expense.Id }
             });

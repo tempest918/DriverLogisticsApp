@@ -4,7 +4,7 @@ using SQLite;
 
 namespace DriverLogisticsApp.Services
 {
-    public class DatabaseService
+    public class DatabaseService : IDatabaseService
     {
         private SQLiteAsyncConnection _database;
 

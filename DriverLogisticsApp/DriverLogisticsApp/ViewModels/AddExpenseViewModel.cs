@@ -11,7 +11,9 @@ namespace DriverLogisticsApp.ViewModels
 
     public partial class AddExpenseViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IDatabaseService _databaseService;
+        private readonly IAlertService _alertService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private int _loadId;
@@ -40,9 +42,13 @@ namespace DriverLogisticsApp.ViewModels
         /// initialize the view model for adding a new expense
         /// </summary>
         /// <param name="databaseService"></param>
-        public AddExpenseViewModel(DatabaseService databaseService)
+        /// <param name="alertService"></param>
+        /// <param name="navigationService"></param>
+        public AddExpenseViewModel(IDatabaseService databaseService, IAlertService alertService, INavigationService navigationService)
         {
             _databaseService = databaseService;
+            _alertService = alertService;
+            _navigationService = navigationService;
 
             Categories = new ObservableCollection<string>
             {
@@ -58,11 +64,11 @@ namespace DriverLogisticsApp.ViewModels
         /// loads the expense data for editing when ExpenseId changes
         /// </summary>
         /// <param name="value"></param>
-        partial void OnExpenseIdChanged(int value)
+        async partial void OnExpenseIdChanged(int value)
         {
             if (value > 0)
             {
-                LoadExpenseForEditAsync();
+                await LoadExpenseForEditAsync();
             }
         }
 
@@ -96,7 +102,7 @@ namespace DriverLogisticsApp.ViewModels
         {
             if (string.IsNullOrWhiteSpace(SelectedCategory) || Amount <= 0)
             {
-                await Shell.Current.DisplayAlert("Error", "Please select a category and enter a valid amount.", "OK");
+                await _alertService.DisplayAlert("Error", "Please select a category and enter a valid amount.", "OK");
                 return;
             }
 
@@ -112,7 +118,7 @@ namespace DriverLogisticsApp.ViewModels
 
             await _databaseService.SaveExpenseAsync(expenseToSave);
 
-            await Shell.Current.GoToAsync("..");
+            await _navigationService.GoBackAsync();
         }
     }
 }

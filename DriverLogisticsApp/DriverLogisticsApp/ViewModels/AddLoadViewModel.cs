@@ -8,7 +8,9 @@ namespace DriverLogisticsApp.ViewModels
     [QueryProperty(nameof(LoadId), "LoadId")]
     public partial class AddLoadViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IDatabaseService _databaseService;
+        private readonly IAlertService _alertService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private int _loadId;
@@ -38,9 +40,14 @@ namespace DriverLogisticsApp.ViewModels
         /// initialize the view model for adding a new load
         /// </summary>
         /// <param name="databaseService"></param>
-        public AddLoadViewModel(DatabaseService databaseService)
+        /// <param name="alertService"></param>
+        /// <param name="navigationService"></param>
+        public AddLoadViewModel(IDatabaseService databaseService , IAlertService alertService, INavigationService navigationService)
         {
             _databaseService = databaseService;
+            _alertService = alertService;
+            _navigationService = navigationService;
+
             Title = "Add New Load";
         }
 
@@ -67,7 +74,7 @@ namespace DriverLogisticsApp.ViewModels
             if (value < PickupDate)
             {
                 // show alert
-                Shell.Current.DisplayAlert("Invalid Date", "Delivery date cannot be before the pickup date.", "OK");
+                _alertService.DisplayAlert("Invalid Date", "Delivery date cannot be before the pickup date.", "OK");
 
                 // reset date
                 DeliveryDate = PickupDate.AddDays(1);
@@ -107,7 +114,7 @@ namespace DriverLogisticsApp.ViewModels
             // validation checks
             if (string.IsNullOrWhiteSpace(LoadNumber) || string.IsNullOrWhiteSpace(ShipperName) || FreightRate <= 0)
             {
-                await Shell.Current.DisplayAlert("Error", "Please fill in all required fields.", "OK");
+                await _alertService.DisplayAlert("Error", "Please fill in all required fields.", "OK");
                 return;
             }
 
@@ -128,7 +135,7 @@ namespace DriverLogisticsApp.ViewModels
             await _databaseService.SaveLoadAsync(newLoad);
 
             // navigate back to the main page
-            await Shell.Current.GoToAsync("..");
+            await _navigationService.GoBackAsync();
         }
     }
 }

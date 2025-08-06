@@ -9,7 +9,9 @@ namespace DriverLogisticsApp.ViewModels
     [QueryProperty(nameof(ExpenseId), "ExpenseId")]
     public partial class ExpenseDetailsViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IDatabaseService _databaseService;
+        private readonly IAlertService _alertService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private int _expenseId;
@@ -22,18 +24,22 @@ namespace DriverLogisticsApp.ViewModels
         /// initialize the view model for the expense details page
         /// </summary>
         /// <param name="databaseService"></param>
-        public ExpenseDetailsViewModel(DatabaseService databaseService)
+        /// <param name="alertService"></param>
+        /// <param name="navigationService"></param>
+        public ExpenseDetailsViewModel(IDatabaseService databaseService, IAlertService alertService, INavigationService navigationService)
         {
             _databaseService = databaseService;
+            _alertService = alertService;
+            _navigationService = navigationService;
         }
 
         /// <summary>
         /// reloads the expense data when ExpenseId changes
         /// </summary>
         /// <param name="value"></param>
-        partial void OnExpenseIdChanged(int value)
+        async partial void OnExpenseIdChanged(int value)
         {
-            LoadDataAsync();
+            await LoadDataAsync();
         }
 
         /// <summary>
@@ -66,7 +72,7 @@ namespace DriverLogisticsApp.ViewModels
             if (Expense is null) return;
 
             // pass the ExpenseId as a query parameter to the AddExpensePage
-            await Shell.Current.GoToAsync(nameof(Views.AddExpensePage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(Views.AddExpensePage), new Dictionary<string, object>
             {
                 { "ExpenseId", Expense.Id }
             }); 
@@ -81,7 +87,7 @@ namespace DriverLogisticsApp.ViewModels
         {
             if (Expense is null) return;
 
-            bool confirmed = await Shell.Current.DisplayAlert("Confirm Delete", "Are you sure you want to delete this expense?", "Yes", "No");
+            bool confirmed = await _alertService.DisplayAlert("Confirm Delete", $"Are you sure you want to delete the expense for {Expense.Category}?", "Yes", "No");
             if (!confirmed) return;
 
             // convert back to databse model for deletion
@@ -92,7 +98,7 @@ namespace DriverLogisticsApp.ViewModels
 
             await _databaseService.DeleteExpenseAsync(expenseToDelete);
 
-            await Shell.Current.GoToAsync("..");
+            await _navigationService.GoBackAsync();
         }
     }
 }

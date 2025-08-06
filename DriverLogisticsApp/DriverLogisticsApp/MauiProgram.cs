@@ -23,7 +23,9 @@ namespace DriverLogisticsApp
     		builder.Logging.AddDebug();
 #endif
             // services
-            builder.Services.AddSingleton<DatabaseService>();
+            builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
+            builder.Services.AddSingleton<IAlertService, MauiAlertService>();
+            builder.Services.AddSingleton<INavigationService, MauiNavigationService>();
 
             // view models
             builder.Services.AddTransient<MainPageViewModel>();

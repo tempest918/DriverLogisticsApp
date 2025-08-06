@@ -8,7 +8,9 @@ namespace DriverLogisticsApp.ViewModels
 {
     public partial class MainPageViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IDatabaseService _databaseService;
+        private readonly INavigationService _navigationService;
+
         private List<Load> _allLoads;
 
         [ObservableProperty]
@@ -21,9 +23,10 @@ namespace DriverLogisticsApp.ViewModels
         /// initialize the view model for the main page
         /// </summary>
         /// <param name="databaseService"></param>
-        public MainPageViewModel(DatabaseService databaseService)
+        public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService)
         {
             _databaseService = databaseService;
+            _navigationService = navigationService;
             _loads = new ObservableCollection<Load>();
             _allLoads = new List<Load>();
         }
@@ -77,7 +80,7 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task GoToAddLoadAsync()
         {
-            await Shell.Current.GoToAsync("AddLoadPage");
+            await _navigationService.NavigateToAsync("AddLoadPage");
         }
 
         /// <summary>
@@ -92,7 +95,7 @@ namespace DriverLogisticsApp.ViewModels
                 return;
 
             // pass load ID as a query parameter to the LoadDetailsPage
-            await Shell.Current.GoToAsync(nameof(Views.LoadDetailsPage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(Views.LoadDetailsPage), new Dictionary<string, object>
             {
                 { "LoadId", load.Id }
             });
