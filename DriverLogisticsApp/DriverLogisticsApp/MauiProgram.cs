@@ -30,6 +30,7 @@ namespace DriverLogisticsApp
             builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
             builder.Services.AddSingleton<IAlertService, MauiAlertService>();
             builder.Services.AddSingleton<INavigationService, MauiNavigationService>();
+            builder.Services.AddSingleton<PdfService>();
 
             // view models
             builder.Services.AddTransient<MainPageViewModel>();

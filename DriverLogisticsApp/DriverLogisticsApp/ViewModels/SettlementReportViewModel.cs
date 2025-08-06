@@ -4,6 +4,7 @@ using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -14,6 +15,8 @@ namespace DriverLogisticsApp.ViewModels
         #pragma warning disable MVVMTK0045
 
         private readonly IDatabaseService _databaseService;
+        private readonly PdfService _pdfService;
+        private readonly IAlertService _alertService;
 
         [ObservableProperty]
         private DateTime _startDate = DateTime.Today.AddDays(-7);
@@ -30,15 +33,21 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private decimal _netPay;
 
+        [ObservableProperty]
+        private bool _isReportGenerated;
+
         public ObservableCollection<Load> CompletedLoads { get; } = new();
 
         public ObservableCollection<LoadExpenseGroup> GroupedExpenses { get; } = new();
 
         public ObservableCollection<CategoryTotal> DeductionSummaries { get; } = new();
 
-        public SettlementReportViewModel(IDatabaseService databaseService)
+        public SettlementReportViewModel(IDatabaseService databaseService, PdfService pdfService, IAlertService alertService)
         {
             _databaseService = databaseService;
+            _pdfService = pdfService;
+            _alertService = alertService;
+            IsReportGenerated = false;
         }
 
         /// <summary>
@@ -91,6 +100,46 @@ namespace DriverLogisticsApp.ViewModels
                     TotalAmount = group.Sum(e => e.Amount)
                 });
             }
+
+            // set the report generated flag
+            IsReportGenerated = true;
+
+        }
+
+        /// <summary>
+        /// save the generated PDF report to the public Downloads folder.
+        /// </summary>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task SavePdfAsync()
+        {
+            try
+            {
+                // set filename and create PDF in the cache directory
+                var fileName = $"Settlement_{StartDate:yyyy-MM-dd}_to_{EndDate:yyyy-MM-dd}.pdf";
+                var tempFilePath = _pdfService.CreateSettlementReportPdf(this, fileName);
+
+                // logic for android
+#if ANDROID
+        var downloadsPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
+        var destinationFilePath = Path.Combine(downloadsPath, fileName);
+#else
+                // logic for debuggin in windows
+                var destinationFilePath = tempFilePath;
+#endif
+
+                // copy the file from temp to the destination
+                if (tempFilePath != destinationFilePath)
+                {
+                    File.Copy(tempFilePath, destinationFilePath, true);
+                }
+
+                await _alertService.DisplayAlert("Success", $"Report saved to Downloads folder.", "OK");
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", $"Failed to save file: {ex.Message}", "OK");
+            }
         }
 
         /// <summary>
@@ -100,6 +149,15 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task ExportPdfAsync()
         {
+            var fileName = $"Settlement_{StartDate:yyyy-MM-dd}_to_{EndDate:yyyy-MM-dd}.pdf";
+
+            var filePath = _pdfService.CreateSettlementReportPdf(this, fileName);
+
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = $"Settlement Report {_endDate:yyyy-MM-dd}",
+                File = new ShareFile(filePath)
+            });
         }
     }
 }

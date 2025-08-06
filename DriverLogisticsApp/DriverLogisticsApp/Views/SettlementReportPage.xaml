@@ -20,17 +20,7 @@
                     <DatePicker Date="{Binding EndDate}" />
                 </VerticalStackLayout>
             </Grid>
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <Button
-                    Grid.Column="0"
-                    Command="{Binding GenerateReportCommand}"
-                    Text="Generate Report" />
-                <Button
-                    Grid.Column="1"
-                    Command="{Binding ExportPdfCommand}"
-                    Text="Export to PDF" />
-            </Grid>
-
+            <Button Command="{Binding GenerateReportCommand}" Text="Generate Report" />
             <Border
                 Margin="0,20"
                 Padding="15"
@@ -134,6 +124,21 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            <Grid
+                Margin="0,20,0,0"
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10"
+                IsVisible="{Binding IsReportGenerated}">
+
+                <Button
+                    Grid.Column="0"
+                    Command="{Binding ExportPdfCommand}"
+                    Text="Share PDF" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding SavePdfCommand}"
+                    Text="Save to Downloads" />
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
