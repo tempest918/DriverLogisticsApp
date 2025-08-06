@@ -84,6 +84,17 @@ namespace DriverLogisticsApp.Services
         #region Expense CRUD operations
 
         /// <summary>
+        /// get a simple expense by its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Models.Expense> GetSimpleExpenseAsync(int id)
+        {
+            await Init();
+            return await _database!.Table<Models.Expense>().Where(e => e.Id == id).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
         /// get all expenses for a specific load, utilize factory pattern to convert for polymorphic behavior
         /// </summary>
         /// <param name="loadId"></param>
@@ -110,7 +121,7 @@ namespace DriverLogisticsApp.Services
                         specificExpense = new MaintenanceExpense();
                         break;
                     default:
-                        specificExpense = new MaintenanceExpense { Description = dbExpense.Category }; // Fallback
+                        specificExpense = new GeneralExpense();
                         break;
                 }
 
@@ -121,11 +132,56 @@ namespace DriverLogisticsApp.Services
                 specificExpense.Date = dbExpense.Date;
                 specificExpense.Description = dbExpense.Description;
                 specificExpense.ReceiptImagePath = dbExpense.ReceiptImagePath;
+                specificExpense.Category = dbExpense.Category;
 
                 expenseList.Add(specificExpense);
             }
 
             return expenseList;
+        }
+
+        /// <summary>
+        /// get a single expense by its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Models.ExpenseTypes.Expense?> GetExpenseAsync(int id)
+        {
+            await Init();
+
+            // get single expense from the database
+            var dbExpense = await _database!.Table<Models.Expense>().Where(e => e.Id == id).FirstOrDefaultAsync();
+
+            if (dbExpense is null)
+                return null;
+
+            // convert to the specific type of expense based on the category
+            Models.ExpenseTypes.Expense specificExpense;
+            switch (dbExpense.Category)
+            {
+                case "Fuel":
+                    specificExpense = new Models.ExpenseTypes.FuelExpense();
+                    break;
+                case "Maintenance":
+                    specificExpense = new Models.ExpenseTypes.MaintenanceExpense();
+                    break;
+                default:
+                    specificExpense = new Models.ExpenseTypes.MaintenanceExpense { Description = dbExpense.Category };
+                    break;
+            }
+
+            // populate the specific expense properties
+            specificExpense.Id = dbExpense.Id;
+            specificExpense.LoadId = dbExpense.LoadId;
+            specificExpense.Amount = dbExpense.Amount;
+            specificExpense.Date = dbExpense.Date;
+            if (string.IsNullOrEmpty(specificExpense.Description))
+            {
+                specificExpense.Description = dbExpense.Description;
+            }
+            specificExpense.ReceiptImagePath = dbExpense.ReceiptImagePath;
+
+            return specificExpense;
         }
 
         /// <summary>

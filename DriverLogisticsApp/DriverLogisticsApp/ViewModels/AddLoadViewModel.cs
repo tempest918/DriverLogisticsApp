@@ -31,6 +31,9 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         DateTime deliveryDate = DateTime.Today.AddDays(1);
 
+        [ObservableProperty]
+        private string _title;
+
         /// <summary>
         /// initialize the view model for adding a new load
         /// </summary>
@@ -38,6 +41,7 @@ namespace DriverLogisticsApp.ViewModels
         public AddLoadViewModel(DatabaseService databaseService)
         {
             _databaseService = databaseService;
+            Title = "Add New Load";
         }
 
         /// <summary>
@@ -76,6 +80,8 @@ namespace DriverLogisticsApp.ViewModels
         /// <returns></returns>
         public async Task LoadLoadForEditAsync()
         {
+            Title = "Edit Load";
+
             if (LoadId > 0)
             {
                 var load = await _databaseService.GetLoadAsync(LoadId);

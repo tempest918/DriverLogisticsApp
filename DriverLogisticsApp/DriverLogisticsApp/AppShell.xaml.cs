@@ -10,6 +10,7 @@
             Routing.RegisterRoute("AddLoadPage", typeof(Views.AddLoadPage));
             Routing.RegisterRoute("LoadDetailsPage", typeof(Views.LoadDetailsPage));
             Routing.RegisterRoute("AddExpensePage", typeof(Views.AddExpensePage));
+            Routing.RegisterRoute("ExpenseDetailsPage", typeof(Views.ExpenseDetailsPage));
         }
     }
 }

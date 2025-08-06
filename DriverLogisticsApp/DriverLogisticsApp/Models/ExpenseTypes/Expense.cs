@@ -14,6 +14,8 @@
 
         public string? ReceiptImagePath { get; set; }
 
+        public string Category { get; set; } = string.Empty;
+
         public abstract string FormattedDetails { get; }
     }
 }

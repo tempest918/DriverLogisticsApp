@@ -4,7 +4,7 @@ using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using DriverLogisticsApp.Models.ExpenseTypes;
+using System.Linq;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -14,6 +14,7 @@ namespace DriverLogisticsApp.ViewModels
     public partial class LoadDetailsViewModel : ObservableObject
     {
         private readonly DatabaseService _databaseService;
+        private List<Models.ExpenseTypes.Expense> _allExpenses;
 
         [ObservableProperty]
         private int _loadId;
@@ -24,6 +25,9 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private ObservableCollection<Models.ExpenseTypes.Expense> _expenses;
 
+        [ObservableProperty]
+        private string _expenseSearchText;
+
         /// <summary>
         /// initialize the view model for the load details page
         /// </summary>
@@ -32,6 +36,7 @@ namespace DriverLogisticsApp.ViewModels
         {
             _databaseService = databaseService;
             _expenses = new ObservableCollection<Models.ExpenseTypes.Expense>();
+            _allExpenses = new List<Models.ExpenseTypes.Expense>();
         }
 
         #region Load Related Methods
@@ -59,13 +64,10 @@ namespace DriverLogisticsApp.ViewModels
                     Load = load;
 
                     // load expenses for this load
-                    var expensesFromDb = await _databaseService.GetExpensesForLoadAsync(LoadId);
+                    _allExpenses = await _databaseService.GetExpensesForLoadAsync(LoadId);
 
-                    Expenses.Clear();
-                    foreach (var expense in expensesFromDb)
-                    {
-                        Expenses.Add(expense);
-                    }
+                    // filter expenses based on the search text
+                    FilterExpenses();
                 }
             }
             catch (Exception ex)
@@ -113,6 +115,15 @@ namespace DriverLogisticsApp.ViewModels
         #region Expense Related Methods
 
         /// <summary>
+        /// monitor changes to the search text and filter expenses accordingly
+        /// </summary>
+        /// <param name="value"></param>
+        partial void OnExpenseSearchTextChanged(string value)
+        {
+            FilterExpenses();
+        }
+
+        /// <summary>
         /// navigate to the Add Expense page, passing the current Load's Id
         /// </summary>
         /// <returns></returns>
@@ -125,6 +136,42 @@ namespace DriverLogisticsApp.ViewModels
             {
                 { "LoadId", Load.Id }
             });
+        }
+
+        /// <summary>
+        /// load the details of the selected expense
+        /// </summary>
+        /// <param name="expense"></param>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task GoToExpenseDetailsAsync(Models.ExpenseTypes.Expense expense)
+        {
+            if (expense is null)
+                return;
+
+            await Shell.Current.GoToAsync(nameof(Views.AddExpensePage), new Dictionary<string, object>
+            {
+                { "ExpenseId", expense.Id }
+            });
+        }
+
+        /// <summary>
+        /// filters the expenses based on the search text
+        /// </summary>
+        private void FilterExpenses()
+        {
+            var filtered = string.IsNullOrWhiteSpace(ExpenseSearchText)
+                ? _allExpenses
+                : _allExpenses.Where(e =>
+                    e.FormattedDetails.ToLower().Contains(ExpenseSearchText.ToLower()) ||
+                    (e.Description != null && e.Description.ToLower().Contains(ExpenseSearchText.ToLower())));
+
+            // Update the UI's collection with the filtered results
+            Expenses.Clear();
+            foreach (var expense in filtered)
+            {
+                Expenses.Add(expense);
+            }
         }
         #endregion
 
