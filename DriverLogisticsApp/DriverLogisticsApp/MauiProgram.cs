@@ -2,7 +2,9 @@
 using DriverLogisticsApp.Services;
 using DriverLogisticsApp.ViewModels;
 using DriverLogisticsApp.Views;
+using DriverLogisticsApp.Popups;
 using DriverLogisticsApp;
+using CommunityToolkit.Maui;
 
 namespace DriverLogisticsApp
 {
@@ -13,6 +15,7 @@ namespace DriverLogisticsApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -40,6 +43,9 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<LoadDetailsPage>();
             builder.Services.AddTransient<AddExpensePage>();
             builder.Services.AddTransient<ExpenseDetailsPage>();
+
+            // popups
+            builder.Services.AddTransient<ZoomedImagePopup>();
 
             return builder.Build();
         }

@@ -6,6 +6,10 @@ using System.Collections.ObjectModel;
 
 namespace DriverLogisticsApp.ViewModels
 {
+    // disable annoying warnings that are not relevant to this project
+    #pragma warning disable MVVMTK0034
+    #pragma warning disable MVVMTK0045
+
     [QueryProperty(nameof(LoadId), "LoadId")]
     [QueryProperty(nameof(ExpenseId), "ExpenseId")]
 
@@ -35,6 +39,9 @@ namespace DriverLogisticsApp.ViewModels
 
         [ObservableProperty]
         private string _title = "Add Expense";
+
+        [ObservableProperty]
+        private string _receiptImagePath;
 
         public ObservableCollection<string> Categories { get; }
 
@@ -89,7 +96,39 @@ namespace DriverLogisticsApp.ViewModels
                     Amount = expense.Amount;
                     Date = expense.Date;
                     Description = expense.Description;
+                    ReceiptImagePath = expense.ReceiptImagePath;
                 }
+            }
+        }
+
+        /// <summary>
+        /// saves the photo taken with the camera and updates the ReceiptImagePath property
+        /// </summary>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task AttachPhotoAsync()
+        {
+            try
+            {
+                // capture photo using the device camera
+                var result = await MediaPicker.Default.CapturePhotoAsync();
+
+                // save the file into local storage
+                if (result != null)
+                {
+                    var newFilePath = Path.Combine(FileSystem.AppDataDirectory, result.FileName);
+                    using (var stream = await result.OpenReadAsync())
+                    using (var newStream = File.OpenWrite(newFilePath))
+                    {
+                        await stream.CopyToAsync(newStream);
+                    }
+
+                    ReceiptImagePath = newFilePath;
+                }
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", $"Failed to attach photo: {ex.Message}", "OK");
             }
         }
 
@@ -113,7 +152,8 @@ namespace DriverLogisticsApp.ViewModels
                 Category = this.SelectedCategory,
                 Amount = this.Amount,
                 Date = this.Date,
-                Description = this.Description
+                Description = this.Description,
+                ReceiptImagePath = this.ReceiptImagePath
             };
 
             await _databaseService.SaveExpenseAsync(expenseToSave);

@@ -28,7 +28,14 @@
                 FontAttributes="Bold"
                 Text="Description" />
             <Label Text="{Binding Expense.Description}" />
-
+            <Image
+                Margin="0,20"
+                HeightRequest="300"
+                Source="{Binding Expense.ReceiptImagePath}">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnImageTapped" />
+                </Image.GestureRecognizers>
+            </Image>
             <HorizontalStackLayout
                 Margin="0,30,0,0"
                 HorizontalOptions="Center"
