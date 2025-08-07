@@ -9,7 +9,6 @@
     x:DataType="viewmodels:MainPageViewModel">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding GoToSettlementReportCommand}" Text="Report" />
         <ToolbarItem Command="{Binding GoToAddLoadCommand}" Text="Add" />
     </ContentPage.ToolbarItems>
 

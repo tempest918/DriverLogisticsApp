@@ -11,7 +11,12 @@
         /// <returns></returns>
         public Task DisplayAlert(string title, string message, string cancel)
         {
-            return Shell.Current.DisplayAlert(title, message, cancel);
+            if (Application.Current?.MainPage != null)
+            {
+                return Application.Current.MainPage.DisplayAlert(title, message, cancel);
+            }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>

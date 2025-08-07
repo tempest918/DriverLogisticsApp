@@ -21,16 +21,18 @@ namespace DriverLogisticsApp
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("MaterialSymbolsOutlined-Regular.ttf", "MaterialIcons");
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
             // services
             builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
             builder.Services.AddSingleton<IAlertService, MauiAlertService>();
             builder.Services.AddSingleton<INavigationService, MauiNavigationService>();
             builder.Services.AddSingleton<PdfService>();
+            builder.Services.AddSingleton<ISecureStorageService, MauiSecureStorageService>();
 
             // view models
             builder.Services.AddTransient<MainPageViewModel>();
@@ -39,19 +41,28 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<AddExpenseViewModel>();
             builder.Services.AddTransient<ExpenseDetailsViewModel>();
             builder.Services.AddTransient<SettlementReportViewModel>();
+            builder.Services.AddTransient<ProfilePageViewModel>();
+            builder.Services.AddTransient<LoginViewModel>();
 
             // views/pages
+            builder.Services.AddTransient<AppShell>();
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<AddLoadPage>();
             builder.Services.AddTransient<LoadDetailsPage>();
             builder.Services.AddTransient<AddExpensePage>();
             builder.Services.AddTransient<ExpenseDetailsPage>();
             builder.Services.AddTransient<SettlementReportPage>();
+            builder.Services.AddTransient<ProfilePage>();
+            builder.Services.AddTransient<LoginPage>();
 
             // popups
             builder.Services.AddTransient<ZoomedImagePopup>();
 
-            return builder.Build();
+            var app = builder.Build();
+
+            ServiceHelper.Initialize(app.Services);
+
+            return app;
         }
     }
 }

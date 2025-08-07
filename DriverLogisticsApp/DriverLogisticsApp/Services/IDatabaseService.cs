@@ -22,5 +22,10 @@ namespace DriverLogisticsApp.Services
         Task<int> DeleteExpenseAsync(Expense expense);
 
         Task<Expense> GetSimpleExpenseAsync(int id);
+
+        Task<UserProfile> GetUserProfileAsync();
+
+        Task<int> SaveUserProfileAsync(UserProfile profile);
+
     }
 }

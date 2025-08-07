@@ -1,4 +1,6 @@
-﻿namespace DriverLogisticsApp
+﻿using DriverLogisticsApp.Views;
+
+namespace DriverLogisticsApp
 {
     public partial class AppShell : Shell
     {
@@ -12,6 +14,8 @@
             Routing.RegisterRoute("AddExpensePage", typeof(Views.AddExpensePage));
             Routing.RegisterRoute("ExpenseDetailsPage", typeof(Views.ExpenseDetailsPage));
             Routing.RegisterRoute("SettlementReportPage", typeof(Views.SettlementReportPage));
+            Routing.RegisterRoute("ProfilePage", typeof(Views.ProfilePage));
+            Routing.RegisterRoute("LoginPage", typeof(Views.LoginPage));
         }
     }
 }

@@ -22,9 +22,10 @@ namespace DriverLogisticsApp.Services
 
             _database = new SQLiteAsyncConnection(databasePath);
 
-            // create the Load table if it doesn't exist
+            // create the tables
             await _database.CreateTableAsync<Load>();
             await _database.CreateTableAsync<Models.Expense>();
+            await _database.CreateTableAsync<UserProfile>();
         }
 
         #region Load CRUD operations
@@ -221,6 +222,39 @@ namespace DriverLogisticsApp.Services
             await Init();
             return await _database!.DeleteAsync(expense);
         }
+        #endregion
+
+        #region UserProfile operations
+
+        /// <summary>
+        /// get the user profile, there will only ever be one
+        /// </summary>
+        /// <returns></returns>
+        public async Task<UserProfile> GetUserProfileAsync()
+        {
+            await Init();
+            var profile = await _database!.Table<UserProfile>().FirstOrDefaultAsync();
+
+            if (profile == null)
+            {
+                profile = new UserProfile { Id = 1 };
+                await _database.InsertAsync(profile);
+            }
+
+            return profile;
+        }
+
+        /// <summary>
+        /// save the user profile, there will only ever be one with Id = 1
+        /// </summary>
+        /// <param name="profile"></param>
+        /// <returns></returns>
+        public async Task<int> SaveUserProfileAsync(UserProfile profile)
+        {
+            await Init();
+            return await _database!.UpdateAsync(profile);
+        }
+
         #endregion
     }
 }

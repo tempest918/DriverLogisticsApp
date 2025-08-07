@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DriverLogisticsApp.Views.ProfilePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+    Title="My Profile"
+    x:DataType="viewmodels:ProfilePageViewModel">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <Label
+                FontAttributes="Bold"
+                FontSize="Large"
+                Text="My Information" />
+            <Entry Placeholder="Your Name" Text="{Binding Profile.UserName}" />
+            <Entry
+                Keyboard="Telephone"
+                Placeholder="Your Phone Number"
+                Text="{Binding Profile.UserPhoneNumber}" />
+            <Entry
+                Keyboard="Email"
+                Placeholder="Your Email"
+                Text="{Binding Profile.UserEmail}" />
+
+            <Label
+                Margin="0,20,0,0"
+                FontAttributes="Bold"
+                FontSize="Large"
+                Text="Company Information (for Invoices)" />
+            <Entry Placeholder="Company Name" Text="{Binding Profile.CompanyName}" />
+            <Entry Placeholder="Address Line 1" Text="{Binding Profile.CompanyAddressLineOne}" />
+            <Entry Placeholder="Address Line 2" Text="{Binding Profile.CompanyAddressLineTwo}" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Entry Placeholder="City" Text="{Binding Profile.CompanyCity}" />
+                <Entry
+                    Grid.Column="1"
+                    Placeholder="State"
+                    Text="{Binding Profile.CompanyState}" />
+            </Grid>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Entry
+                    Keyboard="Numeric"
+                    Placeholder="Zip Code"
+                    Text="{Binding Profile.CompanyZipCode}" />
+                <Entry
+                    Grid.Column="1"
+                    Placeholder="Country"
+                    Text="{Binding Profile.CompanyCountry}" />
+            </Grid>
+            <Entry
+                Keyboard="Telephone"
+                Placeholder="Company Phone Number"
+                Text="{Binding Profile.CompanyPhoneNumber}" />
+
+            <Button
+                Margin="0,15,0,0"
+                Command="{Binding SaveProfileCommand}"
+                Text="Save Profile" />
+
+            <BoxView
+                Margin="0,20"
+                HeightRequest="1"
+                Color="LightGray" />
+
+            <Label
+                FontAttributes="Bold"
+                FontSize="Large"
+                Text="Security" />
+            <Entry
+                IsPassword="True"
+                Keyboard="Numeric"
+                MaxLength="4"
+                Placeholder="Enter New 4-Digit PIN"
+                Text="{Binding NewPin}" />
+            <Entry
+                IsPassword="True"
+                Keyboard="Numeric"
+                MaxLength="4"
+                Placeholder="Confirm New PIN"
+                Text="{Binding ConfirmPin}" />
+            <Button Command="{Binding SetPinCommand}" Text="Set/Change PIN" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
