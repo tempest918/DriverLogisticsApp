@@ -111,8 +111,18 @@ namespace DriverLogisticsApp.Services
             // company and bill to information
             // TODO:  Update with actual company details when user profile is implemented
             var companyInfo = new Paragraph("Driver Logistics App\n123 Trucking Way\nAnytown, USA 12345");
-            var billToInfo = new Paragraph($"Bill To:\n{load.ShipperName}")
+            var billToAddress = string.Join("\n", new List<string>
+                {
+                    load.ShipperAddressLineOne,
+                    load.ShipperAddressLineTwo,
+                    $"{load.ShipperCity}, {load.ShipperState} {load.ShipperZipCode}",
+                    load.ShipperCountry,
+                    load.ShipperPhoneNumber
+                }.Where(s => !string.IsNullOrWhiteSpace(s)));
+
+            var billToInfo = new Paragraph($"Bill To:\n{load.ShipperName}\n{billToAddress}")
                 .SetTextAlignment(iText.Layout.Properties.TextAlignment.RIGHT);
+
             document.Add(new Div().Add(companyInfo).Add(billToInfo));
 
             // invoice details

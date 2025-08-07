@@ -8,27 +8,101 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="10">
-            <Label Text="Load Number" />
+            <Label FontAttributes="Bold" Text="Load Number" />
             <Entry Placeholder="e.g., ABC12345" Text="{Binding LoadNumber}" />
 
+            <!--  shipper  -->
+            <Label
+                Margin="0,15,0,0"
+                FontAttributes="Bold"
+                FontSize="Large"
+                Text="Shipper Information" />
             <Label Text="Shipper Name" />
             <Entry Placeholder="e.g., Main Street Shipping" Text="{Binding ShipperName}" />
+            <Label Text="Address Line 1" />
+            <Entry Placeholder="e.g., 123 Main St" Text="{Binding ShipperAddressLineOne}" />
+            <Label Text="Address Line 2 (Optional)" />
+            <Entry Text="{Binding ShipperAddressLineTwo}" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <VerticalStackLayout>
+                    <Label Text="City" />
+                    <Entry Placeholder="e.g., Anytown" Text="{Binding ShipperCity}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="State" />
+                    <Entry Placeholder="e.g., CA" Text="{Binding ShipperState}" />
+                </VerticalStackLayout>
+            </Grid>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <VerticalStackLayout>
+                    <Label Text="Zip Code" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Placeholder="e.g., 12345"
+                        Text="{Binding ShipperZipCode}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="Country" />
+                    <Entry Placeholder="e.g., USA" Text="{Binding ShipperCountry}" />
+                </VerticalStackLayout>
+            </Grid>
+            <Label Text="Phone Number (Optional)" />
+            <Entry
+                Keyboard="Telephone"
+                Placeholder="e.g., 555-123-4567"
+                Text="{Binding ShipperPhoneNumber}" />
 
+            <!--  consignee  -->
+            <Label
+                Margin="0,15,0,0"
+                FontAttributes="Bold"
+                FontSize="Large"
+                Text="Consignee Information" />
             <Label Text="Consignee Name (Optional)" />
             <Entry Placeholder="e.g., Downtown Receiving" Text="{Binding ConsigneeName}" />
+            <Label Text="Address Line 1 (Optional)" />
+            <Entry Text="{Binding ConsigneeAddressLineOne}" />
+            <Label Text="Address Line 2 (Optional)" />
+            <Entry Text="{Binding ConsigneeAddressLineTwo}" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <VerticalStackLayout>
+                    <Label Text="City (Optional)" />
+                    <Entry Text="{Binding ConsigneeCity}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="State (Optional)" />
+                    <Entry Text="{Binding ConsigneeState}" />
+                </VerticalStackLayout>
+            </Grid>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <VerticalStackLayout>
+                    <Label Text="Zip Code (Optional)" />
+                    <Entry Keyboard="Numeric" Text="{Binding ConsigneeZipCode}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="Country (Optional)" />
+                    <Entry Text="{Binding ConsigneeCountry}" />
+                </VerticalStackLayout>
+            </Grid>
+            <Label Text="Phone Number (Optional)" />
+            <Entry Keyboard="Telephone" Text="{Binding ConsigneePhoneNumber}" />
 
+            <!--  load details  -->
+            <Label
+                Margin="0,15,0,0"
+                FontAttributes="Bold"
+                FontSize="Large"
+                Text="Load Details" />
             <Label Text="Freight Rate ($)" />
             <Entry
                 Keyboard="Numeric"
                 Placeholder="e.g., 1500"
                 Text="{Binding FreightRate}" />
-
             <Label Text="Planned Pickup" />
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                 <DatePicker Grid.Column="0" Date="{Binding PickupDate}" />
                 <TimePicker Grid.Column="1" Time="{Binding PickupTime}" />
             </Grid>
-
             <Label Text="Planned Delivery" />
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                 <DatePicker Grid.Column="0" Date="{Binding DeliveryDate}" />
