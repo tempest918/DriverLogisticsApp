@@ -82,13 +82,19 @@
                     <DataTemplate x:DataType="models:LoadExpenseGroup">
                         <Grid
                             Padding="0,10,0,5"
-                            BackgroundColor="LightGray"
                             ColumnDefinitions="*,Auto">
                             <Label
                                 Margin="10,0"
                                 FontAttributes="Bold"
                                 Text="{Binding LoadNumber}"
                                 VerticalOptions="Center" />
+                            <BoxView
+                                Grid.ColumnSpan="2"
+                                HeightRequest="1"
+                                BackgroundColor="LightGray"
+                                VerticalOptions="End"
+                                Margin="0,5,0,0" />
+
                             <Label
                                 Grid.Column="1"
                                 Margin="10,0"

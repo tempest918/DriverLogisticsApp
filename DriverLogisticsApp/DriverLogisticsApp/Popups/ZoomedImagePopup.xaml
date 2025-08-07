@@ -3,10 +3,11 @@
     x:Class="DriverLogisticsApp.Popups.ZoomedImagePopup"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#222222}">
 
-    <Grid x:Name="PopupContainer">
+    <Grid x:Name="PopupContainer"
+          BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#222222}">
         <Image Aspect="AspectFit" Source="{Binding ImagePath}" />
     </Grid>
-
 </toolkit:Popup>
