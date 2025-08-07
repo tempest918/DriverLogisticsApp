@@ -26,5 +26,18 @@
         {
             return Shell.Current.DisplayAlert(title, message, accept, cancel);
         }
+
+        /// <summary>
+        /// request an action sheet from the user with a title, cancel, destruction and buttons options
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="cancel"></param>
+        /// <param name="destruction"></param>
+        /// <param name="buttons"></param>
+        /// <returns></returns>
+        public Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons)
+        {
+            return Shell.Current.DisplayActionSheet(title, cancel, destruction, buttons);
+        }
     }
 }

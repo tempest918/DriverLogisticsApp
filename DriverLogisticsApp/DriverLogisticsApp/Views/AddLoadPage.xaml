@@ -23,11 +23,17 @@
                 Placeholder="e.g., 1500"
                 Text="{Binding FreightRate}" />
 
-            <Label Text="Pickup Date" />
-            <DatePicker Date="{Binding PickupDate}" />
+            <Label Text="Planned Pickup" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <DatePicker Grid.Column="0" Date="{Binding PickupDate}" />
+                <TimePicker Grid.Column="1" Time="{Binding PickupTime}" />
+            </Grid>
 
-            <Label Text="Delivery Date" />
-            <DatePicker Date="{Binding DeliveryDate}" />
+            <Label Text="Planned Delivery" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <DatePicker Grid.Column="0" Date="{Binding DeliveryDate}" />
+                <TimePicker Grid.Column="1" Time="{Binding DeliveryTime}" />
+            </Grid>
 
             <Button
                 Margin="0,20,0,0"

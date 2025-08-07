@@ -15,7 +15,11 @@ namespace DriverLogisticsApp.Models
 
         public DateTime PickupDate { get; set; }
 
+        public DateTime? ActualPickupTime { get; set; }
+
         public DateTime DeliveryDate { get; set; }
+
+        public DateTime? ActualDeliveryTime { get; set; }
 
         public decimal FreightRate { get; set; }
 

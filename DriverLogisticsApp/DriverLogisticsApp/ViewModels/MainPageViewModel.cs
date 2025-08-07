@@ -23,6 +23,16 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private string _searchText;
 
+        // KPIs
+        [ObservableProperty]
+        private decimal _actualRevenue;
+        [ObservableProperty]
+        private decimal _potentialRevenue;
+        [ObservableProperty]
+        private decimal _totalExpenses;
+        [ObservableProperty]
+        private decimal _netProfit;
+
         /// <summary>
         /// initialize the view model for the main page
         /// </summary>
@@ -54,6 +64,7 @@ namespace DriverLogisticsApp.ViewModels
             _allLoads = await _databaseService.GetLoadsAsync();
 
             FilterLoads();
+            await CalculateKpisAsync();
         }
 
         /// <summary>
@@ -113,6 +124,43 @@ namespace DriverLogisticsApp.ViewModels
         private async Task GoToSettlementReportAsync()
         {
             await _navigationService.NavigateToAsync(nameof(Views.SettlementReportPage));
+        }
+
+        /// <summary>
+        /// used to calculate KPIs such as total revenue, total expenses, and net profit
+        /// </summary>
+        /// <returns></returns>
+        private async Task CalculateKpisAsync()
+        {
+            var allExpenses = await _databaseService.GetExpensesForLoadAsync(0);
+
+            var today = DateTime.Today;
+            var startOfMonth = new DateTime(today.Year, today.Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            // filter loads by month that weren't cancelled
+            var monthlyLoads = _allLoads.Where(l =>
+                l.Status != "Cancelled" &&
+                l.DeliveryDate.Date >= startOfMonth &&
+                l.DeliveryDate.Date <= endOfMonth);
+
+            // calculate actual revenue from completed and invoiced loads
+            ActualRevenue = monthlyLoads
+                .Where(l => l.Status == "Completed" || l.Status == "Invoiced")
+                .Sum(l => l.FreightRate);
+
+            // calculate potential revenue from planned and in-progress loads
+            PotentialRevenue = monthlyLoads
+                .Where(l => l.Status == "Planned" || l.Status == "In Progress")
+                .Sum(l => l.FreightRate);
+
+            // calculate total expenses for the month
+            TotalExpenses = allExpenses
+                .Where(e => e.Date.Date >= startOfMonth && e.Date.Date <= endOfMonth)
+                .Sum(e => e.Amount);
+
+            // calculate net profit
+            NetProfit = ActualRevenue - TotalExpenses;
         }
     }
 }

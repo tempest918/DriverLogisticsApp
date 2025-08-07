@@ -29,9 +29,13 @@ namespace DriverLogisticsApp.ViewModels
 
         [ObservableProperty]
         DateTime pickupDate = DateTime.Today;
-
         [ObservableProperty]
         DateTime deliveryDate = DateTime.Today.AddDays(1);
+
+        [ObservableProperty]
+        TimeSpan pickupTime = DateTime.Now.TimeOfDay;
+        [ObservableProperty]
+        TimeSpan deliveryTime = DateTime.Now.TimeOfDay;
 
         [ObservableProperty]
         private string _title;
@@ -99,8 +103,10 @@ namespace DriverLogisticsApp.ViewModels
                     ShipperName = load.ShipperName;
                     ConsigneeName = load.ConsigneeName;
                     FreightRate = load.FreightRate;
-                    PickupDate = load.PickupDate;
-                    DeliveryDate = load.DeliveryDate;
+                    PickupDate = load.PickupDate.Date;
+                    PickupTime = load.PickupDate.TimeOfDay;
+                    DeliveryDate = load.DeliveryDate.Date;
+                    DeliveryTime = load.DeliveryDate.TimeOfDay;
                 }
             }
         }
@@ -118,6 +124,9 @@ namespace DriverLogisticsApp.ViewModels
                 return;
             }
 
+            var combinedPickupDateTime = PickupDate.Date + PickupTime;
+            var combinedDeliveryDateTime = DeliveryDate.Date + DeliveryTime;
+
             // create load object
             var newLoad = new Load
             {
@@ -126,9 +135,9 @@ namespace DriverLogisticsApp.ViewModels
                 ShipperName = this.ShipperName,
                 ConsigneeName = this.ConsigneeName,
                 FreightRate = this.FreightRate,
-                PickupDate = this.PickupDate,
-                DeliveryDate = this.DeliveryDate,
-                Status = "Active"
+                PickupDate = combinedPickupDateTime,
+                DeliveryDate = combinedDeliveryDateTime,
+                Status = "Planned"
             };
 
             // save to database

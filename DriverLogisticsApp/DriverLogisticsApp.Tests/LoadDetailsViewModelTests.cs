@@ -12,6 +12,7 @@ namespace DriverLogisticsApp.Tests
         private Mock<IDatabaseService> _mockDbService;
         private Mock<IAlertService> _mockAlertService;
         private Mock<INavigationService> _mockNavigationService;
+        private Mock<PdfService> _mockPdfService;
         private LoadDetailsViewModel _viewModel;
 
         [TestInitialize]
@@ -20,10 +21,13 @@ namespace DriverLogisticsApp.Tests
             _mockDbService = new Mock<IDatabaseService>();
             _mockAlertService = new Mock<IAlertService>();
             _mockNavigationService = new Mock<INavigationService>();
+            _mockPdfService = new Mock<PdfService>();
             _viewModel = new LoadDetailsViewModel(
                 _mockDbService.Object,
                 _mockAlertService.Object,
-                _mockNavigationService.Object);
+                _mockNavigationService.Object,
+                _mockPdfService.Object
+            );
         }
 
         /// <summary>
@@ -64,5 +68,85 @@ namespace DriverLogisticsApp.Tests
                 It.Is<IDictionary<string, object>>(d => (int)d["LoadId"] == 123)),
                 Times.Once);
         }
+
+        /// <summary>
+        /// tests that when ChangeStatusCommand is executed, it prompts the user to select a new status and updates the load status accordingly.
+        /// </summary>
+        /// <returns></returns>
+        [TestMethod]
+        public async Task ToolbarActionCommand_WhenLoadIsPlanned_UpdatesStatusAndPickupTime()
+        {
+            // ARRANGE
+            var testLoad = new Load { Status = "Planned" };
+            _viewModel.Load = testLoad;
+
+            // ACT
+            await _viewModel.ToolbarActionCommand.ExecuteAsync(null);
+
+            // ASSERT
+            Assert.AreEqual("In Progress", _viewModel.Load.Status);
+            Assert.IsNotNull(_viewModel.Load.ActualPickupTime);
+            _mockDbService.Verify(db => db.SaveLoadAsync(testLoad), Times.Once);
+        }
+
+        /// <summary>
+        /// tests that when the toolbar action command is executed while the load status is "In Progress", it updates the status to "Completed" and sets the actual delivery time.
+        /// </summary>
+        /// <returns></returns>
+        [TestMethod]
+        public async Task ToolbarActionCommand_WhenLoadIsInProgress_UpdatesStatusAndDeliveryTime()
+        {
+            // ARRANGE
+            var testLoad = new Load { Status = "In Progress" };
+            _viewModel.Load = testLoad;
+
+            // ACT
+            await _viewModel.ToolbarActionCommand.ExecuteAsync(null);
+
+            // ASSERT
+            Assert.AreEqual("Completed", _viewModel.Load.Status);
+            Assert.IsNotNull(_viewModel.Load.ActualDeliveryTime);
+            _mockDbService.Verify(db => db.SaveLoadAsync(testLoad), Times.Once);
+        }
+
+        /// <summary>
+        /// tests that when the load status is "Planned", the toolbar action is set to "Start Load" and is visible.
+        /// </summary>
+        /// <returns></returns>
+        [TestMethod]
+        public async Task UpdateToolbarState_WhenLoadIsPlanned_SetsCorrectState()
+        {
+            // ARRANGE
+            var testLoad = new Load { Id = 1, Status = "Planned" };
+            _viewModel.LoadId = testLoad.Id;
+            _mockDbService.Setup(db => db.GetLoadAsync(testLoad.Id)).ReturnsAsync(testLoad);
+
+            // ACT
+            await _viewModel.LoadDataAsync();
+
+            // ASSERT
+            Assert.AreEqual("Start Load", _viewModel.ToolbarActionText);
+            Assert.IsTrue(_viewModel.IsToolbarActionVisible);
+        }
+
+        /// <summary>
+        /// tests that when the load status is "Completed", the toolbar action is hidden.
+        /// </summary>
+        /// <returns></returns>
+        [TestMethod]
+        public async Task UpdateToolbarState_WhenLoadIsCompleted_HidesToolbarAction()
+        {
+            // ARRANGE
+            var testLoad = new Load { Id = 1, Status = "Completed" };
+            _viewModel.LoadId = testLoad.Id;
+            _mockDbService.Setup(db => db.GetLoadAsync(testLoad.Id)).ReturnsAsync(testLoad);
+
+            // ACT
+            await _viewModel.LoadDataAsync();
+
+            // ASSERT
+            Assert.IsFalse(_viewModel.IsToolbarActionVisible);
+        }
+
     }
 }

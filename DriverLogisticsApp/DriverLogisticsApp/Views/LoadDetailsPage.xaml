@@ -8,6 +8,7 @@
     x:Name="loadDetailsPage"
     Title="Load Details"
     x:DataType="viewmodels:LoadDetailsViewModel">
+
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="10">
             <Label FontAttributes="Bold" Text="Load Number" />
@@ -40,14 +41,29 @@
             <Label
                 Margin="0,10,0,0"
                 FontAttributes="Bold"
-                Text="Pickup Date" />
-            <Label Text="{Binding Load.PickupDate, StringFormat='{0:D}'}" />
+                Text="Planned Pickup" />
+            <Label Text="{Binding Load.PickupDate, StringFormat='{0:g}'}" />
 
             <Label
                 Margin="0,10,0,0"
                 FontAttributes="Bold"
-                Text="Delivery Date" />
-            <Label Text="{Binding Load.DeliveryDate, StringFormat='{0:D}'}" />
+                Text="Planned Delivery" />
+            <Label Text="{Binding Load.DeliveryDate, StringFormat='{0:g}'}" />
+            <VerticalStackLayout IsVisible="{Binding Load.ActualPickupTime, Converter={StaticResource NullToBoolConverter}}">
+                <Label
+                    Margin="0,10,0,0"
+                    FontAttributes="Bold"
+                    Text="Actual Pickup" />
+                <Label Text="{Binding Load.ActualPickupTime, StringFormat='{0:g}'}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout IsVisible="{Binding Load.ActualDeliveryTime, Converter={StaticResource NullToBoolConverter}}">
+                <Label
+                    Margin="0,10,0,0"
+                    FontAttributes="Bold"
+                    Text="Actual Delivery" />
+                <Label Text="{Binding Load.ActualDeliveryTime, StringFormat='{0:g}'}" />
+            </VerticalStackLayout>
 
             <Grid Margin="0,10" ColumnDefinitions="*,Auto" />
 

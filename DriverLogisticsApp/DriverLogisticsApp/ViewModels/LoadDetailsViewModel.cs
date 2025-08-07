@@ -31,6 +31,12 @@ namespace DriverLogisticsApp.ViewModels
         private Load _load;
 
         [ObservableProperty]
+        private string _toolbarActionText;
+
+        [ObservableProperty]
+        private bool _isToolbarActionVisible;
+
+        [ObservableProperty]
         private ObservableCollection<Models.ExpenseTypes.Expense> _expenses;
 
         [ObservableProperty]
@@ -75,6 +81,9 @@ namespace DriverLogisticsApp.ViewModels
                 {
                     Load = load;
 
+                    // update the toolbar state based on the load status
+                    UpdateToolbarState();
+
                     // load expenses for this load
                     _allExpenses = await _databaseService.GetExpensesForLoadAsync(LoadId);
 
@@ -85,6 +94,45 @@ namespace DriverLogisticsApp.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Failed to load data: {ex.Message}");
+            }
+        }
+
+        [RelayCommand]
+        private async Task ToolbarActionAsync()
+        {
+            if (Load is null) return;
+
+            if (Load.Status == "Planned")
+            {
+                Load.Status = "In Progress";
+                Load.ActualPickupTime = DateTime.Now;
+            }
+            else if (Load.Status == "In Progress")
+            {
+                Load.Status = "Completed";
+                Load.ActualDeliveryTime = DateTime.Now;
+            }
+
+            await _databaseService.SaveLoadAsync(Load);
+            UpdateToolbarState();
+        }
+
+        private void UpdateToolbarState()
+        {
+            if (Load?.Status == "Planned")
+            {
+                ToolbarActionText = "Start Load";
+                IsToolbarActionVisible = true;
+            }
+            else if (Load?.Status == "In Progress")
+            {
+                ToolbarActionText = "Complete Load";
+                IsToolbarActionVisible = true;
+            }
+            else
+            {
+                // Hide the button for any other status (Completed, Invoiced, etc.)
+                IsToolbarActionVisible = false;
             }
         }
 
@@ -103,6 +151,31 @@ namespace DriverLogisticsApp.ViewModels
             {
                 { "LoadId", Load.Id }
             });
+        }
+
+        /// <summary>
+        /// update the status of the current load
+        /// </summary>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task ChangeStatusAsync()
+        {
+            if (Load is null) return;
+
+            // Define the status options
+            var newStatus = await _alertService.DisplayActionSheet(
+                "Change Load Status",
+                "Cancel",
+                null,
+                "Active", "Completed", "Invoiced", "Cancelled");
+
+
+            if (!string.IsNullOrWhiteSpace(newStatus) && newStatus != "Cancel")
+            {
+                Load.Status = newStatus;
+                await _databaseService.SaveLoadAsync(Load);
+
+            }
         }
 
         /// <summary>
@@ -139,6 +212,10 @@ namespace DriverLogisticsApp.ViewModels
                 Title = $"Invoice {Load.LoadNumber}",
                 File = new ShareFile(filePath)
             });
+
+            // update load status to Invoiced
+            Load.Status = "Invoiced";
+            await _databaseService.SaveLoadAsync(this.Load);
         }
         #endregion
 
