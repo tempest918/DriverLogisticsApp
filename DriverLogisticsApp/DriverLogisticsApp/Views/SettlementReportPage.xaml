@@ -80,9 +80,7 @@
 
                 <CollectionView.GroupHeaderTemplate>
                     <DataTemplate x:DataType="models:LoadExpenseGroup">
-                        <Grid
-                            Padding="0,10,0,5"
-                            ColumnDefinitions="*,Auto">
+                        <Grid Padding="0,10,0,5" ColumnDefinitions="*,Auto">
                             <Label
                                 Margin="10,0"
                                 FontAttributes="Bold"
@@ -90,10 +88,10 @@
                                 VerticalOptions="Center" />
                             <BoxView
                                 Grid.ColumnSpan="2"
-                                HeightRequest="1"
+                                Margin="0,5,0,0"
                                 BackgroundColor="LightGray"
-                                VerticalOptions="End"
-                                Margin="0,5,0,0" />
+                                HeightRequest="1"
+                                VerticalOptions="End" />
 
                             <Label
                                 Grid.Column="1"
@@ -143,7 +141,7 @@
                 <Button
                     Grid.Column="1"
                     Command="{Binding SavePdfCommand}"
-                    Text="Save to Downloads" />
+                    Text="Save PDF" />
             </Grid>
         </VerticalStackLayout>
     </ScrollView>

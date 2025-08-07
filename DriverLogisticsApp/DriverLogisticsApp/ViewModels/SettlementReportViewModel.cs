@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Storage;
 using System.Linq;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 
@@ -119,22 +120,20 @@ namespace DriverLogisticsApp.ViewModels
                 var fileName = $"Settlement_{StartDate:yyyy-MM-dd}_to_{EndDate:yyyy-MM-dd}.pdf";
                 var tempFilePath = _pdfService.CreateSettlementReportPdf(this, fileName);
 
-                // logic for android
-#if ANDROID
-        var downloadsPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
-        var destinationFilePath = Path.Combine(downloadsPath, fileName);
-#else
-                // logic for debuggin in windows
-                var destinationFilePath = tempFilePath;
-#endif
+                // create a stream from the temp file
+                using var stream = File.OpenRead(tempFilePath);
 
-                // copy the file from temp to the destination
-                if (tempFilePath != destinationFilePath)
+                // use the FileSaver plugin to save to Downloads
+                var result = await FileSaver.Default.SaveAsync(fileName, stream, CancellationToken.None);
+
+                if (result.IsSuccessful)
                 {
-                    File.Copy(tempFilePath, destinationFilePath, true);
+                    await _alertService.DisplayAlert("Success", $"Report saved to: {result.FilePath}", "OK");
                 }
-
-                await _alertService.DisplayAlert("Success", $"Report saved to Downloads folder.", "OK");
+                else
+                {
+                    await _alertService.DisplayAlert("Save Failed", "The file was not saved.", "OK");
+                }
             }
             catch (Exception ex)
             {
