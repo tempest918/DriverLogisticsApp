@@ -20,6 +20,7 @@ namespace DriverLogisticsApp.ViewModels
         private readonly IDatabaseService _databaseService;
         private readonly IAlertService _alertService;
         private readonly INavigationService _navigationService;
+        private readonly PdfService _pdfService;
 
         private List<Models.ExpenseTypes.Expense> _allExpenses;
 
@@ -39,11 +40,12 @@ namespace DriverLogisticsApp.ViewModels
         /// initialize the view model for the load details page
         /// </summary>
         /// <param name="databaseService"></param>
-        public LoadDetailsViewModel(IDatabaseService databaseService, IAlertService alertService, INavigationService navigationService)
+        public LoadDetailsViewModel(IDatabaseService databaseService, IAlertService alertService, INavigationService navigationService, PdfService pdfService)
         {
             _databaseService = databaseService;
             _alertService = alertService;
             _navigationService = navigationService;
+            _pdfService = pdfService;
 
             Expenses = new ObservableCollection<Models.ExpenseTypes.Expense>();
             _allExpenses = new List<Models.ExpenseTypes.Expense>();
@@ -119,6 +121,24 @@ namespace DriverLogisticsApp.ViewModels
 
             // navigate back to the main list
             await _navigationService.GoBackAsync();
+        }
+
+        /// <summary>
+        /// create a PDF invoice for the current load and share it
+        /// </summary>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task CreateInvoiceAsync()
+        {
+            if (Load is null) return;
+
+            var filePath = _pdfService.CreateInvoicePdf(this.Load, this.Expenses.ToList());
+
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = $"Invoice {Load.LoadNumber}",
+                File = new ShareFile(filePath)
+            });
         }
         #endregion
 

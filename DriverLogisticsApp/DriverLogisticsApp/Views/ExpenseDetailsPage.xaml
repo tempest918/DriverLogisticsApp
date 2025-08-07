@@ -45,6 +45,7 @@
                     Command="{Binding GoToEditExpenseCommand}"
                     Text="Edit Expense" />
                 <Button
+                    Margin="40,0,0,0"
                     BackgroundColor="Red"
                     Command="{Binding DeleteExpenseCommand}"
                     Text="Delete Expense" />

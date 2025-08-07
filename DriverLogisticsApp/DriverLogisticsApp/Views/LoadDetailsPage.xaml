@@ -105,20 +105,21 @@
             <HorizontalStackLayout
                 Margin="0,30,0,0"
                 HorizontalOptions="Center"
-                Spacing="10" />
-            <HorizontalStackLayout
-                Margin="0,30,0,0"
-                HorizontalOptions="Center"
                 Spacing="10">
+
+                <Button Command="{Binding CreateInvoiceCommand}" Text="Create Invoice" />
+
                 <Button
                     BackgroundColor="{StaticResource Primary}"
                     Command="{Binding GoToEditCommand}"
                     Text="Edit Load" />
 
                 <Button
+                    Margin="40,0,0,0"
                     BackgroundColor="Red"
                     Command="{Binding DeleteLoadCommand}"
                     Text="Delete Load" />
+
             </HorizontalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
