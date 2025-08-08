@@ -8,141 +8,151 @@
     Title="Settlement Report"
     x:DataType="viewmodels:SettlementReportViewModel">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="10">
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <VerticalStackLayout>
-                    <Label Text="Start Date" />
-                    <DatePicker Date="{Binding StartDate}" />
-                </VerticalStackLayout>
-                <VerticalStackLayout Grid.Column="1">
-                    <Label Text="End Date" />
-                    <DatePicker Date="{Binding EndDate}" />
-                </VerticalStackLayout>
-            </Grid>
-            <Button Command="{Binding GenerateReportCommand}" Text="Generate Report" />
-            <Border
-                Margin="0,20"
-                Padding="15"
-                Stroke="LightGray"
-                StrokeShape="RoundRectangle 10">
-                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                    <Label FontAttributes="Bold" Text="Total Revenue:" />
-                    <Label
-                        Grid.Column="1"
-                        HorizontalTextAlignment="End"
-                        Text="{Binding TotalRevenue, StringFormat='{0:C}'}" />
-                    <Label
-                        Grid.Row="1"
-                        FontAttributes="Bold"
-                        Text="Total Expenses:" />
-                    <Label
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        HorizontalTextAlignment="End"
-                        Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
-                    <Label
-                        Grid.Row="2"
-                        FontAttributes="Bold"
-                        FontSize="Large"
-                        Text="Net Pay:" />
-                    <Label
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        FontAttributes="Bold"
-                        FontSize="Large"
-                        HorizontalTextAlignment="End"
-                        Text="{Binding NetPay, StringFormat='{0:C}'}" />
+    <Grid>
+        <ScrollView IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+            <VerticalStackLayout Padding="20" Spacing="10">
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <VerticalStackLayout>
+                        <Label Text="Start Date" />
+                        <DatePicker Date="{Binding StartDate}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="End Date" />
+                        <DatePicker Date="{Binding EndDate}" />
+                    </VerticalStackLayout>
                 </Grid>
-            </Border>
+                <Button Command="{Binding GenerateReportCommand}" Text="Generate Report" />
+                <Border
+                    Margin="0,20"
+                    Padding="15"
+                    Stroke="LightGray"
+                    StrokeShape="RoundRectangle 10">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                        <Label FontAttributes="Bold" Text="Total Revenue:" />
+                        <Label
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding TotalRevenue, StringFormat='{0:C}'}" />
+                        <Label
+                            Grid.Row="1"
+                            FontAttributes="Bold"
+                            Text="Total Expenses:" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
+                        <Label
+                            Grid.Row="2"
+                            FontAttributes="Bold"
+                            FontSize="Large"
+                            Text="Net Pay:" />
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="Large"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding NetPay, StringFormat='{0:C}'}" />
+                    </Grid>
+                </Border>
 
-            <Label
-                FontAttributes="Bold"
-                FontSize="Title"
-                Text="Earnings" />
-            <CollectionView ItemsSource="{Binding CompletedLoads}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Load">
-                        <Grid Padding="0,5" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding LoadNumber}" />
-                            <Label Grid.Column="1" Text="{Binding FreightRate, StringFormat='{0:C}'}" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="Title"
+                    Text="Earnings" />
+                <CollectionView ItemsSource="{Binding CompletedLoads}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Load">
+                            <Grid Padding="0,5" ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding LoadNumber}" />
+                                <Label Grid.Column="1" Text="{Binding FreightRate, StringFormat='{0:C}'}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <Label
-                Margin="0,20,0,0"
-                FontAttributes="Bold"
-                FontSize="Title"
-                Text="Deductions" />
-            <CollectionView IsGrouped="True" ItemsSource="{Binding GroupedExpenses}">
+                <Label
+                    Margin="0,20,0,0"
+                    FontAttributes="Bold"
+                    FontSize="Title"
+                    Text="Deductions" />
+                <CollectionView IsGrouped="True" ItemsSource="{Binding GroupedExpenses}">
 
-                <CollectionView.GroupHeaderTemplate>
-                    <DataTemplate x:DataType="models:LoadExpenseGroup">
-                        <Grid Padding="0,10,0,5" ColumnDefinitions="*,Auto">
-                            <Label
-                                Margin="10,0"
-                                FontAttributes="Bold"
-                                Text="{Binding LoadNumber}"
-                                VerticalOptions="Center" />
-                            <BoxView
-                                Grid.ColumnSpan="2"
-                                Margin="0,5,0,0"
-                                BackgroundColor="LightGray"
-                                HeightRequest="1"
-                                VerticalOptions="End" />
+                    <CollectionView.GroupHeaderTemplate>
+                        <DataTemplate x:DataType="models:LoadExpenseGroup">
+                            <Grid Padding="0,10,0,5" ColumnDefinitions="*,Auto">
+                                <Label
+                                    Margin="10,0"
+                                    FontAttributes="Bold"
+                                    Text="{Binding LoadNumber}"
+                                    VerticalOptions="Center" />
+                                <BoxView
+                                    Grid.ColumnSpan="2"
+                                    Margin="0,5,0,0"
+                                    BackgroundColor="LightGray"
+                                    HeightRequest="1"
+                                    VerticalOptions="End" />
 
-                            <Label
-                                Grid.Column="1"
-                                Margin="10,0"
-                                FontAttributes="Bold"
-                                Text="{Binding TotalForLoad, StringFormat='Subtotal: {0:C}'}"
-                                VerticalOptions="Center" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.GroupHeaderTemplate>
+                                <Label
+                                    Grid.Column="1"
+                                    Margin="10,0"
+                                    FontAttributes="Bold"
+                                    Text="{Binding TotalForLoad, StringFormat='Subtotal: {0:C}'}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.GroupHeaderTemplate>
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="expenseTypes:Expense">
-                        <Grid Padding="10,5" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding Category}" />
-                            <Label Grid.Column="1" Text="{Binding Amount, StringFormat='{0:C}'}" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="expenseTypes:Expense">
+                            <Grid Padding="10,5" ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Category}" />
+                                <Label Grid.Column="1" Text="{Binding Amount, StringFormat='{0:C}'}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <Label
-                Margin="0,20,0,0"
-                FontAttributes="Bold"
-                FontSize="Title"
-                Text="Deduction Summary" />
-            <CollectionView ItemsSource="{Binding DeductionSummaries}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:CategoryTotal">
-                        <Grid Padding="0,5" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding CategoryName}" />
-                            <Label Grid.Column="1" Text="{Binding TotalAmount, StringFormat='{0:C}'}" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-            <Grid
-                Margin="0,20,0,0"
-                ColumnDefinitions="*,*"
-                ColumnSpacing="10"
-                IsVisible="{Binding IsReportGenerated}">
+                <Label
+                    Margin="0,20,0,0"
+                    FontAttributes="Bold"
+                    FontSize="Title"
+                    Text="Deduction Summary" />
+                <CollectionView ItemsSource="{Binding DeductionSummaries}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:CategoryTotal">
+                            <Grid Padding="0,5" ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding CategoryName}" />
+                                <Label Grid.Column="1" Text="{Binding TotalAmount, StringFormat='{0:C}'}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Grid
+                    Margin="0,20,0,0"
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="10"
+                    IsVisible="{Binding IsReportGenerated}">
 
-                <Button
-                    Grid.Column="0"
-                    Command="{Binding ExportPdfCommand}"
-                    Text="Share PDF" />
-                <Button
-                    Grid.Column="1"
-                    Command="{Binding SavePdfCommand}"
-                    Text="Save PDF" />
-            </Grid>
-        </VerticalStackLayout>
-    </ScrollView>
+                    <Button
+                        Grid.Column="0"
+                        Command="{Binding ExportPdfCommand}"
+                        Text="Share PDF" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding SavePdfCommand}"
+                        Text="Save PDF" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            Color="{StaticResource Primary}" />
+
+    </Grid>
 </ContentPage>

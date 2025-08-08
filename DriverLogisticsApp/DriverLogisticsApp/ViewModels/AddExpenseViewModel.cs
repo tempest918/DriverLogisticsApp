@@ -43,6 +43,9 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private string _receiptImagePath;
 
+        [ObservableProperty]
+        private bool _isBusy;
+
         public ObservableCollection<string> Categories { get; }
 
         /// <summary>
@@ -85,18 +88,34 @@ namespace DriverLogisticsApp.ViewModels
         /// <returns></returns>
         public async Task LoadExpenseForEditAsync()
         {
+            if (IsBusy) return;
+
             if (ExpenseId > 0)
             {
                 Title = "Edit Expense";
-                var expense = await _databaseService.GetSimpleExpenseAsync(ExpenseId);
-                if (expense != null)
+
+                IsBusy = true;
+                try
                 {
-                    LoadId = expense.LoadId;
-                    SelectedCategory = expense.Category;
-                    Amount = expense.Amount;
-                    Date = expense.Date;
-                    Description = expense.Description;
-                    ReceiptImagePath = expense.ReceiptImagePath;
+
+                    var expense = await _databaseService.GetSimpleExpenseAsync(ExpenseId);
+                    if (expense != null)
+                    {
+                        LoadId = expense.LoadId;
+                        SelectedCategory = expense.Category;
+                        Amount = expense.Amount;
+                        Date = expense.Date;
+                        Description = expense.Description;
+                        ReceiptImagePath = expense.ReceiptImagePath;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await _alertService.DisplayAlert("Error", $"Failed to save expense: {ex.Message}", "OK");
+                }
+                finally
+                {
+                    IsBusy = false;
                 }
             }
         }
@@ -108,6 +127,9 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task AttachPhotoAsync()
         {
+            if (IsBusy) return;
+
+            IsBusy = true;
             try
             {
                 // capture photo using the device camera
@@ -130,6 +152,10 @@ namespace DriverLogisticsApp.ViewModels
             {
                 await _alertService.DisplayAlert("Error", $"Failed to attach photo: {ex.Message}", "OK");
             }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         /// <summary>
@@ -139,26 +165,42 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task SaveExpenseAsync()
         {
+            if (IsBusy) return;
+
             if (string.IsNullOrWhiteSpace(SelectedCategory) || Amount <= 0)
             {
                 await _alertService.DisplayAlert("Error", "Please select a category and enter a valid amount.", "OK");
                 return;
             }
 
-            var expenseToSave = new Models.Expense
+            IsBusy = true;
+            try
             {
-                Id = this.ExpenseId,
-                LoadId = this.LoadId,
-                Category = this.SelectedCategory,
-                Amount = this.Amount,
-                Date = this.Date,
-                Description = this.Description,
-                ReceiptImagePath = this.ReceiptImagePath
-            };
 
-            await _databaseService.SaveExpenseAsync(expenseToSave);
+                var expenseToSave = new Models.Expense
+                {
+                    Id = this.ExpenseId,
+                    LoadId = this.LoadId,
+                    Category = this.SelectedCategory,
+                    Amount = this.Amount,
+                    Date = this.Date,
+                    Description = this.Description,
+                    ReceiptImagePath = this.ReceiptImagePath
+                };
 
-            await _navigationService.GoBackAsync();
+                await _databaseService.SaveExpenseAsync(expenseToSave);
+
+                await _navigationService.GoBackAsync();
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", $"Failed to save expense: {ex.Message}", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
         }
     }
 }

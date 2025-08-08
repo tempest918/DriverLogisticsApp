@@ -6,25 +6,34 @@
     xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
     Title="Import / Export"
     x:DataType="viewmodels:ImportExportViewModel">
-    <VerticalStackLayout
-        Padding="30"
-        Spacing="20"
-        VerticalOptions="Center">
+    <Grid>
+        <VerticalStackLayout
+            Padding="30"
+            IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+            Spacing="20"
+            VerticalOptions="Center">
+            <Label
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Data Management" />
 
-        <Label
-            FontAttributes="Bold"
-            FontSize="24"
+            <Label HorizontalTextAlignment="Center" Text="You can export all your data to a JSON file as a backup, or import a previously saved file." />
+
+            <Button
+                Margin="0,20,0,0"
+                Command="{Binding ImportDataCommand}"
+                Text="Import Data from File" />
+
+            <Button Command="{Binding ExportAllDataCommand}" Text="Export All Data to File" />
+
+        </VerticalStackLayout>
+        <ActivityIndicator
             HorizontalOptions="Center"
-            Text="Data Management" />
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            Color="{StaticResource Primary}" />
 
-        <Label HorizontalTextAlignment="Center" Text="You can export all your data to a JSON file as a backup, or import a previously saved file." />
-
-        <Button
-            Margin="0,20,0,0"
-            Command="{Binding ImportDataCommand}"
-            Text="Import Data from File" />
-
-        <Button Command="{Binding ExportAllDataCommand}" Text="Export All Data to File" />
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

@@ -12,8 +12,8 @@ namespace DriverLogisticsApp.ViewModels
     public partial class SettlementReportViewModel : ObservableObject
     {
         // disable annoying warnings that are not relevant to this project
-        #pragma warning disable MVVMTK0034
-        #pragma warning disable MVVMTK0045
+#pragma warning disable MVVMTK0034
+#pragma warning disable MVVMTK0045
 
         private readonly IDatabaseService _databaseService;
         private readonly PdfService _pdfService;
@@ -37,6 +37,9 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isReportGenerated;
 
+        [ObservableProperty]
+        private bool _isBusy;
+
         public ObservableCollection<Load> CompletedLoads { get; } = new();
 
         public ObservableCollection<LoadExpenseGroup> GroupedExpenses { get; } = new();
@@ -58,52 +61,68 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task GenerateReportAsync()
         {
-            // get all loads and filter by date range
-            var allLoads = await _databaseService.GetLoadsAsync();
-            var loadsInPeriod = allLoads
-                .Where(l => l.DeliveryDate.Date >= StartDate.Date && l.DeliveryDate.Date <= EndDate.Date)
-                .ToList();
+            if (IsBusy)
+                return;
 
-            // get all expenses and filter by date range
-            var allExpenses = await _databaseService.GetExpensesForLoadAsync(0);
-            var expensesInPeriod = allExpenses
-                .Where(e => e.Date.Date >= StartDate.Date && e.Date.Date <= EndDate.Date)
-                .ToList();
-
-            // perform calculations
-            TotalRevenue = loadsInPeriod.Sum(l => l.FreightRate);
-            TotalExpenses = expensesInPeriod.Sum(e => e.Amount);
-            NetPay = TotalRevenue - TotalExpenses;
-
-            CompletedLoads.Clear();
-            foreach (var load in loadsInPeriod) CompletedLoads.Add(load);
-
-            // group expenses by Load for detailed view
-            GroupedExpenses.Clear();
-            var expensesGroupedByLoad = expensesInPeriod.GroupBy(e => e.LoadId);
-            foreach (var group in expensesGroupedByLoad)
+            IsBusy = true;
+            try
             {
-                var load = allLoads.FirstOrDefault(l => l.Id == group.Key);
-                var loadNumber = load?.LoadNumber ?? "Unassigned";
-                var totalForLoad = group.Sum(e => e.Amount);
-                var newGroup = new LoadExpenseGroup(loadNumber, totalForLoad, group.ToList());
-                GroupedExpenses.Add(newGroup);
-            }
 
-            // group expenses by Category for deduction summary
-            DeductionSummaries.Clear();
-            var expensesGroupedByCategory = expensesInPeriod.GroupBy(e => e.Category);
-            foreach (var group in expensesGroupedByCategory)
-            {
-                DeductionSummaries.Add(new CategoryTotal
+                // get all loads and filter by date range
+                var allLoads = await _databaseService.GetLoadsAsync();
+                var loadsInPeriod = allLoads
+                    .Where(l => l.DeliveryDate.Date >= StartDate.Date && l.DeliveryDate.Date <= EndDate.Date)
+                    .ToList();
+
+                // get all expenses and filter by date range
+                var allExpenses = await _databaseService.GetExpensesForLoadAsync(0);
+                var expensesInPeriod = allExpenses
+                    .Where(e => e.Date.Date >= StartDate.Date && e.Date.Date <= EndDate.Date)
+                    .ToList();
+
+                // perform calculations
+                TotalRevenue = loadsInPeriod.Sum(l => l.FreightRate);
+                TotalExpenses = expensesInPeriod.Sum(e => e.Amount);
+                NetPay = TotalRevenue - TotalExpenses;
+
+                CompletedLoads.Clear();
+                foreach (var load in loadsInPeriod) CompletedLoads.Add(load);
+
+                // group expenses by Load for detailed view
+                GroupedExpenses.Clear();
+                var expensesGroupedByLoad = expensesInPeriod.GroupBy(e => e.LoadId);
+                foreach (var group in expensesGroupedByLoad)
                 {
-                    CategoryName = group.Key,
-                    TotalAmount = group.Sum(e => e.Amount)
-                });
-            }
+                    var load = allLoads.FirstOrDefault(l => l.Id == group.Key);
+                    var loadNumber = load?.LoadNumber ?? "Unassigned";
+                    var totalForLoad = group.Sum(e => e.Amount);
+                    var newGroup = new LoadExpenseGroup(loadNumber, totalForLoad, group.ToList());
+                    GroupedExpenses.Add(newGroup);
+                }
 
-            // set the report generated flag
-            IsReportGenerated = true;
+                // group expenses by Category for deduction summary
+                DeductionSummaries.Clear();
+                var expensesGroupedByCategory = expensesInPeriod.GroupBy(e => e.Category);
+                foreach (var group in expensesGroupedByCategory)
+                {
+                    DeductionSummaries.Add(new CategoryTotal
+                    {
+                        CategoryName = group.Key,
+                        TotalAmount = group.Sum(e => e.Amount)
+                    });
+                }
+
+                // set the report generated flag
+                IsReportGenerated = true;
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", $"Failed to generate report: {ex.Message}", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
 
         }
 
@@ -114,6 +133,9 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task SavePdfAsync()
         {
+            if (IsBusy) return;
+
+            IsBusy = true;
             try
             {
                 // set filename and create PDF in the cache directory
@@ -139,6 +161,11 @@ namespace DriverLogisticsApp.ViewModels
             {
                 await _alertService.DisplayAlert("Error", $"Failed to save file: {ex.Message}", "OK");
             }
+            finally
+            {
+                IsBusy = false;
+            }
+
         }
 
         /// <summary>
@@ -148,15 +175,29 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task ExportPdfAsync()
         {
-            var fileName = $"Settlement_{StartDate:yyyy-MM-dd}_to_{EndDate:yyyy-MM-dd}.pdf";
-
-            var filePath = _pdfService.CreateSettlementReportPdf(this, fileName);
-
-            await Share.Default.RequestAsync(new ShareFileRequest
+            if (IsBusy) return;
+            IsBusy = true;
+            try
             {
-                Title = $"Settlement Report {_endDate:yyyy-MM-dd}",
-                File = new ShareFile(filePath)
-            });
+
+                var fileName = $"Settlement_{StartDate:yyyy-MM-dd}_to_{EndDate:yyyy-MM-dd}.pdf";
+
+                var filePath = _pdfService.CreateSettlementReportPdf(this, fileName);
+
+                await Share.Default.RequestAsync(new ShareFileRequest
+                {
+                    Title = $"Settlement Report {_endDate:yyyy-MM-dd}",
+                    File = new ShareFile(filePath)
+                });
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", $"Failed to export PDF: {ex.Message}", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }

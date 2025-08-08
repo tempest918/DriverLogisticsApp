@@ -14,8 +14,8 @@ namespace DriverLogisticsApp.ViewModels
     public partial class LoadDetailsViewModel : ObservableObject
     {
         // disable annoying warnings that are not relevant to this project
-        #pragma warning disable MVVMTK0034
-        #pragma warning disable MVVMTK0045
+#pragma warning disable MVVMTK0034
+#pragma warning disable MVVMTK0045
 
         private readonly IDatabaseService _databaseService;
         private readonly IAlertService _alertService;
@@ -41,6 +41,9 @@ namespace DriverLogisticsApp.ViewModels
 
         [ObservableProperty]
         private string _expenseSearchText;
+
+        [ObservableProperty]
+        private bool _isBusy;
 
         /// <summary>
         /// initialize the view model for the load details page
@@ -74,6 +77,8 @@ namespace DriverLogisticsApp.ViewModels
         /// <returns></returns>
         public async Task LoadDataAsync()
         {
+            IsBusy = true;
+
             try
             {
                 var load = await _databaseService.GetLoadAsync(LoadId);
@@ -95,8 +100,16 @@ namespace DriverLogisticsApp.ViewModels
             {
                 Debug.WriteLine($"Failed to load data: {ex.Message}");
             }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
+        /// <summary>
+        /// execute the toolbar action based on the current load status
+        /// </summary>
+        /// <returns></returns>
         [RelayCommand]
         private async Task ToolbarActionAsync()
         {
@@ -123,6 +136,9 @@ namespace DriverLogisticsApp.ViewModels
 
         }
 
+        /// <summary>
+        /// update the toolbar state based on the current load status
+        /// </summary>
         private void UpdateToolbarState()
         {
             if (Load?.Status == "Planned")
@@ -209,19 +225,32 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task CreateInvoiceAsync()
         {
-            if (Load is null) return;
+            if (Load is null || IsBusy) return;
 
-            var filePath = _pdfService.CreateInvoicePdf(this.Load, this.Expenses.ToList());
-
-            await Share.Default.RequestAsync(new ShareFileRequest
+            IsBusy = true;
+            try
             {
-                Title = $"Invoice {Load.LoadNumber}",
-                File = new ShareFile(filePath)
-            });
+                var filePath = _pdfService.CreateInvoicePdf(this.Load, this.Expenses.ToList());
 
-            // update load status to Invoiced
-            Load.Status = "Invoiced";
-            await _databaseService.SaveLoadAsync(this.Load);
+                await Share.Default.RequestAsync(new ShareFileRequest
+                {
+                    Title = $"Invoice {Load.LoadNumber}",
+                    File = new ShareFile(filePath)
+                });
+
+                // update load status to Invoiced
+                Load.Status = "Invoiced";
+                await _databaseService.SaveLoadAsync(this.Load);
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", $"Failed to create invoice: {ex.Message}", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
         }
         #endregion
 

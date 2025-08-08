@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -33,6 +34,9 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private decimal _netProfit;
 
+        [ObservableProperty]
+        private bool _isBusy;
+
         /// <summary>
         /// initialize the view model for the main page
         /// </summary>
@@ -61,10 +65,26 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task GetLoadsAsync()
         {
-            _allLoads = await _databaseService.GetLoadsAsync();
+            if (IsBusy)
+                return;
 
-            FilterLoads();
-            await CalculateKpisAsync();
+            IsBusy = true;
+            try
+            {
+                _allLoads = await _databaseService.GetLoadsAsync();
+
+                FilterLoads();
+                await CalculateKpisAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to load data: {ex.Message}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
         }
 
         /// <summary>

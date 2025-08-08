@@ -12,93 +12,104 @@
         <ToolbarItem Command="{Binding GoToAddLoadCommand}" Text="Add" />
     </ContentPage.ToolbarItems>
 
-    <Grid RowDefinitions="Auto, Auto, *">
-        <Border
-            Grid.Row="0"
-            Margin="10"
-            Padding="15"
-            Stroke="LightGray"
-            StrokeShape="RoundRectangle 10">
-            <VerticalStackLayout Spacing="5">
-                <Label FontAttributes="Bold" Text="This Month's Summary" />
-                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
-                    <Label
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Text="Actual Revenue:" />
-                    <Label
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        HorizontalTextAlignment="End"
-                        Text="{Binding ActualRevenue, StringFormat='{0:C}'}" />
+    <Grid>
 
-                    <Label
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Text="Potential Revenue:" />
-                    <Label
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        HorizontalTextAlignment="End"
-                        Text="{Binding PotentialRevenue, StringFormat='{0:C}'}" />
+        <Grid IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" RowDefinitions="Auto, Auto, *">
+            <Border
+                Grid.Row="0"
+                Margin="10"
+                Padding="15"
+                Stroke="LightGray"
+                StrokeShape="RoundRectangle 10">
+                <VerticalStackLayout Spacing="5">
+                    <Label FontAttributes="Bold" Text="This Month's Summary" />
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Text="Actual Revenue:" />
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding ActualRevenue, StringFormat='{0:C}'}" />
 
-                    <Label
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Text="Total Expenses:" />
-                    <Label
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        HorizontalTextAlignment="End"
-                        Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Text="Potential Revenue:" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding PotentialRevenue, StringFormat='{0:C}'}" />
 
-                    <Label
-                        Grid.Row="3"
-                        Grid.Column="0"
-                        FontAttributes="Bold"
-                        FontSize="Medium"
-                        Text="Net Profit:" />
-                    <Label
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        FontAttributes="Bold"
-                        FontSize="Medium"
-                        HorizontalTextAlignment="End"
-                        Text="{Binding NetProfit, StringFormat='{0:C}'}" />
-                </Grid>
-            </VerticalStackLayout>
-        </Border>
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Text="Total Expenses:" />
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
 
-        <SearchBar
-            Grid.Row="1"
-            Margin="10"
-            Placeholder="Search by Load # or Shipper..."
-            Text="{Binding SearchText, Mode=TwoWay}" />
+                        <Label
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            Text="Net Profit:" />
+                        <Label
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding NetProfit, StringFormat='{0:C}'}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
 
-        <CollectionView Grid.Row="2" ItemsSource="{Binding Loads}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Load">
-                    <Border
-                        Margin="10,5"
-                        Padding="15"
-                        Stroke="LightGray"
-                        StrokeShape="RoundRectangle 10">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={x:Reference mainPage}, Path=BindingContext.GoToDetailsCommand}" CommandParameter="{Binding .}" />
-                        </Border.GestureRecognizers>
+            <SearchBar
+                Grid.Row="1"
+                Margin="10"
+                Placeholder="Search by Load # or Shipper..."
+                Text="{Binding SearchText, Mode=TwoWay}" />
 
-                        <VerticalStackLayout Spacing="5">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="Large"
-                                Text="{Binding LoadNumber}" />
-                            <Label Text="{Binding ShipperName}" />
-                            <Label Text="{Binding Status}" />
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            <CollectionView Grid.Row="2" ItemsSource="{Binding Loads}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Load">
+                        <Border
+                            Margin="10,5"
+                            Padding="15"
+                            Stroke="LightGray"
+                            StrokeShape="RoundRectangle 10">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={x:Reference mainPage}, Path=BindingContext.GoToDetailsCommand}" CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="Large"
+                                    Text="{Binding LoadNumber}" />
+                                <Label Text="{Binding ShipperName}" />
+                                <Label Text="{Binding Status}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            Color="{StaticResource Primary}" />
+
     </Grid>
 
 </ContentPage>

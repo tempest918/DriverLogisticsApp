@@ -20,18 +20,6 @@ namespace DriverLogisticsApp.Models
         public string ShipperCountry { get; set; } = string.Empty;
         public string? ShipperPhoneNumber { get; set; }
 
-        [Ignore]
-        public List<string> ShipperAddressLines =>
-            new List<string>
-            {
-            ShipperAddressLineOne,
-            ShipperAddressLineTwo,
-            $"{ShipperCity}, {ShipperState} {ShipperZipCode}",
-            ShipperCountry,
-            ShipperPhoneNumber
-            }.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
-
-
         // consignee
         public string? ConsigneeName { get; set; }
         public string? ConsigneeAddressLineOne { get; set; }
@@ -41,18 +29,6 @@ namespace DriverLogisticsApp.Models
         public string? ConsigneeZipCode { get; set; }
         public string? ConsigneeCountry { get; set; }
         public string? ConsigneePhoneNumber { get; set; }
-
-        [Ignore]
-        public List<string> ConsigneeAddressLines =>
-            new List<string>
-            {
-            ConsigneeAddressLineOne,
-            ConsigneeAddressLineTwo,
-            $"{ConsigneeCity}, {ConsigneeState} {ConsigneeZipCode}",
-            ConsigneeCountry,
-            ConsigneePhoneNumber
-            }.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
-
 
         // load details
         public DateTime PickupDate { get; set; }

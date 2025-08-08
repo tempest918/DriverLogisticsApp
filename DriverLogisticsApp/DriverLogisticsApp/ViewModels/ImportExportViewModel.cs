@@ -11,6 +11,8 @@ namespace DriverLogisticsApp.ViewModels
         private readonly IAlertService _alertService;
         private readonly IJsonImportExportService _jsonService;
 
+        [ObservableProperty]
+        private bool _isBusy;
 
         /// <summary>
         /// initializes the import/export view model
@@ -29,25 +31,35 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task ExportAllDataAsync()
         {
-            var allLoads = await _databaseService.GetLoadsAsync();
-            var allExpenses = await _databaseService.GetExpensesForLoadAsync(0);
-
-            var exportData = new ExportData
+            if (IsBusy) return;
+            IsBusy = true;
+            try
             {
-                Loads = allLoads,
-                Expenses = allExpenses.Select(e => new Expense
-                {
-                    Id = e.Id,
-                    LoadId = e.LoadId,
-                    Category = e.Category,
-                    Amount = e.Amount,
-                    Date = e.Date,
-                    Description = e.Description,
-                    ReceiptImagePath = e.ReceiptImagePath
-                }).ToList()
-            };
 
-            await _jsonService.ExportDataAsync(exportData, $"DriverLogistics_Backup_{DateTime.Now:yyyy-MM-dd}.json");
+                var allLoads = await _databaseService.GetLoadsAsync();
+                var allExpenses = await _databaseService.GetExpensesForLoadAsync(0);
+
+                var exportData = new ExportData
+                {
+                    Loads = allLoads,
+                    Expenses = allExpenses.Select(e => new Expense
+                    {
+                        Id = e.Id,
+                        LoadId = e.LoadId,
+                        Category = e.Category,
+                        Amount = e.Amount,
+                        Date = e.Date,
+                        Description = e.Description,
+                        ReceiptImagePath = e.ReceiptImagePath
+                    }).ToList()
+                };
+
+                await _jsonService.ExportDataAsync(exportData, $"DriverLogistics_Backup_{DateTime.Now:yyyy-MM-dd}.json");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         /// <summary>
@@ -57,27 +69,37 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task ImportDataAsync()
         {
-            var importedData = await _jsonService.ImportDataAsync();
-            if (importedData != null)
+            if (IsBusy) return;
+            IsBusy = true;
+            try
             {
-                if (importedData.Loads != null)
-                {
-                    foreach (var load in importedData.Loads)
-                    {
-                        load.Id = 0;
-                        await _databaseService.SaveLoadAsync(load);
-                    }
-                }
-                if (importedData.Expenses != null)
-                {
-                    foreach (var expense in importedData.Expenses)
-                    {
-                        expense.Id = 0;
-                        await _databaseService.SaveExpenseAsync(expense);
-                    }
-                }
 
-                await _alertService.DisplayAlert("Success", "Data imported successfully. Please restart the app to see the changes.", "OK");
+                var importedData = await _jsonService.ImportDataAsync();
+                if (importedData != null)
+                {
+                    if (importedData.Loads != null)
+                    {
+                        foreach (var load in importedData.Loads)
+                        {
+                            load.Id = 0;
+                            await _databaseService.SaveLoadAsync(load);
+                        }
+                    }
+                    if (importedData.Expenses != null)
+                    {
+                        foreach (var expense in importedData.Expenses)
+                        {
+                            expense.Id = 0;
+                            await _databaseService.SaveExpenseAsync(expense);
+                        }
+                    }
+
+                    await _alertService.DisplayAlert("Success", "Data imported successfully. Please restart the app to see the changes.", "OK");
+                }
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
     }

@@ -6,43 +6,51 @@
     Title="{Binding Title}"
     x:DataType="viewmodels:AddExpenseViewModel">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="10">
-            <Label Text="Category" />
-            <Picker
-                Title="Select a category"
-                ItemsSource="{Binding Categories}"
-                SelectedItem="{Binding SelectedCategory}" />
+    <Grid>
+        <ScrollView IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+            <VerticalStackLayout Padding="20" Spacing="10">
+                <Label Text="Category" />
+                <Picker
+                    Title="Select a category"
+                    ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding SelectedCategory}" />
 
-            <Label Text="Amount ($)" />
-            <Entry
-                Keyboard="Numeric"
-                Placeholder="0.00"
-                Text="{Binding Amount}" />
+                <Label Text="Amount ($)" />
+                <Entry
+                    Keyboard="Numeric"
+                    Placeholder="0.00"
+                    Text="{Binding Amount}" />
 
-            <Label Text="Date" />
-            <DatePicker Date="{Binding Date}" />
+                <Label Text="Date" />
+                <DatePicker Date="{Binding Date}" />
 
-            <Label Text="Description (Optional)" />
-            <Editor
-                HeightRequest="100"
-                Placeholder="e.g., Oil change at..."
-                Text="{Binding Description}" />
+                <Label Text="Description (Optional)" />
+                <Editor
+                    HeightRequest="100"
+                    Placeholder="e.g., Oil change at..."
+                    Text="{Binding Description}" />
 
-            <Image
-                Margin="0,10"
-                HeightRequest="200"
-                IsVisible="{Binding ReceiptImagePath, Converter={StaticResource StringToBoolConverter}}"
-                Source="{Binding ReceiptImagePath}" />
+                <Image
+                    Margin="0,10"
+                    HeightRequest="200"
+                    IsVisible="{Binding ReceiptImagePath, Converter={StaticResource StringToBoolConverter}}"
+                    Source="{Binding ReceiptImagePath}" />
 
-            <Button Command="{Binding AttachPhotoCommand}" Text="Attach Receipt" />
+                <Button Command="{Binding AttachPhotoCommand}" Text="Attach Receipt" />
 
-            <Button
-                Margin="0,20,0,0"
-                Command="{Binding SaveExpenseCommand}"
-                Text="Save Expense" />
+                <Button
+                    Margin="0,20,0,0"
+                    Command="{Binding SaveExpenseCommand}"
+                    Text="Save Expense" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
 
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            Color="{StaticResource Primary}" />
+    </Grid>
 </ContentPage>

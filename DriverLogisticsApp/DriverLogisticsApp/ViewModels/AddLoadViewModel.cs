@@ -68,6 +68,8 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private string _title;
 
+        [ObservableProperty]
+        private bool _isBusy;
 
         /// <summary>
         /// initialize the view model for adding a new load
@@ -75,7 +77,7 @@ namespace DriverLogisticsApp.ViewModels
         /// <param name="databaseService"></param>
         /// <param name="alertService"></param>
         /// <param name="navigationService"></param>
-        public AddLoadViewModel(IDatabaseService databaseService , IAlertService alertService, INavigationService navigationService)
+        public AddLoadViewModel(IDatabaseService databaseService, IAlertService alertService, INavigationService navigationService)
         {
             _databaseService = databaseService;
             _alertService = alertService;
@@ -162,6 +164,8 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task SaveLoadAsync()
         {
+            if (IsBusy) return;
+
             // validation checks
             if (string.IsNullOrWhiteSpace(LoadNumber) || string.IsNullOrWhiteSpace(ShipperName) || FreightRate <= 0)
             {
@@ -169,43 +173,56 @@ namespace DriverLogisticsApp.ViewModels
                 return;
             }
 
-            var combinedPickupDateTime = PickupDate.Date + PickupTime;
-            var combinedDeliveryDateTime = DeliveryDate.Date + DeliveryTime;
-
-            // create load object
-            var newLoad = new Load
+            IsBusy = true;
+            try
             {
-                Id = this.LoadId,
-                LoadNumber = this.LoadNumber,
-                ShipperName = this.ShipperName,
-                ShipperAddressLineOne = this.ShipperAddressLineOne,
-                ShipperAddressLineTwo = this.ShipperAddressLineTwo,
-                ShipperCity = this.ShipperCity,
-                ShipperState = this.ShipperState,
-                ShipperZipCode = this.ShipperZipCode,
-                ShipperCountry = this.ShipperCountry,
-                ShipperPhoneNumber = this.ShipperPhoneNumber,
 
-                ConsigneeName = this.ConsigneeName,
-                ConsigneeAddressLineOne = this.ConsigneeAddressLineOne,
-                ConsigneeAddressLineTwo = this.ConsigneeAddressLineTwo,
-                ConsigneeCity = this.ConsigneeCity,
-                ConsigneeState = this.ConsigneeState,
-                ConsigneeZipCode = this.ConsigneeZipCode,
-                ConsigneeCountry = this.ConsigneeCountry,
-                ConsigneePhoneNumber = this.ConsigneePhoneNumber,
+                var combinedPickupDateTime = PickupDate.Date + PickupTime;
+                var combinedDeliveryDateTime = DeliveryDate.Date + DeliveryTime;
 
-                FreightRate = this.FreightRate,
-                PickupDate = combinedPickupDateTime,
-                DeliveryDate = combinedDeliveryDateTime,
-                Status = "Planned"
-            };
+                // create load object
+                var newLoad = new Load
+                {
+                    Id = this.LoadId,
+                    LoadNumber = this.LoadNumber,
+                    ShipperName = this.ShipperName,
+                    ShipperAddressLineOne = this.ShipperAddressLineOne,
+                    ShipperAddressLineTwo = this.ShipperAddressLineTwo,
+                    ShipperCity = this.ShipperCity,
+                    ShipperState = this.ShipperState,
+                    ShipperZipCode = this.ShipperZipCode,
+                    ShipperCountry = this.ShipperCountry,
+                    ShipperPhoneNumber = this.ShipperPhoneNumber,
 
-            // save to database
-            await _databaseService.SaveLoadAsync(newLoad);
+                    ConsigneeName = this.ConsigneeName,
+                    ConsigneeAddressLineOne = this.ConsigneeAddressLineOne,
+                    ConsigneeAddressLineTwo = this.ConsigneeAddressLineTwo,
+                    ConsigneeCity = this.ConsigneeCity,
+                    ConsigneeState = this.ConsigneeState,
+                    ConsigneeZipCode = this.ConsigneeZipCode,
+                    ConsigneeCountry = this.ConsigneeCountry,
+                    ConsigneePhoneNumber = this.ConsigneePhoneNumber,
 
-            // navigate back to the main page
-            await _navigationService.GoBackAsync();
+                    FreightRate = this.FreightRate,
+                    PickupDate = combinedPickupDateTime,
+                    DeliveryDate = combinedDeliveryDateTime,
+                    Status = "Planned"
+                };
+
+                // save to database
+                await _databaseService.SaveLoadAsync(newLoad);
+
+                // navigate back to the main page
+                await _navigationService.GoBackAsync();
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", $"Failed to save load: {ex.Message}", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }
