@@ -32,17 +32,23 @@ namespace DriverLogisticsApp.Tests
             var importData = new ExportData
             {
                 Loads = new List<Load> { new Load(), new Load() },
-                Expenses = new List<Expense> { new Expense() }
+                Expenses = new List<Expense> { new Expense() },
+                Companies = new List<Company> { new Company() },
+                UserProfile = new UserProfile()
             };
+
+            _mockDbService.Setup(db => db.GetCompaniesAsync()).ReturnsAsync(new List<Company>());
             _mockJsonService.Setup(s => s.ImportDataAsync()).ReturnsAsync(importData);
 
             // ACT
             await _viewModel.ImportDataCommand.ExecuteAsync(null);
 
             // ASSERT
+            _mockDbService.Verify(db => db.SaveCompanyAsync(It.IsAny<Company>()), Times.Once);
             _mockDbService.Verify(db => db.SaveLoadAsync(It.IsAny<Load>()), Times.Exactly(2));
             _mockDbService.Verify(db => db.SaveExpenseAsync(It.IsAny<Expense>()), Times.Once);
-            _mockAlertService.Verify(a => a.DisplayAlert("Success", "Data imported successfully. Please restart the app to see the changes.", "OK"), Times.Once);
+            _mockDbService.Verify(db => db.SaveUserProfileAsync(It.IsAny<UserProfile>()), Times.Once);
+            _mockAlertService.Verify(a => a.DisplayAlert("Success", "Data imported successfully. Please restart the app to see all changes.", "OK"), Times.Once);
         }
 
         [TestMethod]

@@ -24,6 +24,7 @@ namespace DriverLogisticsApp.Services
 
             // create the tables
             await _database.CreateTableAsync<Load>();
+            await _database.CreateTableAsync<Company>();
             await _database.CreateTableAsync<Models.Expense>();
             await _database.CreateTableAsync<UserProfile>();
         }
@@ -36,7 +37,30 @@ namespace DriverLogisticsApp.Services
         public async Task<List<Load>> GetLoadsAsync()
         {
             await Init();
-            return await _database.Table<Load>().ToListAsync();
+            var loads = await _database!.Table<Load>().ToListAsync();
+            var companies = await GetCompaniesAsync();
+
+            // "Join" the company data to each load
+            foreach (var load in loads)
+            {
+                var shipper = companies.FirstOrDefault(c => c.Id == load.ShipperId);
+                if (shipper != null)
+                {
+                    load.ShipperName = shipper.Name;
+                    load.ShipperAddress = FormatAddress(shipper);
+                }
+
+                if (load.ConsigneeId.HasValue)
+                {
+                    var consignee = companies.FirstOrDefault(c => c.Id == load.ConsigneeId.Value);
+                    if (consignee != null)
+                    {
+                        load.ConsigneeName = consignee.Name;
+                        load.ConsigneeAddress = FormatAddress(consignee);
+                    }
+                }
+            }
+            return loads;
         }
 
         /// <summary>
@@ -47,7 +71,44 @@ namespace DriverLogisticsApp.Services
         public async Task<Load> GetLoadAsync(int id)
         {
             await Init();
-            return await _database.Table<Load>().Where(i => i.Id == id).FirstOrDefaultAsync();
+            var load = await _database!.Table<Load>().Where(l => l.Id == id).FirstOrDefaultAsync();
+            if (load != null)
+            {
+                var shipper = await GetCompanyAsync(load.ShipperId);
+                if (shipper != null)
+                {
+                    load.ShipperName = shipper.Name;
+                    load.ShipperAddress = FormatAddress(shipper);
+                }
+
+                if (load.ConsigneeId.HasValue)
+                {
+                    var consignee = await GetCompanyAsync(load.ConsigneeId.Value);
+                    if (consignee != null)
+                    {
+                        load.ConsigneeName = consignee.Name;
+                        load.ConsigneeAddress = FormatAddress(consignee);
+                    }
+                }
+            }
+            return load;
+        }
+
+        /// <summary>
+        /// helper to format a company address
+        /// </summary>
+        /// <param name="company"></param>
+        /// <returns></returns>
+        private string FormatAddress(Company company)
+        {
+            var addressParts = new List<string>
+            {
+                company.AddressLineOne,
+                company.AddressLineTwo,
+                $"{company.City}, {company.State} {company.ZipCode}",
+                company.Country
+            };
+            return string.Join("\n", addressParts.Where(s => !string.IsNullOrWhiteSpace(s)));
         }
 
         /// <summary>
@@ -79,6 +140,59 @@ namespace DriverLogisticsApp.Services
         {
             await Init();
             return await _database.DeleteAsync(load);
+        }
+        #endregion
+
+        #region Company CRUD operations
+
+        /// <summary>
+        /// get all companies (shippers and consignees)
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Company>> GetCompaniesAsync()
+        {
+            await Init();
+            return await _database!.Table<Company>().ToListAsync();
+        }
+
+        /// <summary>
+        /// get a single company by its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Company> GetCompanyAsync(int id)
+        {
+            await Init();
+            return await _database!.Table<Company>().Where(c => c.Id == id).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// save a company (insert or update)
+        /// </summary>
+        /// <param name="company"></param>
+        /// <returns></returns>
+        public async Task<int> SaveCompanyAsync(Company company)
+        {
+            await Init();
+            if (company.Id != 0)
+            {
+                return await _database!.UpdateAsync(company);
+            }
+            else
+            {
+                return await _database!.InsertAsync(company);
+            }
+        }
+
+        /// <summary>
+        /// delete a company
+        /// </summary>
+        /// <param name="company"></param>
+        /// <returns></returns>
+        public async Task<int> DeleteCompanyAsync(Company company)
+        {
+            await Init();
+            return await _database!.DeleteAsync(company);
         }
         #endregion
 
@@ -252,9 +366,12 @@ namespace DriverLogisticsApp.Services
         public async Task<int> SaveUserProfileAsync(UserProfile profile)
         {
             await Init();
-            return await _database!.UpdateAsync(profile);
-        }
 
+            profile.Id = 1;
+
+            return await _database!.InsertOrReplaceAsync(profile);
+        }
         #endregion
+
     }
 }

@@ -10,7 +10,6 @@
         <ScrollView IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
             <VerticalStackLayout Padding="20" Spacing="10">
 
-                <!--  load details  -->
                 <Label
                     Margin="0,15,0,0"
                     FontAttributes="Bold"
@@ -34,81 +33,20 @@
                     <TimePicker Grid.Column="1" Time="{Binding DeliveryTime}" />
                 </Grid>
 
-                <!--  shipper  -->
-                <Label
-                    Margin="0,15,0,0"
-                    FontAttributes="Bold"
-                    FontSize="Large"
-                    Text="Shipper Information" />
-                <Label Text="Shipper Name" />
-                <Entry Placeholder="e.g., Main Street Shipping" Text="{Binding ShipperName}" />
-                <Label Text="Address Line 1" />
-                <Entry Placeholder="e.g., 123 Main St" Text="{Binding ShipperAddressLineOne}" />
-                <Label Text="Address Line 2 (Optional)" />
-                <Entry Text="{Binding ShipperAddressLineTwo}" />
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <VerticalStackLayout>
-                        <Label Text="City" />
-                        <Entry Placeholder="e.g., Anytown" Text="{Binding ShipperCity}" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="1">
-                        <Label Text="State" />
-                        <Entry Placeholder="e.g., CA" Text="{Binding ShipperState}" />
-                    </VerticalStackLayout>
-                </Grid>
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <VerticalStackLayout>
-                        <Label Text="Zip Code" />
-                        <Entry
-                            Keyboard="Numeric"
-                            Placeholder="e.g., 12345"
-                            Text="{Binding ShipperZipCode}" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="1">
-                        <Label Text="Country" />
-                        <Entry Placeholder="e.g., USA" Text="{Binding ShipperCountry}" />
-                    </VerticalStackLayout>
-                </Grid>
-                <Label Text="Phone Number (Optional)" />
-                <Entry
-                    Keyboard="Telephone"
-                    Placeholder="e.g., 555-123-4567"
-                    Text="{Binding ShipperPhoneNumber}" />
+                <Label FontAttributes="Bold" Text="Shipper" />
+                <Picker
+                    Title="Select a Shipper"
+                    ItemDisplayBinding="{Binding Name}"
+                    ItemsSource="{Binding CompanyList}"
+                    SelectedItem="{Binding SelectedShipper}" />
 
-                <!--  consignee  -->
-                <Label
-                    Margin="0,15,0,0"
-                    FontAttributes="Bold"
-                    FontSize="Large"
-                    Text="Consignee Information" />
-                <Label Text="Consignee Name (Optional)" />
-                <Entry Placeholder="e.g., Downtown Receiving" Text="{Binding ConsigneeName}" />
-                <Label Text="Address Line 1 (Optional)" />
-                <Entry Text="{Binding ConsigneeAddressLineOne}" />
-                <Label Text="Address Line 2 (Optional)" />
-                <Entry Text="{Binding ConsigneeAddressLineTwo}" />
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <VerticalStackLayout>
-                        <Label Text="City (Optional)" />
-                        <Entry Text="{Binding ConsigneeCity}" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="1">
-                        <Label Text="State (Optional)" />
-                        <Entry Text="{Binding ConsigneeState}" />
-                    </VerticalStackLayout>
-                </Grid>
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <VerticalStackLayout>
-                        <Label Text="Zip Code (Optional)" />
-                        <Entry Keyboard="Numeric" Text="{Binding ConsigneeZipCode}" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="1">
-                        <Label Text="Country (Optional)" />
-                        <Entry Text="{Binding ConsigneeCountry}" />
-                    </VerticalStackLayout>
-                </Grid>
-                <Label Text="Phone Number (Optional)" />
-                <Entry Keyboard="Telephone" Text="{Binding ConsigneePhoneNumber}" />
+                <Label FontAttributes="Bold" Text="Consignee (Optional)" />
+                <Picker
+                    Title="Select a Consignee"
+                    ItemDisplayBinding="{Binding Name}"
+                    ItemsSource="{Binding CompanyList}"
+                    SelectedItem="{Binding SelectedConsignee}" />
+
 
                 <Button
                     Margin="0,20,0,0"

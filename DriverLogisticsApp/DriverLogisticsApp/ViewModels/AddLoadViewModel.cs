@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
+using System.Collections.ObjectModel;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -18,43 +19,13 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private string _loadNumber;
 
-        // shipper
         [ObservableProperty]
-        private string _shipperName;
+        private ObservableCollection<Company> _companyList;
         [ObservableProperty]
-        private string _shipperAddressLineOne;
+        private Company _selectedShipper;
         [ObservableProperty]
-        private string _shipperAddressLineTwo;
-        [ObservableProperty]
-        private string _shipperCity;
-        [ObservableProperty]
-        private string _shipperState;
-        [ObservableProperty]
-        private string _shipperZipCode;
-        [ObservableProperty]
-        private string _shipperCountry;
-        [ObservableProperty]
-        private string _shipperPhoneNumber;
+        private Company _selectedConsignee;
 
-        // consignee
-        [ObservableProperty]
-        private string _consigneeName;
-        [ObservableProperty]
-        private string _consigneeAddressLineOne;
-        [ObservableProperty]
-        private string _consigneeAddressLineTwo;
-        [ObservableProperty]
-        private string _consigneeCity;
-        [ObservableProperty]
-        private string _consigneeState;
-        [ObservableProperty]
-        private string _consigneeZipCode;
-        [ObservableProperty]
-        private string _consigneeCountry;
-        [ObservableProperty]
-        private string _consigneePhoneNumber;
-
-        // others load details
         [ObservableProperty]
         private decimal _freightRate;
         [ObservableProperty]
@@ -83,7 +54,41 @@ namespace DriverLogisticsApp.ViewModels
             _alertService = alertService;
             _navigationService = navigationService;
 
-            Title = "Add New Load";
+            // Initialize the company list
+            CompanyList = new ObservableCollection<Company>();
+        }
+
+        /// <summary>
+        /// load companies and load data if editing an existing load
+        /// </summary>
+        /// <returns></returns>
+        public async Task InitializeAsync()
+        {
+            await LoadCompaniesAsync();
+
+            if (LoadId > 0)
+            {
+                Title = "Edit Company";
+                await LoadLoadForEditAsync();
+            }
+            else
+            {
+                Title = "Add New Load";
+            }
+        }
+
+        /// <summary>
+        /// get the list of companies from the database and populate the CompanyList collection.
+        /// </summary>
+        /// <returns></returns>
+        public async Task LoadCompaniesAsync()
+        {
+            CompanyList.Clear();
+            var companies = await _databaseService.GetCompaniesAsync();
+            foreach (var company in companies)
+            {
+                CompanyList.Add(company);
+            }
         }
 
         /// <summary>
@@ -131,24 +136,8 @@ namespace DriverLogisticsApp.ViewModels
                 {
                     // Populate the form fields with the existing data
                     LoadNumber = load.LoadNumber;
-                    ShipperName = load.ShipperName;
-                    ShipperAddressLineOne = load.ShipperAddressLineOne;
-                    ShipperAddressLineTwo = load.ShipperAddressLineTwo;
-                    ShipperCity = load.ShipperCity;
-                    ShipperState = load.ShipperState;
-                    ShipperZipCode = load.ShipperZipCode;
-                    ShipperCountry = load.ShipperCountry;
-                    ShipperPhoneNumber = load.ShipperPhoneNumber;
-
-                    ConsigneeName = load.ConsigneeName;
-                    ConsigneeAddressLineOne = load.ConsigneeAddressLineOne;
-                    ConsigneeAddressLineTwo = load.ConsigneeAddressLineTwo;
-                    ConsigneeCity = load.ConsigneeCity;
-                    ConsigneeState = load.ConsigneeState;
-                    ConsigneeZipCode = load.ConsigneeZipCode;
-                    ConsigneeCountry = load.ConsigneeCountry;
-                    ConsigneePhoneNumber = load.ConsigneePhoneNumber;
-
+                    SelectedShipper = CompanyList.FirstOrDefault(c => c.Id == load.ShipperId);
+                    SelectedConsignee = CompanyList.FirstOrDefault(c => c.Id == load.ConsigneeId);
                     FreightRate = load.FreightRate;
                     PickupDate = load.PickupDate.Date;
                     PickupTime = load.PickupDate.TimeOfDay;
@@ -167,9 +156,15 @@ namespace DriverLogisticsApp.ViewModels
             if (IsBusy) return;
 
             // validation checks
-            if (string.IsNullOrWhiteSpace(LoadNumber) || string.IsNullOrWhiteSpace(ShipperName) || FreightRate <= 0)
+            if (string.IsNullOrWhiteSpace(LoadNumber) || FreightRate <= 0)
             {
                 await _alertService.DisplayAlert("Error", "Please fill in all required fields.", "OK");
+                return;
+            }
+
+            if (SelectedShipper is null)
+            {
+                await _alertService.DisplayAlert("Error", "Please select a shipper.", "OK");
                 return;
             }
 
@@ -185,24 +180,8 @@ namespace DriverLogisticsApp.ViewModels
                 {
                     Id = this.LoadId,
                     LoadNumber = this.LoadNumber,
-                    ShipperName = this.ShipperName,
-                    ShipperAddressLineOne = this.ShipperAddressLineOne,
-                    ShipperAddressLineTwo = this.ShipperAddressLineTwo,
-                    ShipperCity = this.ShipperCity,
-                    ShipperState = this.ShipperState,
-                    ShipperZipCode = this.ShipperZipCode,
-                    ShipperCountry = this.ShipperCountry,
-                    ShipperPhoneNumber = this.ShipperPhoneNumber,
-
-                    ConsigneeName = this.ConsigneeName,
-                    ConsigneeAddressLineOne = this.ConsigneeAddressLineOne,
-                    ConsigneeAddressLineTwo = this.ConsigneeAddressLineTwo,
-                    ConsigneeCity = this.ConsigneeCity,
-                    ConsigneeState = this.ConsigneeState,
-                    ConsigneeZipCode = this.ConsigneeZipCode,
-                    ConsigneeCountry = this.ConsigneeCountry,
-                    ConsigneePhoneNumber = this.ConsigneePhoneNumber,
-
+                    ShipperId = SelectedShipper.Id,
+                    ConsigneeId = SelectedConsignee?.Id,
                     FreightRate = this.FreightRate,
                     PickupDate = combinedPickupDateTime,
                     DeliveryDate = combinedDeliveryDateTime,

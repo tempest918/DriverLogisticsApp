@@ -9,6 +9,15 @@ namespace DriverLogisticsApp.Services
 
         Task<Load> GetLoadAsync(int id);
 
+        Task<List<Company>> GetCompaniesAsync();
+
+        Task<Company?> GetCompanyAsync(int id);
+
+        Task<int> SaveCompanyAsync(Company company);
+
+        Task<int> DeleteCompanyAsync(Company company);
+
+
         Task<int> SaveLoadAsync(Load load);
 
         Task<int> DeleteLoadAsync(Load load);

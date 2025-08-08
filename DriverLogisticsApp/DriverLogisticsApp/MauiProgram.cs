@@ -5,6 +5,8 @@ using DriverLogisticsApp.Views;
 using DriverLogisticsApp.Popups;
 using DriverLogisticsApp;
 using CommunityToolkit.Maui;
+using Microsoft.Maui.Controls.Maps;
+using Microsoft.Maui.Maps;
 
 namespace DriverLogisticsApp
 {
@@ -17,6 +19,7 @@ namespace DriverLogisticsApp
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
+                .UseMauiMaps()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -45,6 +48,8 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<ProfilePageViewModel>();
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<ImportExportViewModel>();
+            builder.Services.AddTransient<CompanyListViewModel>();
+            builder.Services.AddTransient<AddEditCompanyViewModel>();
 
             // views/pages
             builder.Services.AddTransient<AppShell>();
@@ -57,6 +62,8 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<ProfilePage>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<ImportExportPage>();
+            builder.Services.AddTransient<CompanyListPage>();
+            builder.Services.AddTransient<AddEditCompanyPage>();
 
 
             // popups

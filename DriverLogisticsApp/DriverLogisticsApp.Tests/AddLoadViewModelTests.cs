@@ -88,8 +88,8 @@ namespace DriverLogisticsApp.Tests
         public async Task SaveLoadAsync_WithValidData_SavesToDatabase()
         {
             // ARRANGE
+            _viewModel.SelectedShipper = new Company { Id = 1, Name = "Test Shipper" };
             _viewModel.LoadNumber = "ABC12345";
-            _viewModel.ShipperName = "Test Shipper";
             _viewModel.FreightRate = 1000;
 
             // ACT

@@ -5,37 +5,49 @@ namespace DriverLogisticsApp.Models
 {
     public partial class Load : ObservableObject
     {
+        private int _id;
+
         [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
+        public int Id
+        {
+            get => _id;
+            set => SetProperty(ref _id, value);
+        }
 
-        public string LoadNumber { get; set; } = string.Empty;
+        [ObservableProperty]
+        private string _loadNumber = string.Empty;
 
-        // shipper
+        [ObservableProperty]
+        private int _shipperId;
+
+        [ObservableProperty]
+        private int? _consigneeId;
+
+        [Ignore]
         public string ShipperName { get; set; } = string.Empty;
-        public string ShipperAddressLineOne { get; set; } = string.Empty;
-        public string? ShipperAddressLineTwo { get; set; }
-        public string ShipperCity { get; set; } = string.Empty;
-        public string ShipperState { get; set; } = string.Empty;
-        public string ShipperZipCode { get; set; } = string.Empty;
-        public string ShipperCountry { get; set; } = string.Empty;
-        public string? ShipperPhoneNumber { get; set; }
-
-        // consignee
+        [Ignore]
+        public string ShipperAddress { get; set; } = string.Empty;
+        [Ignore]
         public string? ConsigneeName { get; set; }
-        public string? ConsigneeAddressLineOne { get; set; }
-        public string? ConsigneeAddressLineTwo { get; set; }
-        public string? ConsigneeCity { get; set; }
-        public string? ConsigneeState { get; set; }
-        public string? ConsigneeZipCode { get; set; }
-        public string? ConsigneeCountry { get; set; }
-        public string? ConsigneePhoneNumber { get; set; }
+        [Ignore]
+        public string? ConsigneeAddress { get; set; }
 
-        // load details
-        public DateTime PickupDate { get; set; }
-        public DateTime? ActualPickupTime { get; set; }
-        public DateTime DeliveryDate { get; set; }
-        public DateTime? ActualDeliveryTime { get; set; }
-        public decimal FreightRate { get; set; }
-        public string Status { get; set; } = string.Empty;
+        [ObservableProperty]
+        private DateTime _pickupDate;
+
+        [ObservableProperty]
+        private DateTime? _actualPickupTime;
+
+        [ObservableProperty]
+        private DateTime _deliveryDate;
+
+        [ObservableProperty]
+        private DateTime? _actualDeliveryTime;
+
+        [ObservableProperty]
+        private decimal _freightRate;
+
+        [ObservableProperty]
+        private string _status = string.Empty;
     }
 }

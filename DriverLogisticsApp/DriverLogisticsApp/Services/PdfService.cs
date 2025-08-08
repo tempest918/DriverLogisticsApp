@@ -93,7 +93,7 @@ namespace DriverLogisticsApp.Services
         /// <param name="load"></param>
         /// <param name="expenses"></param>
         /// <returns></returns>
-        public string CreateInvoicePdf(Load load, List<ExpenseBase> expenses)
+        public string CreateInvoicePdf(Load load, List<ExpenseBase> expenses, UserProfile userProfile)
         {
             // setup the PDF document
             var fileName = $"Invoice-{load.LoadNumber}.pdf";
@@ -109,18 +109,18 @@ namespace DriverLogisticsApp.Services
             document.Add(new Paragraph(titleText).SetTextAlignment(iText.Layout.Properties.TextAlignment.RIGHT));
 
             // company and bill to information
-            // TODO:  Update with actual company details when user profile is implemented
-            var companyInfo = new Paragraph("Driver Logistics App\n123 Trucking Way\nAnytown, USA 12345");
-            var billToAddress = string.Join("\n", new List<string>
-                {
-                    load.ShipperAddressLineOne,
-                    load.ShipperAddressLineTwo,
-                    $"{load.ShipperCity}, {load.ShipperState} {load.ShipperZipCode}",
-                    load.ShipperCountry,
-                    load.ShipperPhoneNumber
-                }.Where(s => !string.IsNullOrWhiteSpace(s)));
+            var companyAddress = string.Join("\n", new List<string>
+            {
+                userProfile.CompanyAddressLineOne,
+                userProfile.CompanyAddressLineTwo,
+                $"{userProfile.CompanyCity}, {userProfile.CompanyState} {userProfile.CompanyZipCode}",
+                userProfile.CompanyCountry,
+                userProfile.CompanyPhoneNumber
+            }.Where(s => !string.IsNullOrWhiteSpace(s)));
 
-            var billToInfo = new Paragraph($"Bill To:\n{load.ShipperName}\n{billToAddress}")
+            var companyInfo = new Paragraph($"{userProfile.CompanyName}\n{companyAddress}");
+
+            var billToInfo = new Paragraph($"Bill To:\n{load.ShipperName}\n{load.ShipperAddress}")
                 .SetTextAlignment(iText.Layout.Properties.TextAlignment.RIGHT);
 
             document.Add(new Div().Add(companyInfo).Add(billToInfo));

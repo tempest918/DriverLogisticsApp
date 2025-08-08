@@ -15,72 +15,57 @@
                 <Label FontAttributes="Bold" Text="Load Number" />
                 <Label Text="{Binding Load.LoadNumber}" />
 
-                <!--  shipper  -->
                 <Label
                     Margin="0,10,0,0"
                     FontAttributes="Bold"
                     Text="Shipper" />
-                <Label Text="{Binding Load.ShipperName}" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding Load.ShipperName}" />
+                        <Label FontSize="Small" Text="{Binding Load.ShipperAddress}" />
+                    </VerticalStackLayout>
 
-                <Label
-                    FontSize="Small"
-                    IsVisible="{Binding Load.ShipperAddressLineOne, Converter={StaticResource StringToBoolConverter}}"
-                    Text="{Binding Load.ShipperAddressLineOne}" />
-                <Label
-                    FontSize="Small"
-                    IsVisible="{Binding Load.ShipperAddressLineTwo, Converter={StaticResource StringToBoolConverter}}"
-                    Text="{Binding Load.ShipperAddressLineTwo}" />
-                <Label FontSize="Small" IsVisible="{Binding Load.ShipperCity, Converter={StaticResource StringToBoolConverter}}">
-                    <Label.Text>
-                        <MultiBinding StringFormat="{}{0}, {1} {2}">
-                            <Binding Path="Load.ShipperCity" />
-                            <Binding Path="Load.ShipperState" />
-                            <Binding Path="Load.ShipperZipCode" />
-                        </MultiBinding>
-                    </Label.Text>
-                </Label>
-                <Label
-                    FontSize="Small"
-                    IsVisible="{Binding Load.ShipperCountry, Converter={StaticResource StringToBoolConverter}}"
-                    Text="{Binding Load.ShipperCountry}" />
-                <Label
-                    FontSize="Small"
-                    IsVisible="{Binding Load.ShipperPhoneNumber, Converter={StaticResource StringToBoolConverter}}"
-                    Text="{Binding Load.ShipperPhoneNumber}" />
+                    <ImageButton
+                        Grid.Column="1"
+                        Command="{Binding NavigateToAddressCommand}"
+                        CommandParameter="{Binding Load.ShipperAddress}"
+                        HeightRequest="40"
+                        VerticalOptions="Center"
+                        WidthRequest="40">
+                        <ImageButton.Source>
+                            <FontImageSource
+                                FontFamily="MaterialIcons"
+                                Glyph="&#xf6ea;"
+                                Color="{StaticResource Primary}" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </Grid>
 
-
-                <!--  consignee  -->
                 <Label
                     Margin="0,10,0,0"
                     FontAttributes="Bold"
                     Text="Consignee" />
-                <Label Text="{Binding Load.ConsigneeName}" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding Load.ConsigneeName}" />
+                        <Label FontSize="Small" Text="{Binding Load.ConsigneeAddress}" />
+                    </VerticalStackLayout>
 
-                <Label
-                    FontSize="Small"
-                    IsVisible="{Binding Load.ConsigneeAddressLineOne, Converter={StaticResource StringToBoolConverter}}"
-                    Text="{Binding Load.ConsigneeAddressLineOne}" />
-                <Label
-                    FontSize="Small"
-                    IsVisible="{Binding Load.ConsigneeAddressLineTwo, Converter={StaticResource StringToBoolConverter}}"
-                    Text="{Binding Load.ConsigneeAddressLineTwo}" />
-                <Label FontSize="Small" IsVisible="{Binding Load.ConsigneeCity, Converter={StaticResource StringToBoolConverter}}">
-                    <Label.Text>
-                        <MultiBinding StringFormat="{}{0}, {1} {2}">
-                            <Binding Path="Load.ConsigneeCity" />
-                            <Binding Path="Load.ConsigneeState" />
-                            <Binding Path="Load.ConsigneeZipCode" />
-                        </MultiBinding>
-                    </Label.Text>
-                </Label>
-                <Label
-                    FontSize="Small"
-                    IsVisible="{Binding Load.ConsigneeCountry, Converter={StaticResource StringToBoolConverter}}"
-                    Text="{Binding Load.ConsigneeCountry}" />
-                <Label
-                    FontSize="Small"
-                    IsVisible="{Binding Load.ConsigneePhoneNumber, Converter={StaticResource StringToBoolConverter}}"
-                    Text="{Binding Load.ConsigneePhoneNumber}" />
+                    <ImageButton
+                        Grid.Column="1"
+                        Command="{Binding NavigateToAddressCommand}"
+                        CommandParameter="{Binding Load.ConsigneeAddress}"
+                        HeightRequest="40"
+                        VerticalOptions="Center"
+                        WidthRequest="40">
+                        <ImageButton.Source>
+                            <FontImageSource
+                                FontFamily="MaterialIcons"
+                                Glyph="&#xf6ea;"
+                                Color="{StaticResource Primary}" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </Grid>
                 <Label
                     Margin="0,10,0,0"
                     FontAttributes="Bold"

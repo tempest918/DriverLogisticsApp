@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DriverLogisticsApp.Views.AddEditCompanyPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+    Title="{Binding Title}"
+    x:DataType="viewmodels:AddEditCompanyViewModel">
+    <Grid>
+        <ScrollView IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+            <VerticalStackLayout Padding="20" Spacing="10">
+                <Label FontAttributes="Bold" Text="Company Name" />
+                <Entry Placeholder="e.g., Midwest Parts Co." Text="{Binding Company.Name}" />
+
+                <Label Text="Address Line 1" />
+                <Entry Placeholder="e.g., 123 Industrial Rd" Text="{Binding Company.AddressLineOne}" />
+
+                <Label Text="Address Line 2 (Optional)" />
+                <Entry Text="{Binding Company.AddressLineTwo}" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <VerticalStackLayout>
+                        <Label Text="City" />
+                        <Entry Placeholder="e.g., Columbus" Text="{Binding Company.City}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="State" />
+                        <Entry Placeholder="e.g., OH" Text="{Binding Company.State}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <VerticalStackLayout>
+                        <Label Text="Zip Code" />
+                        <Entry
+                            Keyboard="Numeric"
+                            Placeholder="e.g., 43215"
+                            Text="{Binding Company.ZipCode}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="Country" />
+                        <Entry Placeholder="e.g., USA" Text="{Binding Company.Country}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Label Text="Phone Number (Optional)" />
+                <Entry
+                    Keyboard="Telephone"
+                    Placeholder="e.g., 614-555-0101"
+                    Text="{Binding Company.PhoneNumber}" />
+
+                <Button
+                    Margin="0,20,0,0"
+                    Command="{Binding SaveCompanyCommand}"
+                    Text="Save Company" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            Color="{StaticResource Primary}" />
+    </Grid>
+</ContentPage>

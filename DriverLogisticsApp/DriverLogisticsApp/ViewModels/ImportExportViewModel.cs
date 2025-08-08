@@ -35,9 +35,11 @@ namespace DriverLogisticsApp.ViewModels
             IsBusy = true;
             try
             {
-
+                // get all data types from the database
                 var allLoads = await _databaseService.GetLoadsAsync();
                 var allExpenses = await _databaseService.GetExpensesForLoadAsync(0);
+                var allCompanies = await _databaseService.GetCompaniesAsync();
+                var userProfile = await _databaseService.GetUserProfileAsync();
 
                 var exportData = new ExportData
                 {
@@ -51,10 +53,13 @@ namespace DriverLogisticsApp.ViewModels
                         Date = e.Date,
                         Description = e.Description,
                         ReceiptImagePath = e.ReceiptImagePath
-                    }).ToList()
+                    }).ToList(),
+                    Companies = allCompanies,
+                    UserProfile = userProfile
                 };
 
                 await _jsonService.ExportDataAsync(exportData, $"DriverLogistics_Backup_{DateTime.Now:yyyy-MM-dd}.json");
+                await _alertService.DisplayAlert("Success", "All data has been exported.", "OK");
             }
             finally
             {
@@ -73,10 +78,25 @@ namespace DriverLogisticsApp.ViewModels
             IsBusy = true;
             try
             {
-
                 var importedData = await _jsonService.ImportDataAsync();
                 if (importedData != null)
                 {
+                    // import companies
+                    var existingCompanyNames = (await _databaseService.GetCompaniesAsync()).Select(c => c.Name).ToHashSet();
+
+                    if (importedData.Companies != null)
+                    {
+                        foreach (var company in importedData.Companies)
+                        {
+                            if (!existingCompanyNames.Contains(company.Name))
+                            {
+                                company.Id = 0;
+                                await _databaseService.SaveCompanyAsync(company);
+                            }
+                        }
+                    }
+
+                    // import loads
                     if (importedData.Loads != null)
                     {
                         foreach (var load in importedData.Loads)
@@ -85,6 +105,8 @@ namespace DriverLogisticsApp.ViewModels
                             await _databaseService.SaveLoadAsync(load);
                         }
                     }
+
+                    // import Expenses
                     if (importedData.Expenses != null)
                     {
                         foreach (var expense in importedData.Expenses)
@@ -94,7 +116,13 @@ namespace DriverLogisticsApp.ViewModels
                         }
                     }
 
-                    await _alertService.DisplayAlert("Success", "Data imported successfully. Please restart the app to see the changes.", "OK");
+                    // import User Profile
+                    if (importedData.UserProfile != null)
+                    {
+                        await _databaseService.SaveUserProfileAsync(importedData.UserProfile);
+                    }
+
+                    await _alertService.DisplayAlert("Success", "Data imported successfully. Please restart the app to see all changes.", "OK");
                 }
             }
             finally

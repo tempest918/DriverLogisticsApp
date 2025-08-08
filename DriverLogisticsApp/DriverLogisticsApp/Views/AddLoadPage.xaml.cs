@@ -23,6 +23,6 @@ public partial class AddLoadPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadLoadForEditAsync();
+        await _viewModel.InitializeAsync();
     }
 }

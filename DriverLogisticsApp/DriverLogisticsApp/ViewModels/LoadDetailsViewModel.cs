@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
+using Microsoft.Maui.Devices.Sensors;
+using Microsoft.Maui.Maps;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -237,9 +239,11 @@ namespace DriverLogisticsApp.ViewModels
             {
                 string filePath = string.Empty;
 
+                var userProfile = await _databaseService.GetUserProfileAsync();
+
                 await Task.Run(() =>
                 {
-                    filePath = _pdfService.CreateInvoicePdf(this.Load, this.Expenses.ToList());
+                    filePath = _pdfService.CreateInvoicePdf(this.Load, this.Expenses.ToList(), userProfile);
                 });
 
                 await Share.Default.RequestAsync(new ShareFileRequest
@@ -260,6 +264,42 @@ namespace DriverLogisticsApp.ViewModels
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        /// <summary>
+        /// used to open the device's map application for navigation to the specified address
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task NavigateToAddressAsync(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+                return;
+
+            try
+            {
+                var locations = await Geocoding.Default.GetLocationsAsync(address);
+                var location = locations?.FirstOrDefault();
+
+                if (location != null)
+                {
+                    await Map.Default.OpenAsync(location, new MapLaunchOptions
+                    {
+                        Name = "Load Location",
+                        NavigationMode = NavigationMode.Driving
+                    });
+                }
+                else
+                {
+                    await _alertService.DisplayAlert("Error", "Could not find a location for the provided address.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", "Could not open map application.", "OK");
+                Debug.WriteLine($"Failed to open map: {ex.Message}");
             }
         }
 
