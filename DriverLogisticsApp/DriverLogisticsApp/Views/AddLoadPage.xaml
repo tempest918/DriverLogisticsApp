@@ -8,8 +8,30 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="10">
-            <Label FontAttributes="Bold" Text="Load Number" />
+
+            <!--  load details  -->
+            <Label
+                Margin="0,15,0,0"
+                FontAttributes="Bold"
+                FontSize="Large"
+                Text="Load Details" />
+            <Label Text="Load Number" />
             <Entry Placeholder="e.g., ABC12345" Text="{Binding LoadNumber}" />
+            <Label Text="Freight Rate ($)" />
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="e.g., 1500"
+                Text="{Binding FreightRate}" />
+            <Label Text="Planned Pickup" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <DatePicker Grid.Column="0" Date="{Binding PickupDate}" />
+                <TimePicker Grid.Column="1" Time="{Binding PickupTime}" />
+            </Grid>
+            <Label Text="Planned Delivery" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <DatePicker Grid.Column="0" Date="{Binding DeliveryDate}" />
+                <TimePicker Grid.Column="1" Time="{Binding DeliveryTime}" />
+            </Grid>
 
             <!--  shipper  -->
             <Label
@@ -86,28 +108,6 @@
             </Grid>
             <Label Text="Phone Number (Optional)" />
             <Entry Keyboard="Telephone" Text="{Binding ConsigneePhoneNumber}" />
-
-            <!--  load details  -->
-            <Label
-                Margin="0,15,0,0"
-                FontAttributes="Bold"
-                FontSize="Large"
-                Text="Load Details" />
-            <Label Text="Freight Rate ($)" />
-            <Entry
-                Keyboard="Numeric"
-                Placeholder="e.g., 1500"
-                Text="{Binding FreightRate}" />
-            <Label Text="Planned Pickup" />
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                <DatePicker Grid.Column="0" Date="{Binding PickupDate}" />
-                <TimePicker Grid.Column="1" Time="{Binding PickupTime}" />
-            </Grid>
-            <Label Text="Planned Delivery" />
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                <DatePicker Grid.Column="0" Date="{Binding DeliveryDate}" />
-                <TimePicker Grid.Column="1" Time="{Binding DeliveryTime}" />
-            </Grid>
 
             <Button
                 Margin="0,20,0,0"

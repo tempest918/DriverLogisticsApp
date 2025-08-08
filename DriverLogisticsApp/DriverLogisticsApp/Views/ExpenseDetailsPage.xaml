@@ -36,20 +36,21 @@
                     <TapGestureRecognizer Tapped="OnImageTapped" />
                 </Image.GestureRecognizers>
             </Image>
-            <HorizontalStackLayout
-                Margin="0,30,0,0"
-                HorizontalOptions="Center"
-                Spacing="10">
+            <Grid
+                Margin="0,20,0,0"
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10">
                 <Button
+                    Grid.Column="0"
                     BackgroundColor="{StaticResource Primary}"
                     Command="{Binding GoToEditExpenseCommand}"
                     Text="Edit Expense" />
                 <Button
-                    Margin="40,0,0,0"
+                    Grid.Column="1"
                     BackgroundColor="Red"
                     Command="{Binding DeleteExpenseCommand}"
                     Text="Delete Expense" />
-            </HorizontalStackLayout>
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

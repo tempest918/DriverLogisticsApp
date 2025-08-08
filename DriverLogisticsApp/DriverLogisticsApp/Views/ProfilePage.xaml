@@ -26,7 +26,7 @@
                 Margin="0,20,0,0"
                 FontAttributes="Bold"
                 FontSize="Large"
-                Text="Company Information (for Invoices)" />
+                Text="Company Information" />
             <Entry Placeholder="Company Name" Text="{Binding Profile.CompanyName}" />
             <Entry Placeholder="Address Line 1" Text="{Binding Profile.CompanyAddressLineOne}" />
             <Entry Placeholder="Address Line 2" Text="{Binding Profile.CompanyAddressLineTwo}" />
