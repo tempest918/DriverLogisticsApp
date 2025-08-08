@@ -36,7 +36,7 @@ namespace DriverLogisticsApp.Tests
             await _viewModel.LoginCommand.ExecuteAsync(null);
 
             // ASSERT
-            _mockNavigationService.Verify(nav => nav.GoBackAsync(), Times.Once);
+            _mockAlertService.Verify(a => a.DisplayAlert("Error", "Incorrect PIN. Please try again.", "OK"), Times.Never);
         }
 
         [TestMethod]

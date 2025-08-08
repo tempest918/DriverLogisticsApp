@@ -115,6 +115,12 @@ namespace DriverLogisticsApp.ViewModels
 
             await _databaseService.SaveLoadAsync(Load);
             UpdateToolbarState();
+
+            await _alertService.DisplayAlert("Success", $"Load status updated to {Load.Status}.", "OK");
+
+            // reload the data to reflect changes
+            await LoadDataAsync();
+
         }
 
         private void UpdateToolbarState()

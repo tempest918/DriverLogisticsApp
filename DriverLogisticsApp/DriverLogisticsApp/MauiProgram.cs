@@ -31,8 +31,9 @@ namespace DriverLogisticsApp
             builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
             builder.Services.AddSingleton<IAlertService, MauiAlertService>();
             builder.Services.AddSingleton<INavigationService, MauiNavigationService>();
-            builder.Services.AddSingleton<PdfService>();
             builder.Services.AddSingleton<ISecureStorageService, MauiSecureStorageService>();
+            builder.Services.AddSingleton<IJsonImportExportService, JsonImportExportService>();
+            builder.Services.AddSingleton<PdfService>();
 
             // view models
             builder.Services.AddTransient<MainPageViewModel>();
@@ -43,6 +44,7 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<SettlementReportViewModel>();
             builder.Services.AddTransient<ProfilePageViewModel>();
             builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<ImportExportViewModel>();
 
             // views/pages
             builder.Services.AddTransient<AppShell>();
@@ -54,6 +56,8 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<SettlementReportPage>();
             builder.Services.AddTransient<ProfilePage>();
             builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<ImportExportPage>();
+
 
             // popups
             builder.Services.AddTransient<ZoomedImagePopup>();

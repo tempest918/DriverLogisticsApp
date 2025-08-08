@@ -44,7 +44,7 @@ public partial class LoadDetailsPage : ContentPage
     /// <param name="e"></param>
     private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(LoadDetailsViewModel.IsToolbarActionVisible))
+        if (e.PropertyName == nameof(LoadDetailsViewModel.Load))
         {
             UpdateToolbar();
         }
