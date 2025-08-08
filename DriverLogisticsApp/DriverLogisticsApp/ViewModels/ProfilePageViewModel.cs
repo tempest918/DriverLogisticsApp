@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -20,6 +19,9 @@ namespace DriverLogisticsApp.ViewModels
 
         [ObservableProperty]
         private string _confirmPin;
+
+        [ObservableProperty]
+        private bool _isAuthenticationEnabled;
 
         /// <summary>
         /// initializes the view model with required services
@@ -40,6 +42,30 @@ namespace DriverLogisticsApp.ViewModels
         public async Task LoadProfileAsync()
         {
             Profile = await _databaseService.GetUserProfileAsync();
+
+            var savedPin = await _secureStorageService.GetAsync("user_pin");
+            IsAuthenticationEnabled = !string.IsNullOrWhiteSpace(savedPin);
+        }
+
+        /// <summary>
+        /// enables or disables authentication based on user input
+        /// </summary>
+        /// <param name="value"></param>
+        async partial void OnIsAuthenticationEnabledChanged(bool value)
+        {
+            if (!value)
+            {
+                bool confirmed = await _alertService.DisplayAlert("Disable Security", "Are you sure you want to disable PIN authentication? Your app will no longer be password protected.", "Yes, Disable", "Cancel");
+                if (confirmed)
+                {
+                    _secureStorageService.Remove("user_pin");
+                    await _alertService.DisplayAlert("Success", "PIN authentication has been disabled.", "OK");
+                }
+                else
+                {
+                    IsAuthenticationEnabled = true;
+                }
+            }
         }
 
         /// <summary>

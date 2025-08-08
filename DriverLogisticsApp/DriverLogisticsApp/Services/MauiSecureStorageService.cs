@@ -11,5 +11,10 @@
         {
             return SecureStorage.Default.SetAsync(key, value);
         }
+
+        public bool Remove(string key)
+        {
+            return SecureStorage.Default.Remove(key);
+        }
     }
 }

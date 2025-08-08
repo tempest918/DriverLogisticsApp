@@ -66,19 +66,28 @@
                 FontAttributes="Bold"
                 FontSize="Large"
                 Text="Security" />
-            <Entry
-                IsPassword="True"
-                Keyboard="Numeric"
-                MaxLength="4"
-                Placeholder="Enter New 4-Digit PIN"
-                Text="{Binding NewPin}" />
-            <Entry
-                IsPassword="True"
-                Keyboard="Numeric"
-                MaxLength="4"
-                Placeholder="Confirm New PIN"
-                Text="{Binding ConfirmPin}" />
-            <Button Command="{Binding SetPinCommand}" Text="Set/Change PIN" />
+
+            <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto">
+                <Label Text="Enable PIN Authentication" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding IsAuthenticationEnabled}" />
+            </Grid>
+
+            <VerticalStackLayout IsVisible="{Binding IsAuthenticationEnabled}" Spacing="10">
+                <Entry
+                    IsPassword="True"
+                    Keyboard="Numeric"
+                    MaxLength="4"
+                    Placeholder="Enter New 4-Digit PIN"
+                    Text="{Binding NewPin}" />
+                <Entry
+                    IsPassword="True"
+                    Keyboard="Numeric"
+                    MaxLength="4"
+                    Placeholder="Confirm New PIN"
+                    Text="{Binding ConfirmPin}" />
+                <Button Command="{Binding SetPinCommand}" Text="Set/Change PIN" />
+            </VerticalStackLayout>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
