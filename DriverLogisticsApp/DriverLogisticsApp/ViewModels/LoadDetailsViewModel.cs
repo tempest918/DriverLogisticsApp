@@ -37,6 +37,9 @@ namespace DriverLogisticsApp.ViewModels
         private bool _isToolbarActionVisible;
 
         [ObservableProperty]
+        private bool _isInvoiceActionVisible;
+
+        [ObservableProperty]
         private ObservableCollection<Models.ExpenseTypes.Expense> _expenses;
 
         [ObservableProperty]
@@ -141,6 +144,9 @@ namespace DriverLogisticsApp.ViewModels
         /// </summary>
         private void UpdateToolbarState()
         {
+            IsToolbarActionVisible = false;
+            IsInvoiceActionVisible = false;
+
             if (Load?.Status == "Planned")
             {
                 ToolbarActionText = "Start Load";
@@ -151,10 +157,9 @@ namespace DriverLogisticsApp.ViewModels
                 ToolbarActionText = "Complete Load";
                 IsToolbarActionVisible = true;
             }
-            else
+            else if (Load?.Status == "Completed" || Load?.Status == "Invoiced")
             {
-                // Hide the button for any other status (Completed, Invoiced, etc.)
-                IsToolbarActionVisible = false;
+                IsInvoiceActionVisible = true;
             }
         }
 
@@ -230,7 +235,12 @@ namespace DriverLogisticsApp.ViewModels
             IsBusy = true;
             try
             {
-                var filePath = _pdfService.CreateInvoicePdf(this.Load, this.Expenses.ToList());
+                string filePath = string.Empty;
+
+                await Task.Run(() =>
+                {
+                    filePath = _pdfService.CreateInvoicePdf(this.Load, this.Expenses.ToList());
+                });
 
                 await Share.Default.RequestAsync(new ShareFileRequest
                 {
@@ -238,9 +248,10 @@ namespace DriverLogisticsApp.ViewModels
                     File = new ShareFile(filePath)
                 });
 
-                // update load status to Invoiced
                 Load.Status = "Invoiced";
                 await _databaseService.SaveLoadAsync(this.Load);
+                OnPropertyChanged(nameof(Load));
+                UpdateToolbarState();
             }
             catch (Exception ex)
             {
@@ -250,8 +261,8 @@ namespace DriverLogisticsApp.ViewModels
             {
                 IsBusy = false;
             }
-
         }
+
         #endregion
 
         #region Expense Related Methods

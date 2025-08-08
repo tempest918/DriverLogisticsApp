@@ -44,7 +44,8 @@ public partial class LoadDetailsPage : ContentPage
     /// <param name="e"></param>
     private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(LoadDetailsViewModel.Load))
+        if (e.PropertyName == nameof(LoadDetailsViewModel.IsToolbarActionVisible) ||
+            e.PropertyName == nameof(LoadDetailsViewModel.IsInvoiceActionVisible))
         {
             UpdateToolbar();
         }
@@ -70,6 +71,17 @@ public partial class LoadDetailsPage : ContentPage
                     Command = _viewModel.ToolbarActionCommand
                 };
                 this.ToolbarItems.Add(toolbarItem);
+            }
+
+            // If the ViewModel says the invoice button should be visible, create and add it
+            if (_viewModel.IsInvoiceActionVisible)
+            {
+                var invoiceItem = new ToolbarItem
+                {
+                    Text = "Create Invoice",
+                    Command = _viewModel.CreateInvoiceCommand
+                };
+                this.ToolbarItems.Add(invoiceItem);
             }
         });
     }

@@ -190,9 +190,6 @@
                             Text="No expenses have been added for this load." />
                     </CollectionView.EmptyView>
                 </CollectionView>
-
-                <Button Command="{Binding CreateInvoiceCommand}" Text="Create Invoice" />
-
             </VerticalStackLayout>
         </ScrollView>
 
