@@ -14,7 +14,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>Driver Logistics</ApplicationTitle>
+		<ApplicationTitle>Truck Loads</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.abarnes.driverlogisticsapp</ApplicationId>
