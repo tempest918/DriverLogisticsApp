@@ -2,6 +2,7 @@
     x:Class="DriverLogisticsApp.Views.AddExpensePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
     Title="{Binding Title}"
     x:DataType="viewmodels:AddExpenseViewModel">
@@ -11,15 +12,37 @@
             <VerticalStackLayout Padding="20" Spacing="10">
                 <Label Text="Category" />
                 <Picker
+                    x:Name="CategoryPicker"
                     Title="Select a category"
                     ItemsSource="{Binding Categories}"
                     SelectedItem="{Binding SelectedCategory}" />
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding Source={x:Reference CategoryPicker}, Path=SelectedItem, Converter={StaticResource IsNullConverter}}"
+                    Text="Category is a required field."
+                    TextColor="Red" />
 
                 <Label Text="Amount ($)" />
                 <Entry
                     Keyboard="Numeric"
                     Placeholder="0.00"
-                    Text="{Binding Amount}" />
+                    Text="{Binding Amount}">
+
+                    <Entry.Behaviors>
+                        <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                            <toolkit:NumericValidationBehavior
+                                x:Name="AmountValidator"
+                                Flags="ValidateOnValueChanged"
+                                MaximumValue="1000000"
+                                MinimumValue="0.01" />
+                        </toolkit:MultiValidationBehavior>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding Source={x:Reference AmountValidator}, Path=IsNotValid}"
+                    Text="Please enter a valid amount greater than 0."
+                    TextColor="Red" />
 
                 <Label Text="Date" />
                 <DatePicker Date="{Binding Date}" />

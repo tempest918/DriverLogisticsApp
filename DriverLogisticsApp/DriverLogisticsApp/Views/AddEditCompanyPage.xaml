@@ -3,6 +3,7 @@
     x:Class="DriverLogisticsApp.Views.AddEditCompanyPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
     Title="{Binding Title}"
     x:DataType="viewmodels:AddEditCompanyViewModel">
@@ -10,10 +11,42 @@
         <ScrollView IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
             <VerticalStackLayout Padding="20" Spacing="10">
                 <Label FontAttributes="Bold" Text="Company Name" />
-                <Entry Placeholder="e.g., Midwest Parts Co." Text="{Binding Company.Name}" />
+                <Entry Placeholder="e.g., Midwest Parts Co." Text="{Binding Company.Name}">
+                    <Entry.Behaviors>
+                        <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+
+                            <toolkit:TextValidationBehavior
+                                x:Name="CompanyNameValidator"
+                                Flags="ValidateOnValueChanged"
+                                MinimumLength="1" />
+
+                        </toolkit:MultiValidationBehavior>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding Source={x:Reference CompanyNameValidator}, Path=IsNotValid}"
+                    Text="Company name is required."
+                    TextColor="Red" />
 
                 <Label Text="Address Line 1" />
-                <Entry Placeholder="e.g., 123 Industrial Rd" Text="{Binding Company.AddressLineOne}" />
+                <Entry Placeholder="e.g., 123 Industrial Rd" Text="{Binding Company.AddressLineOne}">
+                    <Entry.Behaviors>
+                        <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                            <toolkit:TextValidationBehavior
+                                x:Name="AddressLineOneValidator"
+                                Flags="ValidateOnValueChanged"
+                                MinimumLength="1" />
+                        </toolkit:MultiValidationBehavior>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding Source={x:Reference AddressLineOneValidator}, Path=IsNotValid}"
+                    Text="Address Line 1 is required."
+                    TextColor="Red" />
 
                 <Label Text="Address Line 2 (Optional)" />
                 <Entry Text="{Binding Company.AddressLineTwo}" />
@@ -21,11 +54,42 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <VerticalStackLayout>
                         <Label Text="City" />
-                        <Entry Placeholder="e.g., Columbus" Text="{Binding Company.City}" />
+                        <Entry Placeholder="e.g., Columbus" Text="{Binding Company.City}">
+                            <Entry.Behaviors>
+                                <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                                    <toolkit:TextValidationBehavior
+                                        x:Name="CityValidator"
+                                        Flags="ValidateOnValueChanged"
+                                        MinimumLength="1" />
+                                </toolkit:MultiValidationBehavior>
+                            </Entry.Behaviors>
+                        </Entry>
+
+                        <Label
+                            FontSize="Small"
+                            IsVisible="{Binding Source={x:Reference CityValidator}, Path=IsNotValid}"
+                            Text="City is required."
+                            TextColor="Red" />
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1">
                         <Label Text="State" />
-                        <Entry Placeholder="e.g., OH" Text="{Binding Company.State}" />
+                        <Entry Placeholder="e.g., OH" Text="{Binding Company.State}">
+                            <Entry.Behaviors>
+                                <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                                    <toolkit:TextValidationBehavior
+                                        x:Name="StateValidator"
+                                        Flags="ValidateOnValueChanged"
+                                        MaximumLength="2"
+                                        MinimumLength="2" />
+                                </toolkit:MultiValidationBehavior>
+                            </Entry.Behaviors>
+                        </Entry>
+
+                        <Label
+                            FontSize="Small"
+                            IsVisible="{Binding Source={x:Reference StateValidator}, Path=IsNotValid}"
+                            Text="State is required and must be 2 characters."
+                            TextColor="Red" />
                     </VerticalStackLayout>
                 </Grid>
 
@@ -35,11 +99,41 @@
                         <Entry
                             Keyboard="Numeric"
                             Placeholder="e.g., 43215"
-                            Text="{Binding Company.ZipCode}" />
+                            Text="{Binding Company.ZipCode}">
+                            <Entry.Behaviors>
+                                <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                                    <toolkit:TextValidationBehavior
+                                        x:Name="ZipCodeValidator"
+                                        Flags="ValidateOnValueChanged"
+                                        MaximumLength="10"
+                                        MinimumLength="5" />
+                                </toolkit:MultiValidationBehavior>
+                            </Entry.Behaviors>
+                        </Entry>
+
+                        <Label
+                            FontSize="Small"
+                            IsVisible="{Binding Source={x:Reference ZipCodeValidator}, Path=IsNotValid}"
+                            Text="Zip Code is required and must be between 5 and 10 characters."
+                            TextColor="Red" />
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1">
                         <Label Text="Country" />
-                        <Entry Placeholder="e.g., USA" Text="{Binding Company.Country}" />
+                        <Entry Placeholder="e.g., USA" Text="{Binding Company.Country}">
+                            <Entry.Behaviors>
+                                <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                                    <toolkit:TextValidationBehavior
+                                        x:Name="CountryValidator"
+                                        Flags="ValidateOnValueChanged"
+                                        MinimumLength="1" />
+                                </toolkit:MultiValidationBehavior>
+                            </Entry.Behaviors>
+                        </Entry>
+                        <Label
+                            FontSize="Small"
+                            IsVisible="{Binding Source={x:Reference CountryValidator}, Path=IsNotValid}"
+                            Text="Country is required."
+                            TextColor="Red" />
                     </VerticalStackLayout>
                 </Grid>
 
@@ -47,7 +141,21 @@
                 <Entry
                     Keyboard="Telephone"
                     Placeholder="e.g., 614-555-0101"
-                    Text="{Binding Company.PhoneNumber}" />
+                    Text="{Binding Company.PhoneNumber}">
+                    <Entry.Behaviors>
+                        <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                            <toolkit:TextValidationBehavior
+                                x:Name="PhoneNumberValidator"
+                                Flags="ValidateOnValueChanged"
+                                MaximumLength="15" />
+                        </toolkit:MultiValidationBehavior>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding Source={x:Reference PhoneNumberValidator}, Path=IsNotValid}"
+                    Text="Phone Number must be 15 characters or fewer."
+                    TextColor="Red" />
 
                 <Button
                     Margin="0,20,0,0"

@@ -2,6 +2,7 @@
     x:Class="DriverLogisticsApp.Views.AddLoadPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
     Title="{Binding Title}"
     x:DataType="viewmodels:AddLoadViewModel">
@@ -16,12 +17,44 @@
                     FontSize="Large"
                     Text="Load Details" />
                 <Label Text="Load Number" />
-                <Entry Placeholder="e.g., ABC12345" Text="{Binding LoadNumber}" />
+                <Entry Placeholder="e.g., ABC12345" Text="{Binding LoadNumber}">
+                    <Entry.Behaviors>
+                        <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                            <toolkit:TextValidationBehavior
+                                x:Name="LoadNumberValidator"
+                                Flags="ValidateOnValueChanged"
+                                MinimumLength="1" />
+                        </toolkit:MultiValidationBehavior>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding Source={x:Reference LoadNumberValidator}, Path=IsNotValid}"
+                    Text="Load Number is a required field."
+                    TextColor="Red" />
                 <Label Text="Freight Rate ($)" />
+
                 <Entry
                     Keyboard="Numeric"
                     Placeholder="e.g., 1500"
-                    Text="{Binding FreightRate}" />
+                    Text="{Binding FreightRate}">
+                    <Entry.Behaviors>
+                        <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                            <toolkit:NumericValidationBehavior
+                                x:Name="FreightRateValidator"
+                                Flags="ValidateOnValueChanged"
+                                MaximumValue="1000000"
+                                MinimumValue="0.01" />
+                        </toolkit:MultiValidationBehavior>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding Source={x:Reference FreightRateValidator}, Path=IsNotValid}"
+                    Text="Please enter a valid freight rate greater than 0."
+                    TextColor="Red" />
+
                 <Label Text="Planned Pickup" />
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                     <DatePicker Grid.Column="0" Date="{Binding PickupDate}" />
@@ -35,18 +68,32 @@
 
                 <Label FontAttributes="Bold" Text="Shipper" />
                 <Picker
+                    x:Name="ShipperPicker"
                     Title="Select a Shipper"
                     ItemDisplayBinding="{Binding Name}"
                     ItemsSource="{Binding CompanyList}"
                     SelectedItem="{Binding SelectedShipper}" />
 
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding Source={x:Reference ShipperPicker}, Path=SelectedItem, Converter={StaticResource IsNullConverter}}"
+                    Text="Shipper is a required field."
+                    TextColor="Red" />
+
+
                 <Label FontAttributes="Bold" Text="Consignee (Optional)" />
                 <Picker
+                    x:Name="ConsigneePicker"
                     Title="Select a Consignee"
                     ItemDisplayBinding="{Binding Name}"
                     ItemsSource="{Binding CompanyList}"
                     SelectedItem="{Binding SelectedConsignee}" />
 
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding Source={x:Reference ConsigneePicker}, Path=SelectedItem, Converter={StaticResource IsNullConverter}}"
+                    Text="Shipper is a required field."
+                    TextColor="Red" />
 
                 <Button
                     Margin="0,20,0,0"

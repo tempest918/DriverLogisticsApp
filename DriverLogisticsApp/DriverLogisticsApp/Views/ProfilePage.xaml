@@ -3,6 +3,7 @@
     x:Class="DriverLogisticsApp.Views.ProfilePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
     Title="My Profile"
     x:DataType="viewmodels:ProfilePageViewModel">
@@ -16,11 +17,39 @@
             <Entry
                 Keyboard="Telephone"
                 Placeholder="Your Phone Number"
-                Text="{Binding Profile.UserPhoneNumber}" />
+                Text="{Binding Profile.UserPhoneNumber}">
+                <Entry.Behaviors>
+                    <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                        <toolkit:TextValidationBehavior
+                            x:Name="PhoneNumberValidator1"
+                            Flags="ValidateOnValueChanged"
+                            MaximumLength="15" />
+                    </toolkit:MultiValidationBehavior>
+                </Entry.Behaviors>
+            </Entry>
+            <Label
+                FontSize="Small"
+                IsVisible="{Binding Source={x:Reference PhoneNumberValidator1}, Path=IsNotValid}"
+                Text="Please enter a valid phone number."
+                TextColor="Red" />
+
             <Entry
                 Keyboard="Email"
                 Placeholder="Your Email"
-                Text="{Binding Profile.UserEmail}" />
+                Text="{Binding Profile.UserEmail}">
+                <Entry.Behaviors>
+                    <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                        <toolkit:EmailValidationBehavior x:Name="EmailValidator" Flags="ValidateOnValueChanged" />
+                    </toolkit:MultiValidationBehavior>
+                </Entry.Behaviors>
+            </Entry>
+
+            <Label
+                FontSize="Small"
+                IsVisible="{Binding Source={x:Reference EmailValidator}, Path=IsNotValid}"
+                Text="Please enter a valid email address."
+                TextColor="Red" />
+
 
             <Label
                 Margin="0,20,0,0"
@@ -50,7 +79,21 @@
             <Entry
                 Keyboard="Telephone"
                 Placeholder="Company Phone Number"
-                Text="{Binding Profile.CompanyPhoneNumber}" />
+                Text="{Binding Profile.CompanyPhoneNumber}">
+                <Entry.Behaviors>
+                    <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
+                        <toolkit:TextValidationBehavior
+                            x:Name="PhoneNumberValidator2"
+                            Flags="ValidateOnValueChanged"
+                            MaximumLength="15" />
+                    </toolkit:MultiValidationBehavior>
+                </Entry.Behaviors>
+            </Entry>
+            <Label
+                FontSize="Small"
+                IsVisible="{Binding Source={x:Reference PhoneNumberValidator2}, Path=IsNotValid}"
+                Text="Please enter a valid company phone number."
+                TextColor="Red" />
 
             <Button
                 Margin="0,15,0,0"
