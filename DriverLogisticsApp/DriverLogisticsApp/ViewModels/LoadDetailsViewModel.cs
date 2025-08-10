@@ -214,14 +214,19 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task DeleteLoadAsync()
         {
-            // ask for confirmation before deleting
-            bool confirmed = await _alertService.DisplayAlert("Confirm Delete", $"Are you sure you want to delete Load #{Load.LoadNumber}?", "Yes", "No");
+            if (Load is null) return;
+
+            bool confirmed = await _alertService.DisplayAlert("Confirm Cancellation", "Are you sure you want to cancel this load?", "Yes, Cancel Load", "No");
             if (!confirmed)
                 return;
 
-            await _databaseService.DeleteLoadAsync(Load);
+            // set the load as cancelled
+            Load.IsCancelled = true;
+            Load.Status = "Cancelled";
 
-            // navigate back to the main list
+            // save the updated load to the database
+            await _databaseService.SaveLoadAsync(Load);
+
             await _navigationService.GoBackAsync();
         }
 

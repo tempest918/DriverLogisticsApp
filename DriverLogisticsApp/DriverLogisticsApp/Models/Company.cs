@@ -10,6 +10,8 @@ namespace DriverLogisticsApp.Models
         [Unique]
         public string Name { get; set; } = string.Empty;
 
+        public bool IsActive { get; set; } = true;
+
         public string AddressLineOne { get; set; } = string.Empty;
 
         public string? AddressLineTwo { get; set; }

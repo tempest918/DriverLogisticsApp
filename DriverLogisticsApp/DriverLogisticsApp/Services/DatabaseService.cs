@@ -132,14 +132,17 @@ namespace DriverLogisticsApp.Services
         }
 
         /// <summary>
-        /// delete a load
+        /// rather than deleting a load, we mark it as cancelled
         /// </summary>
         /// <param name="load"></param>
         /// <returns></returns>
         public async Task<int> DeleteLoadAsync(Load load)
         {
             await Init();
-            return await _database.DeleteAsync(load);
+            load.Status = "Cancelled";
+            load.IsCancelled = true;
+
+            return await SaveLoadAsync(load);
         }
         #endregion
 

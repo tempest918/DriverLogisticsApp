@@ -12,36 +12,45 @@
         <ToolbarItem Command="{Binding GoToCompanyDetailsCommand}" Text="Add Company" />
     </ContentPage.ToolbarItems>
 
-    <CollectionView ItemsSource="{Binding Companies}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="models:Company">
-                <Border
-                    Margin="10"
-                    Padding="15"
-                    Stroke="LightGray"
-                    StrokeShape="RoundRectangle 10">
 
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CompanyListViewModel}}, Path=GoToCompanyDetailsCommand}" CommandParameter="{Binding .}" />
-                    </Border.GestureRecognizers>
+    <Grid RowDefinitions="Auto, *">
+        <SearchBar
+            Grid.Row="0"
+            Margin="10"
+            Placeholder="Search all companies..."
+            Text="{Binding SearchText, Mode=TwoWay}" />
 
-                    <VerticalStackLayout>
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="Medium"
-                            Text="{Binding Name}" />
-                        <Label FontSize="Small" Text="{Binding AddressLineOne}" />
-                        <Label FontSize="Small" Text="{Binding City}" />
-                    </VerticalStackLayout>
-                </Border>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-        <CollectionView.EmptyView>
-            <Label
-                HorizontalOptions="Center"
-                Text="No companies have been added yet."
-                VerticalOptions="Center" />
-        </CollectionView.EmptyView>
-    </CollectionView>
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Companies}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Company">
+                    <Border
+                        Margin="10"
+                        Padding="15"
+                        Stroke="LightGray"
+                        StrokeShape="RoundRectangle 10">
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CompanyListViewModel}}, Path=GoToCompanyDetailsCommand}" CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+
+                        <VerticalStackLayout>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                Text="{Binding Name}" />
+                            <Label FontSize="Small" Text="{Binding AddressLineOne}" />
+                            <Label FontSize="Small" Text="{Binding City}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <Label
+                    HorizontalOptions="Center"
+                    Text="No companies have been added yet."
+                    VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </Grid>
 
 </ContentPage>

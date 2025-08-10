@@ -35,17 +35,18 @@ namespace DriverLogisticsApp.Tests
         /// </summary>
         /// <returns></returns>
         [TestMethod]
-        public async Task DeleteLoadCommand_WhenConfirmed_DeletesAndNavigatesBack()
+        public async Task DeleteLoadCommand_WhenConfirmed_CancelsLoadAndNavigatesBack()
         {
             // ARRANGE
-            _viewModel.Load = new Load { Id = 1, LoadNumber = "Test" };
-            _mockAlertService.Setup(s => s.DisplayAlert(It.IsAny<string>(), It.IsAny<string>(), "Yes", "No")).ReturnsAsync(true);
+            var testLoad = new Load { Id = 1, LoadNumber = "Test", IsCancelled = false };
+            _viewModel.Load = testLoad;
+            _mockAlertService.Setup(s => s.DisplayAlert(It.IsAny<string>(), It.IsAny<string>(), "Yes, Cancel Load", "No")).ReturnsAsync(true);
 
             // ACT
             await _viewModel.DeleteLoadCommand.ExecuteAsync(null);
 
             // ASSERT
-            _mockDbService.Verify(db => db.DeleteLoadAsync(It.IsAny<Load>()), Times.Once);
+            _mockDbService.Verify(db => db.SaveLoadAsync(It.Is<Load>(l => l.IsCancelled == true)), Times.Once);
             _mockNavigationService.Verify(nav => nav.GoBackAsync(), Times.Once);
         }
 

@@ -92,15 +92,25 @@ namespace DriverLogisticsApp.ViewModels
         /// </summary>
         private void FilterLoads()
         {
-            // if search text is empty, return all loads
-            var filteredLoads = string.IsNullOrWhiteSpace(SearchText)
-                ? _allLoads
-                // otherwise filter loads based on search text, look in LoadNumber, ShipperName
-                : _allLoads.Where(load =>
+            IEnumerable<Load> filteredLoads;
+
+            // check if there is any search text
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                // search all loads in all statuses
+                filteredLoads = _allLoads.Where(load =>
                     load.LoadNumber.ToLower().Contains(SearchText.ToLower()) ||
                     load.ShipperName.ToLower().Contains(SearchText.ToLower()));
+            }
+            else
+            {
+                // search only active loads (not cancelled)
+                filteredLoads = _allLoads.Where(l =>
+                    !l.IsCancelled &&
+                    (l.Status == "Planned" || l.Status == "In Progress" || l.Status == "Completed"));
+            }
 
-            // clear the current loads collection and add the filtered loads
+            // clear the existing loads and add the filtered loads
             Loads.Clear();
             foreach (var load in filteredLoads)
             {
@@ -160,6 +170,7 @@ namespace DriverLogisticsApp.ViewModels
 
             // filter loads by month that weren't cancelled
             var monthlyLoads = _allLoads.Where(l =>
+                !l.IsCancelled &&
                 l.Status != "Cancelled" &&
                 l.DeliveryDate.Date >= startOfMonth &&
                 l.DeliveryDate.Date <= endOfMonth);

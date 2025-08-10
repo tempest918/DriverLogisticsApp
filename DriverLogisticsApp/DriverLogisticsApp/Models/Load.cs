@@ -49,5 +49,8 @@ namespace DriverLogisticsApp.Models
 
         [ObservableProperty]
         private string _status = string.Empty;
+
+        [ObservableProperty]
+        private bool _isCancelled = false;
     }
 }

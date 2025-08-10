@@ -42,6 +42,8 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isBusy;
 
+        private string _existingStatus;
+
         /// <summary>
         /// initialize the view model for adding a new load
         /// </summary>
@@ -85,7 +87,10 @@ namespace DriverLogisticsApp.ViewModels
         {
             CompanyList.Clear();
             var companies = await _databaseService.GetCompaniesAsync();
-            foreach (var company in companies)
+
+            // only include active companies
+            var activeCompanies = companies.Where(c => c.IsActive);
+            foreach (var company in activeCompanies)
             {
                 CompanyList.Add(company);
             }
@@ -143,6 +148,7 @@ namespace DriverLogisticsApp.ViewModels
                     PickupTime = load.PickupDate.TimeOfDay;
                     DeliveryDate = load.DeliveryDate.Date;
                     DeliveryTime = load.DeliveryDate.TimeOfDay;
+                    _existingStatus = load.Status;
                 }
             }
         }
@@ -185,7 +191,7 @@ namespace DriverLogisticsApp.ViewModels
                     FreightRate = this.FreightRate,
                     PickupDate = combinedPickupDateTime,
                     DeliveryDate = combinedDeliveryDateTime,
-                    Status = "Planned"
+                    Status = !string.IsNullOrEmpty(_existingStatus) ? _existingStatus : "Planned"
                 };
 
                 // save to database
