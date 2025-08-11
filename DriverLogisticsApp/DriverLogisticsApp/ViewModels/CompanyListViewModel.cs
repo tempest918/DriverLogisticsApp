@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -31,6 +32,7 @@ namespace DriverLogisticsApp.ViewModels
             Companies = new ObservableCollection<Company>();
             _allCompanies = new List<Company>();
         }
+
         partial void OnSearchTextChanged(string value)
         {
             FilterCompanies();
@@ -43,7 +45,10 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task GetCompaniesAsync()
         {
-            _allCompanies = await _databaseService.GetCompaniesAsync();
+            // Fetch the companies and sort them alphabetically by name
+            _allCompanies = (await _databaseService.GetCompaniesAsync())
+                                .OrderBy(c => c.Name)
+                                .ToList();
             FilterCompanies();
         }
 

@@ -10,44 +10,53 @@
     <Grid>
         <ScrollView IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
             <VerticalStackLayout Padding="20" Spacing="10">
-                <Label Text="Category" />
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Category" />
+                            <Span Text=" *" TextColor="Red" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
                 <Picker
-                    x:Name="CategoryPicker"
                     Title="Select a category"
                     ItemsSource="{Binding Categories}"
                     SelectedItem="{Binding SelectedCategory}" />
                 <Label
                     FontSize="Small"
-                    IsVisible="{Binding Source={x:Reference CategoryPicker}, Path=SelectedItem, Converter={StaticResource IsNullConverter}}"
+                    IsVisible="{Binding CategoryErrorVisible}"
                     Text="Category is a required field."
                     TextColor="Red" />
 
-                <Label Text="Amount ($)" />
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Amount ($)" />
+                            <Span Text=" *" TextColor="Red" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
                 <Entry
                     Keyboard="Numeric"
                     Placeholder="0.00"
-                    Text="{Binding Amount}">
-
-                    <Entry.Behaviors>
-                        <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
-                            <toolkit:NumericValidationBehavior
-                                x:Name="AmountValidator"
-                                Flags="ValidateOnValueChanged"
-                                MaximumValue="1000000"
-                                MinimumValue="0.01" />
-                        </toolkit:MultiValidationBehavior>
-                    </Entry.Behaviors>
-                </Entry>
+                    Text="{Binding Amount}" />
                 <Label
                     FontSize="Small"
-                    IsVisible="{Binding Source={x:Reference AmountValidator}, Path=IsNotValid}"
+                    IsVisible="{Binding AmountErrorVisible}"
                     Text="Please enter a valid amount greater than 0."
                     TextColor="Red" />
 
-                <Label Text="Date" />
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Date" />
+                            <Span Text=" *" TextColor="Red" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
                 <DatePicker Date="{Binding Date}" />
 
-                <Label Text="Description (Optional)" />
+                <Label Text="Description" />
                 <Editor
                     HeightRequest="100"
                     Placeholder="e.g., Oil change at..."

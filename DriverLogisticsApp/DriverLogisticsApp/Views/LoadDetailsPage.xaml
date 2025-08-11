@@ -135,7 +135,7 @@
                     <Button
                         Grid.Column="1"
                         Command="{Binding GoToAddExpenseCommand}"
-                        Text="+ Add Expense" />
+                        Text="Add Expense" />
                 </Grid>
 
                 <SearchBar

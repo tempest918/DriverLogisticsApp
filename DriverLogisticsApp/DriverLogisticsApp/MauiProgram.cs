@@ -37,6 +37,7 @@ namespace DriverLogisticsApp
             builder.Services.AddSingleton<ISecureStorageService, MauiSecureStorageService>();
             builder.Services.AddSingleton<IJsonImportExportService, JsonImportExportService>();
             builder.Services.AddSingleton<PdfService>();
+            builder.Services.AddSingleton<AddressDataService>();
 
             // view models
             builder.Services.AddTransient<MainPageViewModel>();

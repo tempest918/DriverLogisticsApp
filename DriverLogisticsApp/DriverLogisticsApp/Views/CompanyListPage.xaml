@@ -47,7 +47,7 @@
             <CollectionView.EmptyView>
                 <Label
                     HorizontalOptions="Center"
-                    Text="No companies have been added yet."
+                    Text="No companies found."
                     VerticalOptions="Center" />
             </CollectionView.EmptyView>
         </CollectionView>

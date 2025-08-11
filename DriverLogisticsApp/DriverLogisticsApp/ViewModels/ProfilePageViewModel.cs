@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
+using System.Collections.ObjectModel;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -10,6 +11,7 @@ namespace DriverLogisticsApp.ViewModels
         private readonly IDatabaseService _databaseService;
         private readonly IAlertService _alertService;
         private readonly ISecureStorageService _secureStorageService;
+        private readonly AddressDataService _addressDataService;
 
         [ObservableProperty]
         private UserProfile _profile;
@@ -21,18 +23,45 @@ namespace DriverLogisticsApp.ViewModels
         private string _confirmPin;
 
         [ObservableProperty]
+        private bool _pinsDoNotMatchErrorVisible;
+
+        [ObservableProperty]
         private bool _isAuthenticationEnabled;
+
+        public ObservableCollection<string> Countries { get; }
+        public ObservableCollection<string> StatesProvinces { get; } = new();
+
+        [ObservableProperty]
+        private string _selectedCountry;
+
+        [ObservableProperty]
+        private bool _userNameErrorVisible;
+        [ObservableProperty]
+        private bool _companyNameErrorVisible;
+        [ObservableProperty]
+        private bool _addressLineOneErrorVisible;
+        [ObservableProperty]
+        private bool _cityErrorVisible;
+        [ObservableProperty]
+        private bool _stateErrorVisible;
+        [ObservableProperty]
+        private bool _zipCodeErrorVisible;
+        [ObservableProperty]
+        private bool _countryErrorVisible;
 
         /// <summary>
         /// initializes the view model with required services
         /// </summary>
         /// <param name="databaseService"></param>
         /// <param name="alertService"></param>
-        public ProfilePageViewModel(IDatabaseService databaseService, IAlertService alertService, ISecureStorageService secureStorageService)
+        public ProfilePageViewModel(IDatabaseService databaseService, IAlertService alertService, ISecureStorageService secureStorageService, AddressDataService addressDataService)
         {
             _databaseService = databaseService;
             _alertService = alertService;
             _secureStorageService = secureStorageService;
+            _addressDataService = addressDataService;
+
+            Countries = new ObservableCollection<string>(_addressDataService.GetCountries());
         }
 
         /// <summary>
@@ -42,6 +71,8 @@ namespace DriverLogisticsApp.ViewModels
         public async Task LoadProfileAsync()
         {
             Profile = await _databaseService.GetUserProfileAsync();
+
+            SelectedCountry = !string.IsNullOrWhiteSpace(Profile.CompanyCountry) ? Profile.CompanyCountry : "USA";
 
             var savedPin = await _secureStorageService.GetAsync("user_pin");
             IsAuthenticationEnabled = !string.IsNullOrWhiteSpace(savedPin);
@@ -69,20 +100,69 @@ namespace DriverLogisticsApp.ViewModels
         }
 
         /// <summary>
+        /// when the selected country changes, update the states/provinces list and reset the state selection
+        /// </summary>
+        /// <param name="value"></param>
+        partial void OnSelectedCountryChanged(string value)
+        {
+            if (Profile is null) return;
+
+            Profile.CompanyCountry = value;
+            var originalState = Profile.CompanyState;
+            StatesProvinces.Clear();
+
+            var states = _addressDataService.GetStatesProvincesForCountry(value);
+            foreach (var state in states)
+            {
+                StatesProvinces.Add(state);
+            }
+
+            if (!string.IsNullOrWhiteSpace(originalState))
+            {
+                Profile.CompanyState = StatesProvinces.FirstOrDefault(s => s == originalState);
+            }
+            else
+            {
+                Profile.CompanyState = null;
+            }
+        }
+
+
+        /// <summary>
         /// saves the user profile after validating the input
         /// </summary>
         /// <returns></returns>
         [RelayCommand]
         private async Task SaveProfileAsync()
         {
-            if (string.IsNullOrWhiteSpace(Profile.UserName) || string.IsNullOrWhiteSpace(Profile.CompanyName))
+            if (!ValidateProfile())
             {
-                await _alertService.DisplayAlert("Error", "Your name and company name are required.", "OK");
+                await _alertService.DisplayAlert("Error", "Please fill in all required fields.", "OK");
                 return;
             }
 
             await _databaseService.SaveUserProfileAsync(Profile);
             await _alertService.DisplayAlert("Success", "Your profile has been saved.", "OK");
+        }
+
+        /// <summary>
+        /// checks if the new PIN matches the confirmation PIN and updates the error visibility
+        /// </summary>
+        /// <param name="value"></param>
+        partial void OnNewPinChanged(string value)
+        {
+            // Check if the pins match and update the error visibility
+            PinsDoNotMatchErrorVisible = !string.IsNullOrEmpty(ConfirmPin) && value != ConfirmPin;
+        }
+
+        /// <summary>
+        /// checks if the confirmation PIN matches the new PIN and updates the error visibility
+        /// </summary>
+        /// <param name="value"></param>
+        partial void OnConfirmPinChanged(string value)
+        {
+            // Check if the pins match and update the error visibility
+            PinsDoNotMatchErrorVisible = value != NewPin;
         }
 
         /// <summary>
@@ -92,15 +172,16 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task SetPinAsync()
         {
-            if (string.IsNullOrWhiteSpace(NewPin) || string.IsNullOrWhiteSpace(ConfirmPin))
+            if (NewPin != ConfirmPin)
             {
-                await _alertService.DisplayAlert("Error", "Please enter and confirm your new PIN.", "OK");
+                PinsDoNotMatchErrorVisible = true;
+                await _alertService.DisplayAlert("Error", "PINs do not match. Please try again.", "OK");
                 return;
             }
 
-            if (NewPin != ConfirmPin)
+            if (string.IsNullOrWhiteSpace(NewPin) || NewPin.Length < 4)
             {
-                await _alertService.DisplayAlert("Error", "PINs do not match. Please try again.", "OK");
+                await _alertService.DisplayAlert("Error", "Please enter a valid 4-digit PIN.", "OK");
                 return;
             }
 
@@ -108,8 +189,27 @@ namespace DriverLogisticsApp.ViewModels
 
             NewPin = string.Empty;
             ConfirmPin = string.Empty;
+            IsAuthenticationEnabled = true;
 
             await _alertService.DisplayAlert("Success", "Your PIN has been set.", "OK");
+        }
+
+        /// <summary>
+        /// validates the user profile input and sets error flags accordingly
+        /// </summary>
+        /// <returns></returns>
+        private bool ValidateProfile()
+        {
+            UserNameErrorVisible = string.IsNullOrWhiteSpace(Profile.UserName);
+            CompanyNameErrorVisible = string.IsNullOrWhiteSpace(Profile.CompanyName);
+            AddressLineOneErrorVisible = string.IsNullOrWhiteSpace(Profile.CompanyAddressLineOne);
+            CityErrorVisible = string.IsNullOrWhiteSpace(Profile.CompanyCity);
+            StateErrorVisible = string.IsNullOrWhiteSpace(Profile.CompanyState);
+            ZipCodeErrorVisible = string.IsNullOrWhiteSpace(Profile.CompanyZipCode);
+            CountryErrorVisible = string.IsNullOrWhiteSpace(Profile.CompanyCountry);
+
+            return !(UserNameErrorVisible || CompanyNameErrorVisible || AddressLineOneErrorVisible ||
+                     CityErrorVisible || StateErrorVisible || ZipCodeErrorVisible || CountryErrorVisible);
         }
     }
 }

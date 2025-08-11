@@ -1,32 +1,50 @@
-﻿using SQLite;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SQLite;
 
 namespace DriverLogisticsApp.Models
 {
-    public class UserProfile
+    public partial class UserProfile : ObservableObject
     {
+        private int _id = 1;
+
         [PrimaryKey]
-        public int Id { get; set; }
+        public int Id
+        {
+            get => _id;
+            set => SetProperty(ref _id, value);
+        }
 
-        public string UserName { get; set; } = string.Empty;
+        [ObservableProperty]
+        private string _userName = string.Empty;
 
-        public string? UserPhoneNumber { get; set; }
+        [ObservableProperty]
+        private string? _userPhoneNumber;
 
-        public string? UserEmail { get; set; }
+        [ObservableProperty]
+        private string? _userEmail;
 
-        public string CompanyName { get; set; } = string.Empty;
+        [ObservableProperty]
+        private string _companyName = string.Empty;
 
-        public string CompanyAddressLineOne { get; set; } = string.Empty;
+        [ObservableProperty]
+        private string _companyAddressLineOne = string.Empty;
 
-        public string? CompanyAddressLineTwo { get; set; }
+        [ObservableProperty]
+        private string? _companyAddressLineTwo;
 
-        public string CompanyCity { get; set; } = string.Empty;
+        [ObservableProperty]
+        private string _companyCity = string.Empty;
 
-        public string CompanyState { get; set; } = string.Empty;
+        [ObservableProperty]
+        private string _companyState = string.Empty;
 
-        public string CompanyZipCode { get; set; } = string.Empty;
+        [ObservableProperty]
+        private string _companyZipCode = string.Empty;
 
-        public string CompanyCountry { get; set; } = string.Empty;
+        [ObservableProperty]
+        private string _companyCountry = string.Empty;
 
-        public string? CompanyPhoneNumber { get; set; }
+        [ObservableProperty]
+        private string? _companyPhoneNumber;
     }
 }

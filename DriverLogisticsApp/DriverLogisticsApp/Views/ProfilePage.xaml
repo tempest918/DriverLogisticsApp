@@ -3,7 +3,6 @@
     x:Class="DriverLogisticsApp.Views.ProfilePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
     Title="My Profile"
     x:DataType="viewmodels:ProfilePageViewModel">
@@ -13,87 +12,156 @@
                 FontAttributes="Bold"
                 FontSize="Large"
                 Text="My Information" />
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Your Name" />
+                        <Span Text=" *" TextColor="Red" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
             <Entry Placeholder="Your Name" Text="{Binding Profile.UserName}" />
+            <Label
+                FontSize="Small"
+                IsVisible="{Binding UserNameErrorVisible}"
+                Text="Your Name is required."
+                TextColor="Red" />
+
+            <Label Text="Your Phone Number" />
             <Entry
                 Keyboard="Telephone"
                 Placeholder="Your Phone Number"
-                Text="{Binding Profile.UserPhoneNumber}">
-                <Entry.Behaviors>
-                    <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
-                        <toolkit:TextValidationBehavior
-                            x:Name="PhoneNumberValidator1"
-                            Flags="ValidateOnValueChanged"
-                            MaximumLength="15" />
-                    </toolkit:MultiValidationBehavior>
-                </Entry.Behaviors>
-            </Entry>
-            <Label
-                FontSize="Small"
-                IsVisible="{Binding Source={x:Reference PhoneNumberValidator1}, Path=IsNotValid}"
-                Text="Please enter a valid phone number."
-                TextColor="Red" />
-
+                Text="{Binding Profile.UserPhoneNumber}" />
+            <Label Text="Your Email" />
             <Entry
                 Keyboard="Email"
                 Placeholder="Your Email"
-                Text="{Binding Profile.UserEmail}">
-                <Entry.Behaviors>
-                    <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
-                        <toolkit:EmailValidationBehavior x:Name="EmailValidator" Flags="ValidateOnValueChanged" />
-                    </toolkit:MultiValidationBehavior>
-                </Entry.Behaviors>
-            </Entry>
-
-            <Label
-                FontSize="Small"
-                IsVisible="{Binding Source={x:Reference EmailValidator}, Path=IsNotValid}"
-                Text="Please enter a valid email address."
-                TextColor="Red" />
-
+                Text="{Binding Profile.UserEmail}" />
 
             <Label
                 Margin="0,20,0,0"
                 FontAttributes="Bold"
                 FontSize="Large"
                 Text="Company Information" />
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Company Name" />
+                        <Span Text=" *" TextColor="Red" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
             <Entry Placeholder="Company Name" Text="{Binding Profile.CompanyName}" />
+            <Label
+                FontSize="Small"
+                IsVisible="{Binding CompanyNameErrorVisible}"
+                Text="Company Name is required."
+                TextColor="Red" />
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Address Line 1" />
+                        <Span Text=" *" TextColor="Red" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
             <Entry Placeholder="Address Line 1" Text="{Binding Profile.CompanyAddressLineOne}" />
+            <Label
+                FontSize="Small"
+                IsVisible="{Binding AddressLineOneErrorVisible}"
+                Text="Address Line 1 is required."
+                TextColor="Red" />
+
+            <Label Text="Address Line 2" />
             <Entry Placeholder="Address Line 2" Text="{Binding Profile.CompanyAddressLineTwo}" />
+
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <Entry Placeholder="City" Text="{Binding Profile.CompanyCity}" />
-                <Entry
-                    Grid.Column="1"
-                    Placeholder="State"
-                    Text="{Binding Profile.CompanyState}" />
+                <VerticalStackLayout>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="City" />
+                                <Span Text=" *" TextColor="Red" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Entry Placeholder="City" Text="{Binding Profile.CompanyCity}" />
+                    <Label
+                        FontSize="Small"
+                        IsVisible="{Binding CityErrorVisible}"
+                        Text="City is required."
+                        TextColor="Red" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="State/Province" />
+                                <Span Text=" *" TextColor="Red" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Picker
+                        Title="Select State/Province"
+                        ItemsSource="{Binding StatesProvinces}"
+                        SelectedItem="{Binding Profile.CompanyState}" />
+                    <Label
+                        FontSize="Small"
+                        IsVisible="{Binding StateErrorVisible}"
+                        Text="State/Province is required."
+                        TextColor="Red" />
+                </VerticalStackLayout>
             </Grid>
+
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <Entry
-                    Keyboard="Numeric"
-                    Placeholder="Zip Code"
-                    Text="{Binding Profile.CompanyZipCode}" />
-                <Entry
-                    Grid.Column="1"
-                    Placeholder="Country"
-                    Text="{Binding Profile.CompanyCountry}" />
+                <VerticalStackLayout>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Zip/Postal Code" />
+                                <Span Text=" *" TextColor="Red" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Entry
+                        Keyboard="Default"
+                        Placeholder="Zip/Postal Code"
+                        Text="{Binding Profile.CompanyZipCode}" />
+                    <Label
+                        FontSize="Small"
+                        IsVisible="{Binding ZipCodeErrorVisible}"
+                        Text="Zip/Postal Code is required."
+                        TextColor="Red" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Country" />
+                                <Span Text=" *" TextColor="Red" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Picker
+                        Title="Select Country"
+                        ItemsSource="{Binding Countries}"
+                        SelectedItem="{Binding SelectedCountry}" />
+                    <Label
+                        FontSize="Small"
+                        IsVisible="{Binding CountryErrorVisible}"
+                        Text="Country is required."
+                        TextColor="Red" />
+                </VerticalStackLayout>
             </Grid>
+
+            <Label Text="Company Phone Number" />
             <Entry
                 Keyboard="Telephone"
                 Placeholder="Company Phone Number"
-                Text="{Binding Profile.CompanyPhoneNumber}">
-                <Entry.Behaviors>
-                    <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
-                        <toolkit:TextValidationBehavior
-                            x:Name="PhoneNumberValidator2"
-                            Flags="ValidateOnValueChanged"
-                            MaximumLength="15" />
-                    </toolkit:MultiValidationBehavior>
-                </Entry.Behaviors>
-            </Entry>
-            <Label
-                FontSize="Small"
-                IsVisible="{Binding Source={x:Reference PhoneNumberValidator2}, Path=IsNotValid}"
-                Text="Please enter a valid company phone number."
-                TextColor="Red" />
+                Text="{Binding Profile.CompanyPhoneNumber}" />
 
             <Button
                 Margin="0,15,0,0"
@@ -104,30 +172,45 @@
                 Margin="0,20"
                 HeightRequest="1"
                 Color="LightGray" />
-
             <Label
                 FontAttributes="Bold"
                 FontSize="Large"
                 Text="Security" />
-
             <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto">
                 <Label Text="Enable PIN Authentication" VerticalOptions="Center" />
                 <Switch Grid.Column="1" IsToggled="{Binding IsAuthenticationEnabled}" />
             </Grid>
 
             <VerticalStackLayout IsVisible="{Binding IsAuthenticationEnabled}" Spacing="10">
+
                 <Entry
                     IsPassword="True"
                     Keyboard="Numeric"
                     MaxLength="4"
                     Placeholder="Enter New 4-Digit PIN"
                     Text="{Binding NewPin}" />
-                <Entry
-                    IsPassword="True"
-                    Keyboard="Numeric"
-                    MaxLength="4"
-                    Placeholder="Confirm New PIN"
-                    Text="{Binding ConfirmPin}" />
+
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="5">
+                    <Entry
+                        Grid.Column="0"
+                        IsPassword="True"
+                        Keyboard="Numeric"
+                        MaxLength="4"
+                        Placeholder="Confirm New PIN"
+                        Text="{Binding ConfirmPin}" />
+
+                    <Image
+                        Grid.Column="1"
+                        IsVisible="{Binding PinsDoNotMatchErrorVisible}"
+                        Style="{StaticResource ErrorIconStyle}" />
+                </Grid>
+
+                <Label
+                    FontSize="Small"
+                    IsVisible="{Binding PinsDoNotMatchErrorVisible}"
+                    Text="PINs do not match."
+                    TextColor="Red" />
+
                 <Button Command="{Binding SetPinCommand}" Text="Set/Change PIN" />
             </VerticalStackLayout>
 

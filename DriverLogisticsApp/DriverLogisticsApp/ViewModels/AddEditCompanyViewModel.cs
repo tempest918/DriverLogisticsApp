@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
+using System.Collections.ObjectModel;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -24,17 +25,43 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isBusy;
 
+        [ObservableProperty]
+        private bool _companyNameErrorVisible;
+        [ObservableProperty]
+        private bool _addressLineOneErrorVisible;
+        [ObservableProperty]
+        private bool _cityErrorVisible;
+        [ObservableProperty]
+        private bool _stateErrorVisible;
+        [ObservableProperty]
+        private bool _zipCodeErrorVisible;
+        [ObservableProperty]
+        private bool _countryErrorVisible;
+
+        private readonly AddressDataService _addressDataService;
+        public ObservableCollection<string> Countries { get; }
+        public ObservableCollection<string> StatesProvinces { get; } = new();
+
+        [ObservableProperty]
+        private string _selectedCountry;
+
+
+
         /// <summary>
         /// initialize the AddEditCompanyViewModel with the database, navigation, and alert services.
         /// </summary>
         /// <param name="databaseService"></param>
         /// <param name="navigationService"></param>
         /// <param name="alertService"></param>
-        public AddEditCompanyViewModel(IDatabaseService databaseService, INavigationService navigationService, IAlertService alertService)
+        public AddEditCompanyViewModel(IDatabaseService databaseService, INavigationService navigationService, IAlertService alertService, AddressDataService addressDataService)
         {
             _databaseService = databaseService;
             _navigationService = navigationService;
             _alertService = alertService;
+            _addressDataService = addressDataService;
+
+            Countries = new ObservableCollection<string>(_addressDataService.GetCountries());
+            SelectedCountry = "USA";
         }
 
         /// <summary>
@@ -46,12 +73,15 @@ namespace DriverLogisticsApp.ViewModels
             if (value > 0)
             {
                 Title = "Edit Company";
-                Company = await _databaseService.GetCompanyAsync(value);
+                var company = await _databaseService.GetCompanyAsync(value);
+                Company = company;
+                SelectedCountry = company.Country;
             }
             else
             {
                 Title = "Add New Company";
                 Company = new Company();
+                SelectedCountry = "USA";
             }
         }
 
@@ -62,18 +92,17 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task SaveCompanyAsync()
         {
-            if (IsBusy) return;
-
-            if (string.IsNullOrWhiteSpace(Company.Name) || string.IsNullOrWhiteSpace(Company.AddressLineOne))
+            // First, validate the form and set the visibility of error messages
+            if (!ValidateForm())
             {
-                await _alertService.DisplayAlert("Error", "Company Name and Address Line 1 are required.", "OK");
+                await _alertService.DisplayAlert("Error", "Please fill in all required fields.", "OK");
                 return;
             }
 
+            if (IsBusy) return;
             IsBusy = true;
             try
             {
-
                 await _databaseService.SaveCompanyAsync(Company);
                 await _navigationService.GoBackAsync();
             }
@@ -86,5 +115,52 @@ namespace DriverLogisticsApp.ViewModels
                 IsBusy = false;
             }
         }
+
+        /// <summary>
+        /// handle changes to the selected country and update the states/provinces list accordingly.
+        /// </summary>
+        /// <param name="value"></param>
+        partial void OnSelectedCountryChanged(string value)
+        {
+            if (Company is null) return;
+
+            Company.Country = value;
+            var originalState = Company.State;
+            StatesProvinces.Clear();
+
+            var states = _addressDataService.GetStatesProvincesForCountry(value);
+            foreach (var state in states)
+            {
+                StatesProvinces.Add(state);
+            }
+
+            if (!string.IsNullOrWhiteSpace(originalState))
+            {
+                Company.State = StatesProvinces.FirstOrDefault(s => s == originalState);
+            }
+            else
+            {
+                Company.State = null;
+            }
+        }
+
+
+        /// <summary>
+        /// helper to validate the form
+        /// </summary>
+        /// <returns></returns>
+        private bool ValidateForm()
+        {
+            CompanyNameErrorVisible = string.IsNullOrWhiteSpace(Company.Name);
+            AddressLineOneErrorVisible = string.IsNullOrWhiteSpace(Company.AddressLineOne);
+            CityErrorVisible = string.IsNullOrWhiteSpace(Company.City);
+            StateErrorVisible = string.IsNullOrWhiteSpace(Company.State) || Company.State.Length != 2;
+            ZipCodeErrorVisible = string.IsNullOrWhiteSpace(Company.ZipCode) || Company.ZipCode.Length < 5;
+            CountryErrorVisible = string.IsNullOrWhiteSpace(Company.Country);
+
+            return !(CompanyNameErrorVisible || AddressLineOneErrorVisible || CityErrorVisible ||
+                     StateErrorVisible || ZipCodeErrorVisible || CountryErrorVisible);
+        }
+
     }
 }

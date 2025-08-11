@@ -44,6 +44,13 @@ namespace DriverLogisticsApp.ViewModels
 
         private string _existingStatus;
 
+        [ObservableProperty]
+        private bool _loadNumberErrorVisible;
+        [ObservableProperty]
+        private bool _freightRateErrorVisible;
+        [ObservableProperty]
+        private bool _shipperErrorVisible;
+
         /// <summary>
         /// initialize the view model for adding a new load
         /// </summary>
@@ -161,16 +168,32 @@ namespace DriverLogisticsApp.ViewModels
         {
             if (IsBusy) return;
 
-            // validation checks
-            if (string.IsNullOrWhiteSpace(LoadNumber) || FreightRate <= 0)
-            {
-                await _alertService.DisplayAlert("Error", "Please fill in all required fields.", "OK");
-                return;
-            }
+            // reset error flags before validating
+            LoadNumberErrorVisible = false;
+            FreightRateErrorVisible = false;
+            ShipperErrorVisible = false;
 
+            // validate required fields
+            bool isValid = true;
+            if (string.IsNullOrWhiteSpace(LoadNumber))
+            {
+                LoadNumberErrorVisible = true;
+                isValid = false;
+            }
+            if (FreightRate <= 0)
+            {
+                FreightRateErrorVisible = true;
+                isValid = false;
+            }
             if (SelectedShipper is null)
             {
-                await _alertService.DisplayAlert("Error", "Please select a shipper.", "OK");
+                ShipperErrorVisible = true;
+                isValid = false;
+            }
+
+            if (!isValid)
+            {
+                await _alertService.DisplayAlert("Error", "Please fill in all required fields.", "OK");
                 return;
             }
 
@@ -209,5 +232,16 @@ namespace DriverLogisticsApp.ViewModels
                 IsBusy = false;
             }
         }
+
+        /// <summary>
+        /// allows a user to add a company from the add/edit load screen
+        /// </summary>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task GoToAddCompanyAsync()
+        {
+            await _navigationService.NavigateToAsync(nameof(Views.AddEditCompanyPage));
+        }
+
     }
 }

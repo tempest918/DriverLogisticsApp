@@ -16,84 +16,104 @@
                     FontAttributes="Bold"
                     FontSize="Large"
                     Text="Load Details" />
-                <Label Text="Load Number" />
-                <Entry Placeholder="e.g., ABC12345" Text="{Binding LoadNumber}">
-                    <Entry.Behaviors>
-                        <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
-                            <toolkit:TextValidationBehavior
-                                x:Name="LoadNumberValidator"
-                                Flags="ValidateOnValueChanged"
-                                MinimumLength="1" />
-                        </toolkit:MultiValidationBehavior>
-                    </Entry.Behaviors>
-                </Entry>
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Load Number" />
+                            <Span Text=" *" TextColor="Red" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Entry Placeholder="e.g., ABC12345" Text="{Binding LoadNumber}" />
                 <Label
                     FontSize="Small"
-                    IsVisible="{Binding Source={x:Reference LoadNumberValidator}, Path=IsNotValid}"
+                    IsVisible="{Binding LoadNumberErrorVisible}"
                     Text="Load Number is a required field."
                     TextColor="Red" />
-                <Label Text="Freight Rate ($)" />
 
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Freight Rate ($)" />
+                            <Span Text=" *" TextColor="Red" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
                 <Entry
                     Keyboard="Numeric"
                     Placeholder="e.g., 1500"
-                    Text="{Binding FreightRate}">
-                    <Entry.Behaviors>
-                        <toolkit:MultiValidationBehavior Flags="ValidateOnValueChanged">
-                            <toolkit:NumericValidationBehavior
-                                x:Name="FreightRateValidator"
-                                Flags="ValidateOnValueChanged"
-                                MaximumValue="1000000"
-                                MinimumValue="0.01" />
-                        </toolkit:MultiValidationBehavior>
-                    </Entry.Behaviors>
-                </Entry>
-
+                    Text="{Binding FreightRate}" />
                 <Label
                     FontSize="Small"
-                    IsVisible="{Binding Source={x:Reference FreightRateValidator}, Path=IsNotValid}"
+                    IsVisible="{Binding FreightRateErrorVisible}"
                     Text="Please enter a valid freight rate greater than 0."
                     TextColor="Red" />
 
-                <Label Text="Planned Pickup" />
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Planned Pickup" />
+                            <Span Text=" *" TextColor="Red" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                     <DatePicker Grid.Column="0" Date="{Binding PickupDate}" />
                     <TimePicker Grid.Column="1" Time="{Binding PickupTime}" />
                 </Grid>
-                <Label Text="Planned Delivery" />
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Planned Delivery" />
+                            <Span Text=" *" TextColor="Red" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                     <DatePicker Grid.Column="0" Date="{Binding DeliveryDate}" />
                     <TimePicker Grid.Column="1" Time="{Binding DeliveryTime}" />
                 </Grid>
 
-                <Label FontAttributes="Bold" Text="Shipper" />
-                <Picker
-                    x:Name="ShipperPicker"
-                    Title="Select a Shipper"
-                    ItemDisplayBinding="{Binding Name}"
-                    ItemsSource="{Binding CompanyList}"
-                    SelectedItem="{Binding SelectedShipper}" />
-
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Shipper" />
+                            <Span Text=" *" TextColor="Red" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                    <Picker
+                        Title="Select a Shipper"
+                        Grid.Column="0"
+                        ItemDisplayBinding="{Binding Name}"
+                        ItemsSource="{Binding CompanyList}"
+                        SelectedItem="{Binding SelectedShipper}" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding GoToAddCompanyCommand}"
+                        Text="New" />
+                </Grid>
                 <Label
                     FontSize="Small"
-                    IsVisible="{Binding Source={x:Reference ShipperPicker}, Path=SelectedItem, Converter={StaticResource IsNullConverter}}"
+                    IsVisible="{Binding ShipperErrorVisible}"
                     Text="Shipper is a required field."
                     TextColor="Red" />
 
+                <Label Text="Consignee" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                    <Picker
+                        Title="Select a Consignee"
+                        Grid.Column="0"
+                        ItemDisplayBinding="{Binding Name}"
+                        ItemsSource="{Binding CompanyList}"
+                        SelectedItem="{Binding SelectedConsignee}" />
 
-                <Label FontAttributes="Bold" Text="Consignee (Optional)" />
-                <Picker
-                    x:Name="ConsigneePicker"
-                    Title="Select a Consignee"
-                    ItemDisplayBinding="{Binding Name}"
-                    ItemsSource="{Binding CompanyList}"
-                    SelectedItem="{Binding SelectedConsignee}" />
-
-                <Label
-                    FontSize="Small"
-                    IsVisible="{Binding Source={x:Reference ConsigneePicker}, Path=SelectedItem, Converter={StaticResource IsNullConverter}}"
-                    Text="Shipper is a required field."
-                    TextColor="Red" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding GoToAddCompanyCommand}"
+                        Text="New" />
+                </Grid>
 
                 <Button
                     Margin="0,20,0,0"

@@ -4,6 +4,7 @@ using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -71,7 +72,9 @@ namespace DriverLogisticsApp.ViewModels
             IsBusy = true;
             try
             {
-                _allLoads = await _databaseService.GetLoadsAsync();
+                _allLoads = (await _databaseService.GetLoadsAsync())
+                                    .OrderBy(l => l.PickupDate)
+                                    .ToList();
 
                 FilterLoads();
                 await CalculateKpisAsync();

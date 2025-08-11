@@ -33,16 +33,15 @@ namespace DriverLogisticsApp.Tests
         public async Task SaveExpenseCommand_WithInvalidData_ShowsAlertAndDoesNotSave()
         {
             // ARRANGE
-            _viewModel.SelectedCategory = ""; // Invalid data
+            _viewModel.SelectedCategory = "";
 
             // ACT
             await _viewModel.SaveExpenseCommand.ExecuteAsync(null);
 
             // ASSERT
-            _mockAlertService.Verify(s => s.DisplayAlert("Error", "Please select a category and enter a valid amount.", "OK"), Times.Once);
+            _mockAlertService.Verify(s => s.DisplayAlert("Error", "Please fill in all required fields.", "OK"), Times.Once);
             _mockDbService.Verify(db => db.SaveExpenseAsync(It.IsAny<Expense>()), Times.Never);
         }
-
         /// <summary>
         /// test to ensure that valid data gets saved and navigation goes back
         /// </summary>

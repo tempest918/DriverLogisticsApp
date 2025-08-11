@@ -7,8 +7,8 @@ using System.Collections.ObjectModel;
 namespace DriverLogisticsApp.ViewModels
 {
     // disable annoying warnings that are not relevant to this project
-    #pragma warning disable MVVMTK0034
-    #pragma warning disable MVVMTK0045
+#pragma warning disable MVVMTK0034
+#pragma warning disable MVVMTK0045
 
     [QueryProperty(nameof(LoadId), "LoadId")]
     [QueryProperty(nameof(ExpenseId), "ExpenseId")]
@@ -45,6 +45,11 @@ namespace DriverLogisticsApp.ViewModels
 
         [ObservableProperty]
         private bool _isBusy;
+
+        [ObservableProperty]
+        private bool _categoryErrorVisible;
+        [ObservableProperty]
+        private bool _amountErrorVisible;
 
         public ObservableCollection<string> Categories { get; }
 
@@ -167,9 +172,9 @@ namespace DriverLogisticsApp.ViewModels
         {
             if (IsBusy) return;
 
-            if (string.IsNullOrWhiteSpace(SelectedCategory) || Amount <= 0)
+            if (!ValidateForm())
             {
-                await _alertService.DisplayAlert("Error", "Please select a category and enter a valid amount.", "OK");
+                await _alertService.DisplayAlert("Error", "Please fill in all required fields.", "OK");
                 return;
             }
 
@@ -202,5 +207,18 @@ namespace DriverLogisticsApp.ViewModels
             }
 
         }
+
+        /// <summary>
+        /// validates the form inputs and sets error visibility flags
+        /// </summary>
+        /// <returns></returns>
+        private bool ValidateForm()
+        {
+            CategoryErrorVisible = string.IsNullOrWhiteSpace(SelectedCategory);
+            AmountErrorVisible = Amount <= 0;
+
+            return !(CategoryErrorVisible || AmountErrorVisible);
+        }
+
     }
 }
