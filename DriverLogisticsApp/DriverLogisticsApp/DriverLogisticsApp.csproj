@@ -62,6 +62,9 @@
 	  <Compile Update="Views\CompanyListPage.xaml.cs">
 	    <DependentUpon>CompanyListPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Popups\OnboardingPopup.xaml.cs">
+	    <DependentUpon>OnboardingPopup.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>

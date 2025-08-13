@@ -58,12 +58,25 @@ namespace DriverLogisticsApp.Services
                     Preferences.Set("OnboardingComplete", true);
                 });
 
-            popup.PreviousButton.IsEnabled = stepIndex > 0;
+            var previousButton = popup.FindByName<Button>("PreviousButton");
+            if (previousButton != null)
+            {
+                previousButton.IsEnabled = stepIndex > 0;
+            }
 
             if (stepIndex == _steps.Count - 1)
             {
-                popup.NextButton.IsVisible = false;
-                popup.DoneButton.IsVisible = true;
+                var nextButton = popup.FindByName<Button>("NextButton");
+                if (nextButton != null)
+                {
+                    nextButton.IsVisible = false;
+                }
+
+                var doneButton = popup.FindByName<Button>("DoneButton");
+                if (doneButton != null)
+                {
+                    doneButton.IsVisible = true;
+                }
             }
 
             Shell.Current.CurrentPage.ShowPopup(popup);

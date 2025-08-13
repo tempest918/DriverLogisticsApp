@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Views;
+using System;
 
 namespace DriverLogisticsApp.Popups
 {
@@ -23,25 +24,25 @@ namespace DriverLogisticsApp.Popups
         private void NextButton_Clicked(object sender, EventArgs e)
         {
             _onNext?.Invoke();
-            Close();
+            (this as CommunityToolkit.Maui.Views.Popup)?.Close();
         }
 
         private void PreviousButton_Clicked(object sender, EventArgs e)
         {
             _onPrevious?.Invoke();
-            Close();
+            (this as CommunityToolkit.Maui.Views.Popup)?.Close();
         }
 
         private void SkipButton_Clicked(object sender, EventArgs e)
         {
             _onSkip?.Invoke();
-            Close();
+            (this as CommunityToolkit.Maui.Views.Popup)?.Close();
         }
 
         private void DoneButton_Clicked(object sender, EventArgs e)
         {
             _onNext?.Invoke();
-            Close();
+            (this as CommunityToolkit.Maui.Views.Popup)?.Close();
         }
     }
 }
