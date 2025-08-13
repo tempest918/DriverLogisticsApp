@@ -1,16 +1,18 @@
 using System;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 
 namespace DriverLogisticsApp.Views
 {
     public partial class OnboardingPage : ContentPage
     {
-        public string UserAction { get; private set; }
+        private readonly TaskCompletionSource<string> _tcs;
 
-        public OnboardingPage(string title, string description, bool isFirstStep, bool isLastStep)
+        public OnboardingPage(string title, string description, bool isFirstStep, bool isLastStep, TaskCompletionSource<string> tcs)
         {
             InitializeComponent();
+
+            _tcs = tcs;
 
             TitleLabel.Text = title;
             DescriptionLabel.Text = description;
@@ -31,30 +33,39 @@ namespace DriverLogisticsApp.Views
 
         private async void NextButton_Clicked(object sender, EventArgs e)
         {
-            UserAction = "next";
-            Debug.WriteLine($"[OnboardingPage] Action set to: {UserAction}");
+            _tcs.TrySetResult("next");
             await Navigation.PopModalAsync(false);
         }
 
         private async void PreviousButton_Clicked(object sender, EventArgs e)
         {
-            UserAction = "previous";
-            Debug.WriteLine($"[OnboardingPage] Action set to: {UserAction}");
+            _tcs.TrySetResult("previous");
             await Navigation.PopModalAsync(false);
         }
 
         private async void SkipButton_Clicked(object sender, EventArgs e)
         {
-            UserAction = "skip";
-            Debug.WriteLine($"[OnboardingPage] Action set to: {UserAction}");
+            _tcs.TrySetResult("skip");
             await Navigation.PopModalAsync(false);
         }
 
         private async void DoneButton_Clicked(object sender, EventArgs e)
         {
-            UserAction = "done";
-            Debug.WriteLine($"[OnboardingPage] Action set to: {UserAction}");
+            _tcs.TrySetResult("done");
             await Navigation.PopModalAsync(false);
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            // Prevent the user from dismissing the page with the hardware back button
+            return true;
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            // Ensure the task is completed if the page is dismissed by other means
+            _tcs.TrySetResult("dismissed");
         }
     }
 }

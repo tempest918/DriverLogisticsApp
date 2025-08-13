@@ -35,12 +35,12 @@ namespace DriverLogisticsApp.Services
                 var isFirstStep = currentStep == 0;
                 var isLastStep = currentStep == _steps.Count - 1;
 
-                var onboardingPage = new OnboardingPage(step.Title, step.Description, isFirstStep, isLastStep);
+                var tcs = new TaskCompletionSource<string>();
+                var onboardingPage = new OnboardingPage(step.Title, step.Description, isFirstStep, isLastStep, tcs);
 
                 await Shell.Current.Navigation.PushModalAsync(onboardingPage, false);
 
-                var userAction = onboardingPage.UserAction;
-                System.Diagnostics.Debug.WriteLine($"[OnboardingService] User action was: {userAction ?? "null"}");
+                var userAction = await tcs.Task;
 
                 switch (userAction)
                 {
@@ -54,8 +54,8 @@ namespace DriverLogisticsApp.Services
                     case "done":
                         currentStep = _steps.Count; // Exit loop
                         break;
-                    default:
-                        currentStep = _steps.Count; // Exit loop if page is dismissed
+                    default: // "dismissed" or other
+                        currentStep = _steps.Count; // Exit loop
                         break;
                 }
             }
