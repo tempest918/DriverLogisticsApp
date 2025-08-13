@@ -49,6 +49,8 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _countryErrorVisible;
 
+        private bool _isInitializing = false;
+
         /// <summary>
         /// initializes the view model with required services
         /// </summary>
@@ -70,12 +72,16 @@ namespace DriverLogisticsApp.ViewModels
         /// <returns></returns>
         public async Task LoadProfileAsync()
         {
+            _isInitializing = true;
+
             Profile = await _databaseService.GetUserProfileAsync();
 
             SelectedCountry = !string.IsNullOrWhiteSpace(Profile.CompanyCountry) ? Profile.CompanyCountry : "USA";
 
             var savedPin = await _secureStorageService.GetAsync("user_pin");
             IsAuthenticationEnabled = !string.IsNullOrWhiteSpace(savedPin);
+
+            _isInitializing = false;
         }
 
         /// <summary>
@@ -117,12 +123,17 @@ namespace DriverLogisticsApp.ViewModels
                 StatesProvinces.Add(state);
             }
 
-            if (!string.IsNullOrWhiteSpace(originalState))
+            if (_isInitializing)
             {
-                Profile.CompanyState = StatesProvinces.FirstOrDefault(s => s == originalState);
+                // During initialization, try to preserve the saved state.
+                if (!string.IsNullOrWhiteSpace(originalState))
+                {
+                    Profile.CompanyState = StatesProvinces.FirstOrDefault(s => s == originalState);
+                }
             }
             else
             {
+                // When user manually changes country, reset the state.
                 Profile.CompanyState = null;
             }
         }
