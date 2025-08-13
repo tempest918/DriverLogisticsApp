@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net9.0-android;net9.0</TargetFrameworks>
@@ -62,15 +62,12 @@
 	  <Compile Update="Views\CompanyListPage.xaml.cs">
 	    <DependentUpon>CompanyListPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Popups\OnboardingPopup.xaml.cs">
-	    <DependentUpon>OnboardingPopup.xaml</DependentUpon>
+	  <Compile Update="Views\OnboardingPage.xaml.cs">
+	    <DependentUpon>OnboardingPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Popups\OnboardingPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="Popups\ZoomedImagePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -102,6 +99,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SettlementReportPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\OnboardingPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
