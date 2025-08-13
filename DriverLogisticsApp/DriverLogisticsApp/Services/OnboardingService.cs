@@ -35,7 +35,10 @@ namespace DriverLogisticsApp.Services
             }
 
             var step = _steps[stepIndex];
-            var popup = new OnboardingPopup(step.Title, step.Description,
+            var isFirstStep = stepIndex == 0;
+            var isLastStep = stepIndex == _steps.Count - 1;
+
+            var popup = new OnboardingPopup(step.Title, step.Description, isFirstStep, isLastStep,
                 onNext: () =>
                 {
                     _currentStep++;
@@ -57,27 +60,6 @@ namespace DriverLogisticsApp.Services
                 {
                     Preferences.Set("OnboardingComplete", true);
                 });
-
-            var previousButton = popup.FindByName<Button>("PreviousButton");
-            if (previousButton != null)
-            {
-                previousButton.IsEnabled = stepIndex > 0;
-            }
-
-            if (stepIndex == _steps.Count - 1)
-            {
-                var nextButton = popup.FindByName<Button>("NextButton");
-                if (nextButton != null)
-                {
-                    nextButton.IsVisible = false;
-                }
-
-                var doneButton = popup.FindByName<Button>("DoneButton");
-                if (doneButton != null)
-                {
-                    doneButton.IsVisible = true;
-                }
-            }
 
             Shell.Current.CurrentPage.ShowPopup(popup);
         }

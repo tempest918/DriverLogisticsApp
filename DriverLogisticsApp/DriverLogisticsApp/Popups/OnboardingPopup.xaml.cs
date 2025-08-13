@@ -9,7 +9,7 @@ namespace DriverLogisticsApp.Popups
         private readonly Action _onPrevious;
         private readonly Action _onSkip;
 
-        public OnboardingPopup(string title, string description, Action onNext, Action onPrevious, Action onSkip)
+        public OnboardingPopup(string title, string description, bool isFirstStep, bool isLastStep, Action onNext, Action onPrevious, Action onSkip)
         {
             InitializeComponent();
 
@@ -19,6 +19,29 @@ namespace DriverLogisticsApp.Popups
             _onNext = onNext;
             _onPrevious = onPrevious;
             _onSkip = onSkip;
+
+            var previousButton = this.FindByName<Button>("PreviousButton");
+            if (previousButton != null)
+            {
+                previousButton.IsEnabled = !isFirstStep;
+            }
+
+            var nextButton = this.FindByName<Button>("NextButton");
+            var doneButton = this.FindByName<Button>("DoneButton");
+
+            if (nextButton != null && doneButton != null)
+            {
+                if (isLastStep)
+                {
+                    nextButton.IsVisible = false;
+                    doneButton.IsVisible = true;
+                }
+                else
+                {
+                    nextButton.IsVisible = true;
+                    doneButton.IsVisible = false;
+                }
+            }
         }
 
         private void NextButton_Clicked(object sender, EventArgs e)
