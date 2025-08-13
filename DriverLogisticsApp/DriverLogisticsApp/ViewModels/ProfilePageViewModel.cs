@@ -76,7 +76,21 @@ namespace DriverLogisticsApp.ViewModels
 
             Profile = await _databaseService.GetUserProfileAsync();
 
-            SelectedCountry = !string.IsNullOrWhiteSpace(Profile.CompanyCountry) ? Profile.CompanyCountry : "USA";
+            var country = !string.IsNullOrWhiteSpace(Profile.CompanyCountry) ? Profile.CompanyCountry : "USA";
+            SelectedCountry = country;
+
+            UpdateStatesForCountry(country);
+
+            // Restore the state selection if it's valid for the country
+            var originalState = Profile.CompanyState;
+            if (!string.IsNullOrWhiteSpace(originalState) && StatesProvinces.Contains(originalState))
+            {
+                Profile.CompanyState = originalState;
+            }
+            else
+            {
+                Profile.CompanyState = null;
+            }
 
             var savedPin = await _secureStorageService.GetAsync("user_pin");
             IsAuthenticationEnabled = !string.IsNullOrWhiteSpace(savedPin);
@@ -111,30 +125,25 @@ namespace DriverLogisticsApp.ViewModels
         /// <param name="value"></param>
         partial void OnSelectedCountryChanged(string value)
         {
+            if (_isInitializing)
+                return;
+
+            UpdateStatesForCountry(value);
+            // When user manually changes country, reset the state.
+            Profile.CompanyState = null;
+        }
+
+        private void UpdateStatesForCountry(string country)
+        {
             if (Profile is null) return;
 
-            Profile.CompanyCountry = value;
-            var originalState = Profile.CompanyState;
+            Profile.CompanyCountry = country;
             StatesProvinces.Clear();
 
-            var states = _addressDataService.GetStatesProvincesForCountry(value);
+            var states = _addressDataService.GetStatesProvincesForCountry(country);
             foreach (var state in states)
             {
                 StatesProvinces.Add(state);
-            }
-
-            if (_isInitializing)
-            {
-                // During initialization, try to preserve the saved state.
-                if (!string.IsNullOrWhiteSpace(originalState))
-                {
-                    Profile.CompanyState = StatesProvinces.FirstOrDefault(s => s == originalState);
-                }
-            }
-            else
-            {
-                // When user manually changes country, reset the state.
-                Profile.CompanyState = null;
             }
         }
 
