@@ -8,10 +8,6 @@ namespace DriverLogisticsApp.Popups
         private readonly Action _onPrevious;
         private readonly Action _onSkip;
 
-        public Button NextButton => this.FindByName<Button>("NextButton");
-        public Button PreviousButton => this.FindByName<Button>("PreviousButton");
-        public Button DoneButton => this.FindByName<Button>("DoneButton");
-
         public OnboardingPopup(string title, string description, Action onNext, Action onPrevious, Action onSkip)
         {
             InitializeComponent();

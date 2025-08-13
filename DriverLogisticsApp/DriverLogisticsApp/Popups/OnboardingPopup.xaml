@@ -9,7 +9,7 @@
         <BoxView Color="Black" Opacity="0.5" />
         <Frame VerticalOptions="Center" HorizontalOptions="Center" CornerRadius="10" Margin="20">
             <VerticalStackLayout Padding="20" Spacing="15">
-                <Label x:Name="TitleLabel" FontSize="Large" FontWeight="Bold" HorizontalTextAlignment="Center" />
+                <Label x:Name="TitleLabel" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center" />
                 <Label x:Name="DescriptionLabel" HorizontalTextAlignment="Center" />
                 <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
                     <Button x:Name="PreviousButton" Text="Previous" Clicked="PreviousButton_Clicked" Grid.Column="0"/>
