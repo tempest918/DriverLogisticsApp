@@ -1,4 +1,5 @@
 using DriverLogisticsApp.Views;
+using DriverLogisticsApp.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Maui.Controls;
@@ -7,14 +8,14 @@ namespace DriverLogisticsApp.Services
 {
     public class OnboardingService : IOnboardingService
     {
-        private readonly List<(string Title, string Description)> _steps = new List<(string, string)>
+        private readonly List<OnboardingStep> _steps = new List<OnboardingStep>
         {
-            ("Welcome to Truck Loads!", "This short tour will walk you through the key features of the app."),
-            ("Manage Your Loads", "Create, update, and track your loads from planned to completed."),
-            ("Track Your Expenses", "Log expenses for each load, including fuel, tolls, and maintenance. You can even attach receipt photos!"),
-            ("Generate Reports", "Create professional PDF invoices and settlement reports."),
-            ("Secure Your Data", "Use the PIN lock feature to keep your financial data safe."),
-            ("Get Started!", "You're all set! Tap 'Done' to start using the app.")
+            new OnboardingStep { Title = "Welcome to Truck Loads!", Description = "This short tour will walk you through the key features of the app." },
+            new OnboardingStep { Title = "Manage Your Loads", Description = "Create, update, and track your loads from planned to completed." },
+            new OnboardingStep { Title = "Track Your Expenses", Description = "Log expenses for each load, including fuel, tolls, and maintenance. You can even attach receipt photos!" },
+            new OnboardingStep { Title = "Generate Reports", Description = "Create professional PDF invoices and settlement reports." },
+            new OnboardingStep { Title = "Secure Your Data", Description = "Use the PIN lock feature to keep your financial data safe." },
+            new OnboardingStep { Title = "Get Started!", Description = "You're all set! Tap 'Done' to start using the app." }
         };
 
         private bool _onboardingInProgress = false;
