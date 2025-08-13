@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DriverLogisticsApp.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+    Title="Settings"
+    x:DataType="viewmodels:SettingsPageViewModel">
+    <Grid>
+        <ScrollView IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+            <VerticalStackLayout Padding="20" Spacing="10">
+                <Label
+                    Margin="0,20,0,0"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    Text="Appearance" />
+                <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto">
+                    <Label Text="Enable Dark Mode" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding IsDarkMode}" />
+                </Grid>
+
+                <Label
+                    Margin="0,20,0,0"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    Text="Security" />
+                <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto">
+                    <Label Text="Enable PIN Authentication" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding IsAuthenticationEnabled}" />
+                </Grid>
+
+                <VerticalStackLayout IsVisible="{Binding IsAuthenticationEnabled}" Spacing="10">
+
+                    <Entry
+                        IsPassword="True"
+                        Keyboard="Numeric"
+                        MaxLength="4"
+                        Placeholder="Enter New 4-Digit PIN"
+                        Text="{Binding NewPin}" />
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="5">
+                        <Entry
+                            Grid.Column="0"
+                            IsPassword="True"
+                            Keyboard="Numeric"
+                            MaxLength="4"
+                            Placeholder="Confirm New PIN"
+                            Text="{Binding ConfirmPin}" />
+
+                        <Image
+                            Grid.Column="1"
+                            IsVisible="{Binding PinsDoNotMatchErrorVisible}"
+                            Style="{StaticResource ErrorIconStyle}" />
+                    </Grid>
+
+                    <Label
+                        FontSize="Small"
+                        IsVisible="{Binding PinsDoNotMatchErrorVisible}"
+                        Text="PINs do not match."
+                        TextColor="Red" />
+
+                    <Button Command="{Binding SetPinCommand}" Text="Set/Change PIN" />
+                </VerticalStackLayout>
+
+                <Label
+                    Margin="0,20,0,0"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    Text="Data Management" />
+
+                <Label HorizontalTextAlignment="Center" Text="You can export all your data to a JSON file as a backup, or import a previously saved file." />
+
+                <Button
+                    Margin="0,20,0,0"
+                    Command="{Binding ImportDataCommand}"
+                    Text="Import Data from File" />
+
+                <Button Command="{Binding ExportAllDataCommand}" Text="Export All Data to File" />
+
+                <Label
+                    Margin="0,20,0,0"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    Text="Legal" />
+                <Button Command="{Binding GoToPrivacyPolicyCommand}" Text="Privacy Policy" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            Color="{StaticResource Primary}" />
+    </Grid>
+</ContentPage>

@@ -49,19 +49,6 @@
         </ShellContent>
 
         <ShellContent
-            Title="Import/Export"
-            ContentTemplate="{DataTemplate views:ImportExportPage}"
-            Route="ImportExportPage">
-            <ShellContent.Icon>
-                <FontImageSource
-                    FontFamily="MaterialIcons"
-                    Glyph="&#xf3bb;"
-                    Color="{AppThemeBinding Light={StaticResource Primary},
-                                            Dark={StaticResource White}}" />
-            </ShellContent.Icon>
-        </ShellContent>
-
-        <ShellContent
             Title="Profile"
             ContentTemplate="{DataTemplate views:ProfilePage}"
             Route="ProfilePage">
@@ -69,6 +56,19 @@
                 <FontImageSource
                     FontFamily="MaterialIcons"
                     Glyph="&#xe853;"
+                    Color="{AppThemeBinding Light={StaticResource Primary},
+                                            Dark={StaticResource White}}" />
+            </ShellContent.Icon>
+        </ShellContent>
+
+        <ShellContent
+            Title="Settings"
+            ContentTemplate="{DataTemplate views:SettingsPage}"
+            Route="SettingsPage">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe8b8;"
                     Color="{AppThemeBinding Light={StaticResource Primary},
                                             Dark={StaticResource White}}" />
             </ShellContent.Icon>
