@@ -16,17 +16,6 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private UserProfile _profile;
 
-        [ObservableProperty]
-        private string _newPin;
-
-        [ObservableProperty]
-        private string _confirmPin;
-
-        [ObservableProperty]
-        private bool _pinsDoNotMatchErrorVisible;
-
-        [ObservableProperty]
-        private bool _isAuthenticationEnabled;
 
         public ObservableCollection<string> Countries { get; }
         public ObservableCollection<string> StatesProvinces { get; } = new();
@@ -73,30 +62,6 @@ namespace DriverLogisticsApp.ViewModels
             Profile = await _databaseService.GetUserProfileAsync();
 
             SelectedCountry = !string.IsNullOrWhiteSpace(Profile.CompanyCountry) ? Profile.CompanyCountry : "USA";
-
-            var savedPin = await _secureStorageService.GetAsync("user_pin");
-            IsAuthenticationEnabled = !string.IsNullOrWhiteSpace(savedPin);
-        }
-
-        /// <summary>
-        /// enables or disables authentication based on user input
-        /// </summary>
-        /// <param name="value"></param>
-        async partial void OnIsAuthenticationEnabledChanged(bool value)
-        {
-            if (!value)
-            {
-                bool confirmed = await _alertService.DisplayAlert("Disable Security", "Are you sure you want to disable PIN authentication? Your app will no longer be password protected.", "Yes, Disable", "Cancel");
-                if (confirmed)
-                {
-                    _secureStorageService.Remove("user_pin");
-                    await _alertService.DisplayAlert("Success", "PIN authentication has been disabled.", "OK");
-                }
-                else
-                {
-                    IsAuthenticationEnabled = true;
-                }
-            }
         }
 
         /// <summary>
@@ -154,54 +119,6 @@ namespace DriverLogisticsApp.ViewModels
             await _alertService.DisplayAlert("Success", "Your profile has been saved.", "OK");
         }
 
-        /// <summary>
-        /// checks if the new PIN matches the confirmation PIN and updates the error visibility
-        /// </summary>
-        /// <param name="value"></param>
-        partial void OnNewPinChanged(string value)
-        {
-            // Check if the pins match and update the error visibility
-            PinsDoNotMatchErrorVisible = !string.IsNullOrEmpty(ConfirmPin) && value != ConfirmPin;
-        }
-
-        /// <summary>
-        /// checks if the confirmation PIN matches the new PIN and updates the error visibility
-        /// </summary>
-        /// <param name="value"></param>
-        partial void OnConfirmPinChanged(string value)
-        {
-            // Check if the pins match and update the error visibility
-            PinsDoNotMatchErrorVisible = value != NewPin;
-        }
-
-        /// <summary>
-        /// sets a new PIN after validating the input
-        /// </summary>
-        /// <returns></returns>
-        [RelayCommand]
-        private async Task SetPinAsync()
-        {
-            if (NewPin != ConfirmPin)
-            {
-                PinsDoNotMatchErrorVisible = true;
-                await _alertService.DisplayAlert("Error", "PINs do not match. Please try again.", "OK");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(NewPin) || NewPin.Length < 4)
-            {
-                await _alertService.DisplayAlert("Error", "Please enter a valid 4-digit PIN.", "OK");
-                return;
-            }
-
-            await _secureStorageService.SetAsync("user_pin", NewPin);
-
-            NewPin = string.Empty;
-            ConfirmPin = string.Empty;
-            IsAuthenticationEnabled = true;
-
-            await _alertService.DisplayAlert("Success", "Your PIN has been set.", "OK");
-        }
 
         /// <summary>
         /// validates the user profile input and sets error flags accordingly

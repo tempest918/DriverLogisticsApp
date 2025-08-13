@@ -51,6 +51,7 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<ImportExportViewModel>();
             builder.Services.AddTransient<CompanyListViewModel>();
             builder.Services.AddTransient<AddEditCompanyViewModel>();
+            builder.Services.AddTransient<SettingsPageViewModel>();
 
             // views/pages
             builder.Services.AddTransient<AppShell>();
@@ -65,6 +66,7 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<ImportExportPage>();
             builder.Services.AddTransient<CompanyListPage>();
             builder.Services.AddTransient<AddEditCompanyPage>();
+            builder.Services.AddTransient<SettingsPage>();
 
 
             // popups

@@ -73,5 +73,18 @@
                                             Dark={StaticResource White}}" />
             </ShellContent.Icon>
         </ShellContent>
+
+        <ShellContent
+            Title="Settings"
+            ContentTemplate="{DataTemplate views:SettingsPage}"
+            Route="SettingsPage">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe8b8;"
+                    Color="{AppThemeBinding Light={StaticResource Primary},
+                                            Dark={StaticResource White}}" />
+            </ShellContent.Icon>
+        </ShellContent>
     </TabBar>
 </Shell>
