@@ -5,81 +5,73 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:DriverLogisticsApp"
     xmlns:views="clr-namespace:DriverLogisticsApp.Views"
-    xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
-    x:DataType="viewmodels:AppShellViewModel"
     Title="DriverLogisticsApp">
 
-    <Grid>
-        <TabBar>
-            <ShellContent
-                Title="Home"
-                ContentTemplate="{DataTemplate local:MainPage}"
-                Route="MainPage">
-                <ShellContent.Icon>
-                    <FontImageSource
-                        FontFamily="MaterialIcons"
-                        Glyph="&#xe88a;"
-                        Color="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource White}}" />
-                </ShellContent.Icon>
-            </ShellContent>
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe88a;"
+                    Color="{AppThemeBinding Light={StaticResource Primary},
+                                            Dark={StaticResource White}}" />
+            </ShellContent.Icon>
+        </ShellContent>
 
-            <ShellContent
-                Title="Companies"
-                ContentTemplate="{DataTemplate views:CompanyListPage}"
-                Route="CompanyListPage">
-                <ShellContent.Icon>
-                    <FontImageSource
-                        FontFamily="MaterialIcons"
-                        Glyph="&#xf1d0;"
-                        Color="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource White}}" />
-                </ShellContent.Icon>
-            </ShellContent>
+        <ShellContent
+            Title="Companies"
+            ContentTemplate="{DataTemplate views:CompanyListPage}"
+            Route="CompanyListPage">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xf1d0;"
+                    Color="{AppThemeBinding Light={StaticResource Primary},
+                                            Dark={StaticResource White}}" />
+            </ShellContent.Icon>
+        </ShellContent>
 
 
-            <ShellContent
-                Title="Reports"
-                ContentTemplate="{DataTemplate views:SettlementReportPage}"
-                Route="SettlementReportPage">
-                <ShellContent.Icon>
-                    <FontImageSource
-                        FontFamily="MaterialIcons"
-                        Glyph="&#xe26b;"
-                        Color="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource White}}" />
-                </ShellContent.Icon>
-            </ShellContent>
+        <ShellContent
+            Title="Reports"
+            ContentTemplate="{DataTemplate views:SettlementReportPage}"
+            Route="SettlementReportPage">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe26b;"
+                    Color="{AppThemeBinding Light={StaticResource Primary},
+                                            Dark={StaticResource White}}" />
+            </ShellContent.Icon>
+        </ShellContent>
 
-            <ShellContent
-                Title="Profile"
-                ContentTemplate="{DataTemplate views:ProfilePage}"
-                Route="ProfilePage">
-                <ShellContent.Icon>
-                    <FontImageSource
-                        FontFamily="MaterialIcons"
-                        Glyph="&#xe853;"
-                        Color="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource White}}" />
-                </ShellContent.Icon>
-            </ShellContent>
+        <ShellContent
+            Title="Profile"
+            ContentTemplate="{DataTemplate views:ProfilePage}"
+            Route="ProfilePage">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe853;"
+                    Color="{AppThemeBinding Light={StaticResource Primary},
+                                            Dark={StaticResource White}}" />
+            </ShellContent.Icon>
+        </ShellContent>
 
-            <ShellContent
-                Title="Settings"
-                ContentTemplate="{DataTemplate views:SettingsPage}"
-                Route="SettingsPage">
-                <ShellContent.Icon>
-                    <FontImageSource
-                        FontFamily="MaterialIcons"
-                        Glyph="&#xe8b8;"
-                        Color="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource White}}" />
-                </ShellContent.Icon>
-            </ShellContent>
-        </TabBar>
-
-        <views:OnboardingOverlay
-            IsVisible="{Binding IsOnboardingVisible}"
-            BindingContext="{Binding .}"/>
-    </Grid>
+        <ShellContent
+            Title="Settings"
+            ContentTemplate="{DataTemplate views:SettingsPage}"
+            Route="SettingsPage">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe8b8;"
+                    Color="{AppThemeBinding Light={StaticResource Primary},
+                                            Dark={StaticResource White}}" />
+            </ShellContent.Icon>
+        </ShellContent>
+    </TabBar>
 </Shell>
