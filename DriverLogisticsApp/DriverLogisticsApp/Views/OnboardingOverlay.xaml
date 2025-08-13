@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DriverLogisticsApp.Views.OnboardingPage"
+             x:Class="DriverLogisticsApp.Views.OnboardingOverlay"
              BackgroundColor="Transparent">
     <Grid>
         <Path
@@ -20,6 +20,7 @@
 
             <Label
                 x:Name="TitleLabel"
+                Text="{Binding OnboardingTitle}"
                 FontSize="24"
                 FontAttributes="Bold"
                 HorizontalTextAlignment="Center"
@@ -27,6 +28,7 @@
 
             <Label
                 x:Name="DescriptionLabel"
+                Text="{Binding OnboardingDescription}"
                 FontSize="16"
                 HorizontalTextAlignment="Center"
                 TextColor="White"/>
@@ -37,30 +39,28 @@
                 Margin="0, 20, 0, 0">
 
                 <Button
-                    x:Name="PreviousButton"
                     Text="Previous"
-                    Clicked="PreviousButton_Clicked"
+                    Command="{Binding PreviousOnboardingStepCommand}"
+                    IsEnabled="{Binding IsOnboardingFirstStep, Converter={StaticResource InvertedBoolConverter}}"
                     Grid.Column="0"/>
 
                 <Button
-                    x:Name="NextButton"
                     Text="Next"
-                    Clicked="NextButton_Clicked"
+                    Command="{Binding NextOnboardingStepCommand}"
+                    IsVisible="{Binding IsOnboardingLastStep, Converter={StaticResource InvertedBoolConverter}}"
                     Grid.Column="1"/>
 
                 <Button
-                    x:Name="DoneButton"
                     Text="Done"
-                    Clicked="DoneButton_Clicked"
-                    Grid.Column="1"
-                    IsVisible="False"/>
+                    Command="{Binding SkipOnboardingCommand}"
+                    IsVisible="{Binding IsOnboardingLastStep}"
+                    Grid.Column="1"/>
 
                 <Button
-                    x:Name="SkipButton"
                     Text="Skip"
-                    Clicked="SkipButton_Clicked"
+                    Command="{Binding SkipOnboardingCommand}"
                     Grid.Column="2"/>
             </Grid>
         </VerticalStackLayout>
     </Grid>
-</ContentPage>
+</ContentView>

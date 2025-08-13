@@ -38,7 +38,6 @@ namespace DriverLogisticsApp
             builder.Services.AddSingleton<IJsonImportExportService, JsonImportExportService>();
             builder.Services.AddSingleton<PdfService>();
             builder.Services.AddSingleton<AddressDataService>();
-            builder.Services.AddSingleton<IOnboardingService, OnboardingService>();
 
             // view models
             builder.Services.AddTransient<MainPageViewModel>();

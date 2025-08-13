@@ -62,8 +62,8 @@
 	  <Compile Update="Views\CompanyListPage.xaml.cs">
 	    <DependentUpon>CompanyListPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\OnboardingPage.xaml.cs">
-	    <DependentUpon>OnboardingPage.xaml</DependentUpon>
+	  <Compile Update="Views\OnboardingOverlay.xaml.cs">
+	    <DependentUpon>OnboardingOverlay.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -101,7 +101,7 @@
 	  <MauiXaml Update="Views\SettlementReportPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\OnboardingPage.xaml">
+	  <MauiXaml Update="Views\OnboardingOverlay.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
