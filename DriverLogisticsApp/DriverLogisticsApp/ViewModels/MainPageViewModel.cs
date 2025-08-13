@@ -16,6 +16,7 @@ namespace DriverLogisticsApp.ViewModels
     {
         private readonly IDatabaseService _databaseService;
         private readonly INavigationService _navigationService;
+        private readonly IOnboardingService _onboardingService;
 
         private List<Load> _allLoads;
 
@@ -42,10 +43,11 @@ namespace DriverLogisticsApp.ViewModels
         /// initialize the view model for the main page
         /// </summary>
         /// <param name="databaseService"></param>
-        public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService)
+        public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService, IOnboardingService onboardingService)
         {
             _databaseService = databaseService;
             _navigationService = navigationService;
+            _onboardingService = onboardingService;
             _loads = new ObservableCollection<Load>();
             _allLoads = new List<Load>();
         }
@@ -157,6 +159,13 @@ namespace DriverLogisticsApp.ViewModels
         private async Task GoToSettlementReportAsync()
         {
             await _navigationService.NavigateToAsync(nameof(Views.SettlementReportPage));
+        }
+
+        [RelayCommand]
+        private async Task OnAppearing()
+        {
+            await GetLoadsAsync();
+            _onboardingService.StartOnboarding();
         }
 
         /// <summary>
