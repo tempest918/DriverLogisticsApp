@@ -2,11 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
-using DriverLogisticsApp.Popups;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CommunityToolkit.Maui.Views;
-using Microsoft.Maui.Controls;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -14,10 +11,33 @@ namespace DriverLogisticsApp.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly List<OnboardingStep> _onboardingSteps;
+        private int _currentOnboardingStep;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsOnboardingFirstStep))]
+        [NotifyPropertyChangedFor(nameof(IsOnboardingLastStep))]
+        private bool _isOnboardingVisible;
+
+        [ObservableProperty]
+        private string _onboardingTitle;
+
+        [ObservableProperty]
+        private string _onboardingDescription;
+
+        public bool IsOnboardingFirstStep => _currentOnboardingStep == 0;
+        public bool IsOnboardingLastStep => _currentOnboardingStep == _onboardingSteps.Count - 1;
+
+        public IAsyncRelayCommand NextOnboardingStepCommand { get; }
+        public IAsyncRelayCommand PreviousOnboardingStepCommand { get; }
+        public IAsyncRelayCommand SkipOnboardingCommand { get; }
 
         public AppShellViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+
+            NextOnboardingStepCommand = new AsyncRelayCommand(NextOnboardingStep);
+            PreviousOnboardingStepCommand = new AsyncRelayCommand(PreviousOnboardingStep);
+            SkipOnboardingCommand = new AsyncRelayCommand(SkipOnboarding);
 
             _onboardingSteps = new List<OnboardingStep>
             {
@@ -28,64 +48,63 @@ namespace DriverLogisticsApp.ViewModels
                 new OnboardingStep { Title = "Manage Your Profile", Description = "Use the profile page to set your information and secure the app with a PIN.", Route = nameof(Views.ProfilePage) }
             };
 
-            // Using Task.Run to avoid blocking the constructor
-            Task.Run(StartOnboardingIfNeeded);
+            StartOnboarding();
         }
 
-        private async Task StartOnboardingIfNeeded()
+        private void StartOnboarding()
         {
-            // A small delay to ensure the initial page has loaded before we navigate
-            await Task.Delay(500);
-
             if (Preferences.Get("OnboardingComplete", false))
             {
                 return;
             }
+            _currentOnboardingStep = 0;
+            UpdateOnboardingStep();
+            IsOnboardingVisible = true;
+        }
 
-            var currentStep = 0;
-            while (currentStep >= 0 && currentStep < _onboardingSteps.Count)
+        private async Task UpdateOnboardingStep()
+        {
+            var step = _onboardingSteps[_currentOnboardingStep];
+            OnboardingTitle = step.Title;
+            OnboardingDescription = step.Description;
+
+            if (!string.IsNullOrEmpty(step.Route))
             {
-                var step = _onboardingSteps[currentStep];
-
-                // Navigate to the correct page for the step
-                if (!string.IsNullOrEmpty(step.Route))
-                {
-                    await _navigationService.NavigateToAsync(step.Route);
-                }
-
-                var isFirstStep = currentStep == 0;
-                var isLastStep = currentStep == _onboardingSteps.Count - 1;
-
-                var tcs = new TaskCompletionSource<string>();
-                var popup = new OnboardingPopup(step.Title, step.Description, isFirstStep, isLastStep, tcs);
-
-                var result = await Shell.Current.CurrentPage.ShowPopupAsync(popup);
-                var userAction = await tcs.Task;
-
-                switch (userAction)
-                {
-                    case "next":
-                        currentStep++;
-                        break;
-                    case "previous":
-                        currentStep--;
-                        break;
-                    case "skip":
-                    case "done":
-                        currentStep = _onboardingSteps.Count; // Exit loop
-                        break;
-                    default: // "dismissed"
-                        currentStep = -1; // Exit loop, but don't mark as complete
-                        break;
-                }
+                await _navigationService.NavigateToAsync(step.Route);
             }
 
-            if (currentStep >= _onboardingSteps.Count)
+            OnPropertyChanged(nameof(IsOnboardingFirstStep));
+            OnPropertyChanged(nameof(IsOnboardingLastStep));
+        }
+
+        private async Task NextOnboardingStep()
+        {
+            if (_currentOnboardingStep < _onboardingSteps.Count - 1)
             {
-                Preferences.Set("OnboardingComplete", true);
-                // Navigate back to the main page after onboarding is finished
-                await _navigationService.NavigateToAsync($"//{nameof(Views.MainPage)}");
+                _currentOnboardingStep++;
+                await UpdateOnboardingStep();
             }
+            else
+            {
+                await SkipOnboarding(); // Finish on the last step
+            }
+        }
+
+        private async Task PreviousOnboardingStep()
+        {
+            if (_currentOnboardingStep > 0)
+            {
+                _currentOnboardingStep--;
+                await UpdateOnboardingStep();
+            }
+        }
+
+        private async Task SkipOnboarding()
+        {
+            IsOnboardingVisible = false;
+            Preferences.Set("OnboardingComplete", true);
+            // Navigate back to the main page after onboarding is finished
+            await _navigationService.NavigateToAsync($"//{nameof(Views.MainPage)}");
         }
     }
 }
