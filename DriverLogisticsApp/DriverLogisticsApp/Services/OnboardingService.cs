@@ -1,12 +1,14 @@
 using DriverLogisticsApp.Popups;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Maui.Extensions;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.Maui.Controls;
 
 namespace DriverLogisticsApp.Services
 {
     public class OnboardingService : IOnboardingService
     {
-        private int _currentStep = 0;
         private readonly List<(string Title, string Description)> _steps = new List<(string, string)>
         {
             ("Welcome to Truck Loads!", "This short tour will walk you through the key features of the app."),
@@ -17,51 +19,42 @@ namespace DriverLogisticsApp.Services
             ("Get Started!", "You're all set! Tap 'Done' to start using the app.")
         };
 
-        public void StartOnboarding()
+        public async Task StartOnboarding()
         {
             if (Preferences.Get("OnboardingComplete", false))
             {
                 return;
             }
 
-            ShowStep(_currentStep);
-        }
-
-        private void ShowStep(int stepIndex)
-        {
-            if (stepIndex < 0 || stepIndex >= _steps.Count)
+            var currentStep = 0;
+            while (currentStep < _steps.Count)
             {
-                return;
+                var step = _steps[currentStep];
+                var isFirstStep = currentStep == 0;
+                var isLastStep = currentStep == _steps.Count - 1;
+
+                var popup = new OnboardingPopup(step.Title, step.Description, isFirstStep, isLastStep);
+                var result = await Shell.Current.CurrentPage.ShowPopupAsync(popup) as string;
+
+                switch (result)
+                {
+                    case "next":
+                        currentStep++;
+                        break;
+                    case "previous":
+                        currentStep--;
+                        break;
+                    case "skip":
+                    case "done":
+                        currentStep = _steps.Count; // Exit loop
+                        break;
+                    default:
+                        currentStep = _steps.Count; // Exit loop if popup is dismissed
+                        break;
+                }
             }
 
-            var step = _steps[stepIndex];
-            var isFirstStep = stepIndex == 0;
-            var isLastStep = stepIndex == _steps.Count - 1;
-
-            var popup = new OnboardingPopup(step.Title, step.Description, isFirstStep, isLastStep,
-                onNext: () =>
-                {
-                    _currentStep++;
-                    if (_currentStep < _steps.Count)
-                    {
-                        ShowStep(_currentStep);
-                    }
-                    else
-                    {
-                        Preferences.Set("OnboardingComplete", true);
-                    }
-                },
-                onPrevious: () =>
-                {
-                    _currentStep--;
-                    ShowStep(_currentStep);
-                },
-                onSkip: () =>
-                {
-                    Preferences.Set("OnboardingComplete", true);
-                });
-
-            Shell.Current.CurrentPage.ShowPopup(popup);
+            Preferences.Set("OnboardingComplete", true);
         }
     }
 }

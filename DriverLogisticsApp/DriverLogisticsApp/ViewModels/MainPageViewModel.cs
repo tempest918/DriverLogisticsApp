@@ -168,7 +168,7 @@ namespace DriverLogisticsApp.ViewModels
         private async Task OnAppearing()
         {
             await GetLoadsAsync();
-            _onboardingService.StartOnboarding();
+            await _onboardingService.StartOnboarding();
         }
 
         /// <summary>

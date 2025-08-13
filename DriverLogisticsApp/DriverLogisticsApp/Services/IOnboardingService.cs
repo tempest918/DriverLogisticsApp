@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace DriverLogisticsApp.Services
 {
     public interface IOnboardingService
     {
-        void StartOnboarding();
+        Task StartOnboarding();
     }
 }
