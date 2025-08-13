@@ -117,13 +117,22 @@ namespace DriverLogisticsApp.ViewModels
                 StatesProvinces.Add(state);
             }
 
-            if (!string.IsNullOrWhiteSpace(originalState))
+            if (string.IsNullOrWhiteSpace(originalState))
             {
-                Profile.CompanyState = StatesProvinces.FirstOrDefault(s => s == originalState);
+                Profile.CompanyState = null;
+                return;
+            }
+
+            // Check if the original state is already an abbreviation
+            if (StatesProvinces.Contains(originalState))
+            {
+                Profile.CompanyState = originalState;
             }
             else
             {
-                Profile.CompanyState = null;
+                // If not, try to convert it from a full name
+                var abbreviation = _addressDataService.GetStateAbbreviation(originalState);
+                Profile.CompanyState = StatesProvinces.FirstOrDefault(s => s == abbreviation);
             }
         }
 
