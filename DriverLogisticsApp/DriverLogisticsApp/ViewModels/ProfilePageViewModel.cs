@@ -49,8 +49,6 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _countryErrorVisible;
 
-        private bool _isInitializing = false;
-
         /// <summary>
         /// initializes the view model with required services
         /// </summary>
@@ -72,30 +70,12 @@ namespace DriverLogisticsApp.ViewModels
         /// <returns></returns>
         public async Task LoadProfileAsync()
         {
-            _isInitializing = true;
-
             Profile = await _databaseService.GetUserProfileAsync();
 
-            var country = !string.IsNullOrWhiteSpace(Profile.CompanyCountry) ? Profile.CompanyCountry : "USA";
-            SelectedCountry = country;
-
-            UpdateStatesForCountry(country);
-
-            // Restore the state selection if it's valid for the country
-            var originalState = Profile.CompanyState;
-            if (!string.IsNullOrWhiteSpace(originalState) && StatesProvinces.Contains(originalState))
-            {
-                Profile.CompanyState = originalState;
-            }
-            else
-            {
-                Profile.CompanyState = null;
-            }
+            SelectedCountry = !string.IsNullOrWhiteSpace(Profile.CompanyCountry) ? Profile.CompanyCountry : "USA";
 
             var savedPin = await _secureStorageService.GetAsync("user_pin");
             IsAuthenticationEnabled = !string.IsNullOrWhiteSpace(savedPin);
-
-            _isInitializing = false;
         }
 
         /// <summary>
@@ -125,24 +105,34 @@ namespace DriverLogisticsApp.ViewModels
         /// <param name="value"></param>
         partial void OnSelectedCountryChanged(string value)
         {
-            if (_isInitializing)
-                return;
-
-            UpdateStatesForCountry(value);
-            // When user manually changes country, reset the state.
-            Profile.CompanyState = null;
-        }
-
-        private void UpdateStatesForCountry(string country)
-        {
             if (Profile is null) return;
 
+            Profile.CompanyCountry = value;
+            var originalState = Profile.CompanyState;
             StatesProvinces.Clear();
 
-            var states = _addressDataService.GetStatesProvincesForCountry(country);
+            var states = _addressDataService.GetStatesProvincesForCountry(value);
             foreach (var state in states)
             {
                 StatesProvinces.Add(state);
+            }
+
+            if (string.IsNullOrWhiteSpace(originalState))
+            {
+                Profile.CompanyState = null;
+                return;
+            }
+
+            // Check if the original state is already an abbreviation
+            if (StatesProvinces.Contains(originalState))
+            {
+                Profile.CompanyState = originalState;
+            }
+            else
+            {
+                // If not, try to convert it from a full name
+                var abbreviation = _addressDataService.GetStateAbbreviation(originalState);
+                Profile.CompanyState = StatesProvinces.FirstOrDefault(s => s == abbreviation);
             }
         }
 
