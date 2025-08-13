@@ -17,18 +17,22 @@ namespace DriverLogisticsApp.Services
             ("Get Started!", "You're all set! Tap 'Done' to start using the app.")
         };
 
+        private bool _onboardingInProgress = false;
+
         public OnboardingService()
         {
         }
 
         public async Task StartOnboardingIfNeeded()
         {
-            if (Preferences.Get("OnboardingComplete", false))
+            if (Preferences.Get("OnboardingComplete", false) || _onboardingInProgress)
             {
                 return;
             }
 
+            _onboardingInProgress = true;
             var currentStep = 0;
+
             while (currentStep < _steps.Count)
             {
                 var step = _steps[currentStep];
@@ -54,13 +58,14 @@ namespace DriverLogisticsApp.Services
                     case "done":
                         currentStep = _steps.Count; // Exit loop
                         break;
-                    default: // "dismissed" or other
+                    default: // "dismissed"
                         currentStep = _steps.Count; // Exit loop
                         break;
                 }
             }
 
             Preferences.Set("OnboardingComplete", true);
+            _onboardingInProgress = false;
         }
     }
 }
