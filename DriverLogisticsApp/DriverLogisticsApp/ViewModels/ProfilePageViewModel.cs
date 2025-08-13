@@ -137,7 +137,6 @@ namespace DriverLogisticsApp.ViewModels
         {
             if (Profile is null) return;
 
-            Profile.CompanyCountry = country;
             StatesProvinces.Clear();
 
             var states = _addressDataService.GetStatesProvincesForCountry(country);
