@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:DriverLogisticsApp.Models"
     xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
-    xmlns:views="clr-namespace:DriverLogisticsApp.Views"
     x:Name="mainPage"
     Title="Loads"
     x:DataType="viewmodels:MainPageViewModel">
@@ -116,10 +115,6 @@
             IsVisible="{Binding IsBusy}"
             VerticalOptions="Center"
             Color="{StaticResource Primary}" />
-
-        <views:OnboardingOverlay
-            IsVisible="{Binding IsOnboardingVisible}"
-            BindingContext="{Binding .}"/>
 
     </Grid>
 

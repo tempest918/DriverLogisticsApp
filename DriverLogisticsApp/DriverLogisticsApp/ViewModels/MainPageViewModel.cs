@@ -16,8 +16,6 @@ namespace DriverLogisticsApp.ViewModels
         private readonly INavigationService _navigationService;
 
         private List<Load> _allLoads;
-        private readonly List<OnboardingStep> _onboardingSteps;
-        private int _currentOnboardingStep;
 
         [ObservableProperty]
         private ObservableCollection<Load> _loads;
@@ -38,25 +36,7 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isBusy;
 
-        // Onboarding Properties
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsOnboardingFirstStep))]
-        [NotifyPropertyChangedFor(nameof(IsOnboardingLastStep))]
-        private bool _isOnboardingVisible;
-
-        [ObservableProperty]
-        private string _onboardingTitle;
-
-        [ObservableProperty]
-        private string _onboardingDescription;
-
-        public bool IsOnboardingFirstStep => _currentOnboardingStep == 0;
-        public bool IsOnboardingLastStep => _currentOnboardingStep == _onboardingSteps.Count - 1;
-
         public IAsyncRelayCommand OnAppearingCommand { get; }
-        public IRelayCommand NextOnboardingStepCommand { get; }
-        public IRelayCommand PreviousOnboardingStepCommand { get; }
-        public IRelayCommand SkipOnboardingCommand { get; }
 
         public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService)
         {
@@ -66,69 +46,11 @@ namespace DriverLogisticsApp.ViewModels
             _allLoads = new List<Load>();
 
             OnAppearingCommand = new AsyncRelayCommand(OnAppearing);
-            NextOnboardingStepCommand = new RelayCommand(NextOnboardingStep);
-            PreviousOnboardingStepCommand = new RelayCommand(PreviousOnboardingStep);
-            SkipOnboardingCommand = new RelayCommand(SkipOnboarding);
-
-            _onboardingSteps = new List<OnboardingStep>
-            {
-                new OnboardingStep { Title = "Welcome to Truck Loads!", Description = "This short tour will walk you through the key features of the app." },
-                new OnboardingStep { Title = "Manage Your Loads", Description = "Create, update, and track your loads from planned to completed." },
-                new OnboardingStep { Title = "Track Your Expenses", Description = "Log expenses for each load, including fuel, tolls, and maintenance. You can even attach receipt photos!" },
-                new OnboardingStep { Title = "Generate Reports", Description = "Create professional PDF invoices and settlement reports." },
-                new OnboardingStep { Title = "Secure Your Data", Description = "Use the PIN lock feature to keep your financial data safe." },
-                new OnboardingStep { Title = "Get Started!", Description = "You're all set! Tap 'Done' to start using the app." }
-            };
         }
 
         private async Task OnAppearing()
         {
             await GetLoadsAsync();
-            StartOnboarding();
-        }
-
-        private void StartOnboarding()
-        {
-            if (Preferences.Get("OnboardingComplete", false))
-            {
-                return;
-            }
-            _currentOnboardingStep = 0;
-            UpdateOnboardingStep();
-            IsOnboardingVisible = true;
-        }
-
-        private void UpdateOnboardingStep()
-        {
-            var step = _onboardingSteps[_currentOnboardingStep];
-            OnboardingTitle = step.Title;
-            OnboardingDescription = step.Description;
-            OnPropertyChanged(nameof(IsOnboardingFirstStep));
-            OnPropertyChanged(nameof(IsOnboardingLastStep));
-        }
-
-        private void NextOnboardingStep()
-        {
-            if (_currentOnboardingStep < _onboardingSteps.Count - 1)
-            {
-                _currentOnboardingStep++;
-                UpdateOnboardingStep();
-            }
-        }
-
-        private void PreviousOnboardingStep()
-        {
-            if (_currentOnboardingStep > 0)
-            {
-                _currentOnboardingStep--;
-                UpdateOnboardingStep();
-            }
-        }
-
-        private void SkipOnboarding()
-        {
-            IsOnboardingVisible = false;
-            Preferences.Set("OnboardingComplete", true);
         }
 
         partial void OnSearchTextChanged(string value)

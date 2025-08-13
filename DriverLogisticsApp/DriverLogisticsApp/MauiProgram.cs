@@ -40,6 +40,7 @@ namespace DriverLogisticsApp
             builder.Services.AddSingleton<AddressDataService>();
 
             // view models
+            builder.Services.AddSingleton<AppShellViewModel>();
             builder.Services.AddTransient<MainPageViewModel>();
             builder.Services.AddTransient<AddLoadViewModel>();
             builder.Services.AddTransient<LoadDetailsViewModel>();
