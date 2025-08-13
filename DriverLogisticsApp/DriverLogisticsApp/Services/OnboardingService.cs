@@ -18,7 +18,7 @@ namespace DriverLogisticsApp.Services
             new OnboardingStep { Title = "Get Started!", Description = "You're all set! Tap 'Done' to start using the app." }
         };
 
-        private bool _onboardingInProgress = false;
+        private static bool _onboardingInProgress = false;
 
         public OnboardingService()
         {
