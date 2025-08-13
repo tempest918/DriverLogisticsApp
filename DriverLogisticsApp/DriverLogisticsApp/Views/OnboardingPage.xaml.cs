@@ -7,6 +7,7 @@ namespace DriverLogisticsApp.Views
     public partial class OnboardingPage : ContentPage
     {
         private readonly TaskCompletionSource<string> _tcs;
+        private bool _isActionTaken = false;
 
         public OnboardingPage(string title, string description, bool isFirstStep, bool isLastStep, TaskCompletionSource<string> tcs)
         {
@@ -33,24 +34,28 @@ namespace DriverLogisticsApp.Views
 
         private async void NextButton_Clicked(object sender, EventArgs e)
         {
+            _isActionTaken = true;
             _tcs.TrySetResult("next");
             await Navigation.PopModalAsync(false);
         }
 
         private async void PreviousButton_Clicked(object sender, EventArgs e)
         {
+            _isActionTaken = true;
             _tcs.TrySetResult("previous");
             await Navigation.PopModalAsync(false);
         }
 
         private async void SkipButton_Clicked(object sender, EventArgs e)
         {
+            _isActionTaken = true;
             _tcs.TrySetResult("skip");
             await Navigation.PopModalAsync(false);
         }
 
         private async void DoneButton_Clicked(object sender, EventArgs e)
         {
+            _isActionTaken = true;
             _tcs.TrySetResult("done");
             await Navigation.PopModalAsync(false);
         }
@@ -65,7 +70,10 @@ namespace DriverLogisticsApp.Views
         {
             base.OnDisappearing();
             // Ensure the task is completed if the page is dismissed by other means
-            _tcs.TrySetResult("dismissed");
+            if (!_isActionTaken)
+            {
+                _tcs.TrySetResult("dismissed");
+            }
         }
     }
 }
