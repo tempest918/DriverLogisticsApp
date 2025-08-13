@@ -1,11 +1,10 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -17,7 +16,6 @@ namespace DriverLogisticsApp.ViewModels
     {
         private readonly IDatabaseService _databaseService;
         private readonly INavigationService _navigationService;
-        private readonly IOnboardingService _onboardingService;
 
         private List<Load> _allLoads;
 
@@ -40,20 +38,16 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isBusy;
 
-        public IAsyncRelayCommand OnAppearingCommand { get; }
-
         /// <summary>
         /// initialize the view model for the main page
         /// </summary>
         /// <param name="databaseService"></param>
-        public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService, IOnboardingService onboardingService)
+        public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService)
         {
             _databaseService = databaseService;
             _navigationService = navigationService;
-            _onboardingService = onboardingService;
             _loads = new ObservableCollection<Load>();
             _allLoads = new List<Load>();
-            OnAppearingCommand = new AsyncRelayCommand(OnAppearing);
         }
 
         /// <summary>
@@ -163,12 +157,6 @@ namespace DriverLogisticsApp.ViewModels
         private async Task GoToSettlementReportAsync()
         {
             await _navigationService.NavigateToAsync(nameof(Views.SettlementReportPage));
-        }
-
-        private async Task OnAppearing()
-        {
-            await GetLoadsAsync();
-            await _onboardingService.StartOnboarding();
         }
 
         /// <summary>

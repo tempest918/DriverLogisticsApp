@@ -5,12 +5,20 @@ namespace DriverLogisticsApp.Popups
 {
     public partial class OnboardingPopup : Popup
     {
-        public OnboardingPopup(string title, string description, bool isFirstStep, bool isLastStep)
+        private readonly Action _onNext;
+        private readonly Action _onPrevious;
+        private readonly Action _onSkip;
+
+        public OnboardingPopup(string title, string description, bool isFirstStep, bool isLastStep, Action onNext, Action onPrevious, Action onSkip)
         {
             InitializeComponent();
 
             TitleLabel.Text = title;
             DescriptionLabel.Text = description;
+
+            _onNext = onNext;
+            _onPrevious = onPrevious;
+            _onSkip = onSkip;
 
             var previousButton = this.FindByName<Button>("PreviousButton");
             if (previousButton != null)
@@ -38,22 +46,26 @@ namespace DriverLogisticsApp.Popups
 
         private void NextButton_Clicked(object sender, EventArgs e)
         {
-            this.Close("next");
+            _onNext?.Invoke();
+            (this as CommunityToolkit.Maui.Views.Popup)?.CloseAsync();
         }
 
         private void PreviousButton_Clicked(object sender, EventArgs e)
         {
-            this.Close("previous");
+            _onPrevious?.Invoke();
+            (this as CommunityToolkit.Maui.Views.Popup)?.CloseAsync();
         }
 
         private void SkipButton_Clicked(object sender, EventArgs e)
         {
-            this.Close("skip");
+            _onSkip?.Invoke();
+            (this as CommunityToolkit.Maui.Views.Popup)?.CloseAsync();
         }
 
         private void DoneButton_Clicked(object sender, EventArgs e)
         {
-            this.Close("done");
+            _onNext?.Invoke();
+            (this as CommunityToolkit.Maui.Views.Popup)?.CloseAsync();
         }
     }
 }
