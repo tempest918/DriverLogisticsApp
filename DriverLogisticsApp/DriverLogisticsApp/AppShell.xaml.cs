@@ -1,23 +1,23 @@
-using DriverLogisticsApp.ViewModels;
+﻿using DriverLogisticsApp.Views;
 
-namespace DriverLogisticsApp;
-
-public partial class AppShell : Shell
+namespace DriverLogisticsApp
 {
-	public AppShell(AppShellViewModel viewModel)
-	{
-		InitializeComponent();
-		BindingContext = viewModel;
+    public partial class AppShell : Shell
+    {
+        public AppShell()
+        {
+            InitializeComponent();
 
-		Routing.RegisterRoute(nameof(Views.AddLoadPage), typeof(Views.AddLoadPage));
-        Routing.RegisterRoute(nameof(Views.LoadDetailsPage), typeof(Views.LoadDetailsPage));
-        Routing.RegisterRoute(nameof(Views.AddExpensePage), typeof(Views.AddExpensePage));
-        Routing.RegisterRoute(nameof(Views.ExpenseDetailsPage), typeof(Views.ExpenseDetailsPage));
-        Routing.RegisterRoute(nameof(Views.SettlementReportPage), typeof(Views.SettlementReportPage));
-        Routing.RegisterRoute(nameof(Views.ProfilePage), typeof(Views.ProfilePage));
-        Routing.RegisterRoute(nameof(Views.LoginPage), typeof(Views.LoginPage));
-        Routing.RegisterRoute(nameof(Views.CompanyListPage), typeof(Views.CompanyListPage));
-        Routing.RegisterRoute(nameof(Views.AddEditCompanyPage), typeof(Views.AddEditCompanyPage));
-        Routing.RegisterRoute(nameof(Views.SettingsPage), typeof(Views.SettingsPage));
+            // routing for navigation
+            Routing.RegisterRoute("AddLoadPage", typeof(Views.AddLoadPage));
+            Routing.RegisterRoute("LoadDetailsPage", typeof(Views.LoadDetailsPage));
+            Routing.RegisterRoute("AddExpensePage", typeof(Views.AddExpensePage));
+            Routing.RegisterRoute("ExpenseDetailsPage", typeof(Views.ExpenseDetailsPage));
+            Routing.RegisterRoute("SettlementReportPage", typeof(Views.SettlementReportPage));
+            Routing.RegisterRoute("ProfilePage", typeof(Views.ProfilePage));
+            Routing.RegisterRoute("LoginPage", typeof(Views.LoginPage));
+            Routing.RegisterRoute("CompanyListPage", typeof(Views.CompanyListPage));
+            Routing.RegisterRoute("AddEditCompanyPage", typeof(Views.AddEditCompanyPage));
+        }
     }
 }
