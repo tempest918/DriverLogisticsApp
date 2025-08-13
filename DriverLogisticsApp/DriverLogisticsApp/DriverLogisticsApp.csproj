@@ -65,9 +65,6 @@
       <Compile Update="Popups\OnboardingPopup.xaml.cs">
         <DependentUpon>OnboardingPopup.xaml</DependentUpon>
       </Compile>
-      <Compile Update="Views\OnboardingPage.xaml.cs">
-        <DependentUpon>OnboardingPage.xaml</DependentUpon>
-      </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -105,9 +102,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
       <MauiXaml Update="Popups\OnboardingPopup.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </MauiXaml>
-      <MauiXaml Update="Views\OnboardingPage.xaml">
         <Generator>MSBuild:Compile</Generator>
       </MauiXaml>
 	</ItemGroup>

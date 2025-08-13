@@ -14,7 +14,6 @@ namespace DriverLogisticsApp.ViewModels
     {
         private readonly IDatabaseService _databaseService;
         private readonly INavigationService _navigationService;
-        private readonly IOnboardingService _onboardingService;
 
         private List<Load> _allLoads;
 
@@ -39,20 +38,19 @@ namespace DriverLogisticsApp.ViewModels
 
         public IAsyncRelayCommand OnAppearingCommand { get; }
 
-        public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService, IOnboardingService onboardingService)
+        public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService)
         {
             _databaseService = databaseService;
             _navigationService = navigationService;
-            _onboardingService = onboardingService;
             _loads = new ObservableCollection<Load>();
             _allLoads = new List<Load>();
+
             OnAppearingCommand = new AsyncRelayCommand(OnAppearing);
         }
 
         private async Task OnAppearing()
         {
             await GetLoadsAsync();
-            await _onboardingService.StartOnboardingIfNeeded();
         }
 
         partial void OnSearchTextChanged(string value)

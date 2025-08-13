@@ -23,7 +23,7 @@ namespace DriverLogisticsApp
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await _viewModel.GetLoadsCommand.ExecuteAsync(null);
+            await _viewModel.OnAppearingCommand.ExecuteAsync(null);
         }
     }
 }
