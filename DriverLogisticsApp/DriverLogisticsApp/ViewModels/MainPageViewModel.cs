@@ -1,10 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -39,6 +40,8 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isBusy;
 
+        public IAsyncRelayCommand OnAppearingCommand { get; }
+
         /// <summary>
         /// initialize the view model for the main page
         /// </summary>
@@ -50,6 +53,7 @@ namespace DriverLogisticsApp.ViewModels
             _onboardingService = onboardingService;
             _loads = new ObservableCollection<Load>();
             _allLoads = new List<Load>();
+            OnAppearingCommand = new AsyncRelayCommand(OnAppearing);
         }
 
         /// <summary>
@@ -161,7 +165,6 @@ namespace DriverLogisticsApp.ViewModels
             await _navigationService.NavigateToAsync(nameof(Views.SettlementReportPage));
         }
 
-        [RelayCommand]
         private async Task OnAppearing()
         {
             await GetLoadsAsync();
