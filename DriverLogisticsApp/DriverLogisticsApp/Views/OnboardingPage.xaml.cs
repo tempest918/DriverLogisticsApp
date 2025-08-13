@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.Maui.Controls;
 
 namespace DriverLogisticsApp.Views
@@ -31,24 +32,28 @@ namespace DriverLogisticsApp.Views
         private async void NextButton_Clicked(object sender, EventArgs e)
         {
             UserAction = "next";
+            Debug.WriteLine($"[OnboardingPage] Action set to: {UserAction}");
             await Navigation.PopModalAsync(false);
         }
 
         private async void PreviousButton_Clicked(object sender, EventArgs e)
         {
             UserAction = "previous";
+            Debug.WriteLine($"[OnboardingPage] Action set to: {UserAction}");
             await Navigation.PopModalAsync(false);
         }
 
         private async void SkipButton_Clicked(object sender, EventArgs e)
         {
             UserAction = "skip";
+            Debug.WriteLine($"[OnboardingPage] Action set to: {UserAction}");
             await Navigation.PopModalAsync(false);
         }
 
         private async void DoneButton_Clicked(object sender, EventArgs e)
         {
             UserAction = "done";
+            Debug.WriteLine($"[OnboardingPage] Action set to: {UserAction}");
             await Navigation.PopModalAsync(false);
         }
     }

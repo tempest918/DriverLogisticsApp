@@ -40,6 +40,7 @@ namespace DriverLogisticsApp.Services
                 await Shell.Current.Navigation.PushModalAsync(onboardingPage, false);
 
                 var userAction = onboardingPage.UserAction;
+                System.Diagnostics.Debug.WriteLine($"[OnboardingService] User action was: {userAction ?? "null"}");
 
                 switch (userAction)
                 {
