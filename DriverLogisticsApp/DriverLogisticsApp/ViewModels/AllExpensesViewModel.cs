@@ -46,12 +46,6 @@ namespace DriverLogisticsApp.ViewModels
 
             ExpenseTypes = new ObservableCollection<string> { "All", "General Expenses" };
             _selectedExpenseType = "All";
-
-            // manually trigger property changed notifications to run the filter
-            OnStartDateChanged(StartDate);
-            OnEndDateChanged(EndDate);
-            OnSelectedExpenseTypeChanged(SelectedExpenseType);
-            OnSearchTextChanged(SearchText);
         }
 
         partial void OnStartDateChanged(DateTime value) => FilterExpenses();
