@@ -17,9 +17,9 @@
                 <Label Grid.Row="0" Grid.Column="1" Text="End Date" />
                 <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding EndDate}" />
             </Grid>
-            <Picker Title="Expense Type"
-                    ItemsSource="{Binding ExpenseTypes}"
-                    SelectedItem="{Binding SelectedExpenseType}" />
+            <Picker Title="Category"
+                    ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding SelectedCategory}" />
             <SearchBar Placeholder="Search..." Text="{Binding SearchText}" />
         </VerticalStackLayout>
 

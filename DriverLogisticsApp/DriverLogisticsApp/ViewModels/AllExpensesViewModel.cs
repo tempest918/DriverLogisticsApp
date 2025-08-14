@@ -26,12 +26,12 @@ namespace DriverLogisticsApp.ViewModels
         private DateTime _endDate;
 
         [ObservableProperty]
-        private string _selectedExpenseType;
+        private string _selectedCategory;
 
         [ObservableProperty]
         private string _searchText;
 
-        public ObservableCollection<string> ExpenseTypes { get; }
+        public ObservableCollection<string> Categories { get; }
 
         public AllExpensesViewModel(IDatabaseService databaseService, INavigationService navigationService)
         {
@@ -44,13 +44,13 @@ namespace DriverLogisticsApp.ViewModels
             _startDate = new DateTime(today.Year, today.Month, 1);
             _endDate = _startDate.AddMonths(1).AddDays(-1);
 
-            ExpenseTypes = new ObservableCollection<string> { "All", "General Expenses" };
-            _selectedExpenseType = "All";
+            Categories = new ObservableCollection<string> { "All", "Fuel", "Toll", "Maintenance", "Food", "Other" };
+            _selectedCategory = "All";
         }
 
         partial void OnStartDateChanged(DateTime value) => FilterExpenses();
         partial void OnEndDateChanged(DateTime value) => FilterExpenses();
-        partial void OnSelectedExpenseTypeChanged(string value) => FilterExpenses();
+        partial void OnSelectedCategoryChanged(string value) => FilterExpenses();
         partial void OnSearchTextChanged(string value) => FilterExpenses();
 
 
@@ -84,10 +84,10 @@ namespace DriverLogisticsApp.ViewModels
             // Date range filter
             filtered = filtered.Where(e => e.Date.Date >= StartDate.Date && e.Date.Date <= EndDate.Date);
 
-            // Expense type filter
-            if (SelectedExpenseType == "General Expenses")
+            // Category filter
+            if (SelectedCategory != "All")
             {
-                filtered = filtered.Where(e => e is GeneralExpense && !e.LoadId.HasValue);
+                filtered = filtered.Where(e => e.Category == SelectedCategory);
             }
 
             // Search text filter
