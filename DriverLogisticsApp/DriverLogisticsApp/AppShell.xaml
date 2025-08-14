@@ -8,7 +8,7 @@
     Title="DriverLogisticsApp">
 
     <TabBar>
-        <Tab Title="Home" Route="MainPage">
+        <Tab Title="Home" Route="HomeTab">
             <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
@@ -22,7 +22,7 @@
                 Route="MainPage"/>
         </Tab>
 
-        <Tab Title="Companies" Route="CompanyListPage">
+        <Tab Title="Companies" Route="CompaniesTab">
             <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
@@ -36,7 +36,7 @@
                 Route="CompanyListPage"/>
         </Tab>
 
-        <Tab Title="Reports" Route="SettlementReportPage">
+        <Tab Title="Reports" Route="ReportsTab">
             <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
@@ -50,7 +50,7 @@
                 Route="SettlementReportPage"/>
         </Tab>
 
-        <Tab Title="Profile" Route="ProfilePage">
+        <Tab Title="Profile" Route="ProfileTab">
             <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
@@ -64,7 +64,7 @@
                 Route="ProfilePage"/>
         </Tab>
 
-        <Tab Title="Settings" Route="SettingsPage">
+        <Tab Title="Settings" Route="SettingsTab">
             <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
