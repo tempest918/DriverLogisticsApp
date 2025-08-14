@@ -99,6 +99,13 @@ namespace DriverLogisticsApp.ViewModels
         }
 
         [RelayCommand]
+        private async Task ReplayTutorial()
+        {
+            _preferences.Set("OnboardingComplete", false);
+            await _navigationService.NavigateToAsync("//MainPage");
+        }
+
+        [RelayCommand]
         private async Task ContactSupport()
         {
             try

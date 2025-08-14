@@ -4,6 +4,7 @@ namespace DriverLogisticsApp
 {
     public partial class AppShell : Shell
     {
+        private bool _isTabChange;
         public AppShell()
         {
             InitializeComponent();
@@ -21,6 +22,29 @@ namespace DriverLogisticsApp
             Routing.RegisterRoute(nameof(PrivacyPolicyPage), typeof(PrivacyPolicyPage));
             Routing.RegisterRoute(nameof(AllExpensesPage), typeof(AllExpensesPage));
             Routing.RegisterRoute(nameof(LoadsArchivePage), typeof(LoadsArchivePage));
+        }
+
+        protected override void OnNavigating(ShellNavigatingEventArgs args)
+        {
+            base.OnNavigating(args);
+            _isTabChange = args.Source == ShellNavigationSource.ShellSectionChanged;
+        }
+
+        protected override void OnNavigated(ShellNavigatedEventArgs args)
+        {
+            base.OnNavigated(args);
+
+            if (_isTabChange)
+            {
+                if (Shell.Current.Navigation.NavigationStack.Count > 1)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Shell.Current.Navigation.PopToRootAsync(false);
+                    });
+                }
+                _isTabChange = false;
+            }
         }
     }
 }
