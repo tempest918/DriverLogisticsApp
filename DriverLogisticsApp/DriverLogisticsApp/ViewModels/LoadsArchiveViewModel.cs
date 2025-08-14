@@ -44,7 +44,7 @@ namespace DriverLogisticsApp.ViewModels
             _startDate = new DateTime(today.Year, today.Month, 1);
             _endDate = _startDate.AddMonths(1).AddDays(-1);
 
-            Statuses = new ObservableCollection<string> { "All", "Planned", "In Progress", "Completed", "Cancelled" };
+            Statuses = new ObservableCollection<string> { "All", "Planned", "In Progress", "Completed", "Invoiced", "Cancelled" };
             _selectedStatus = "All";
         }
 

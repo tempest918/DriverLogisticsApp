@@ -1,25 +1,42 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
-             xmlns:models="clr-namespace:DriverLogisticsApp.Models.ExpenseTypes"
-             x:Class="DriverLogisticsApp.Views.AllExpensesPage"
-             Title="All Expenses"
-             x:DataType="viewmodels:AllExpensesViewModel">
+<ContentPage
+    x:Class="DriverLogisticsApp.Views.AllExpensesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:DriverLogisticsApp.Models.ExpenseTypes"
+    xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+    Title="All Expenses"
+    x:DataType="viewmodels:AllExpensesViewModel">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add Expense" Command="{Binding GoToAddExpenseCommand}" />
+        <ToolbarItem Command="{Binding GoToAddExpenseCommand}" Text="Add General Expense" />
     </ContentPage.ToolbarItems>
     <Grid RowDefinitions="Auto, *">
         <VerticalStackLayout Grid.Row="0" Margin="10">
-            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10">
-                <Label Grid.Row="0" Grid.Column="0" Text="Start Date" />
-                <DatePicker Grid.Row="1" Grid.Column="0" Date="{Binding StartDate}" />
-                <Label Grid.Row="0" Grid.Column="1" Text="End Date" />
-                <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding EndDate}" />
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10"
+                RowDefinitions="Auto,Auto">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Text="Start Date" />
+                <DatePicker
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Date="{Binding StartDate}" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Text="End Date" />
+                <DatePicker
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Date="{Binding EndDate}" />
             </Grid>
-            <Picker Title="Category"
-                    ItemsSource="{Binding Categories}"
-                    SelectedItem="{Binding SelectedCategory}" />
+            <Picker
+                Title="Category"
+                ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding SelectedCategory}" />
             <SearchBar Placeholder="Search..." Text="{Binding SearchText}" />
         </VerticalStackLayout>
 
@@ -37,9 +54,9 @@
                         </Border.GestureRecognizers>
 
                         <VerticalStackLayout>
-                            <Label Text="{Binding FormattedDetails}" FontAttributes="Bold" />
+                            <Label FontAttributes="Bold" Text="{Binding FormattedDetails}" />
                             <Label Text="{Binding Amount, StringFormat='{0:C}'}" />
-                            <Label Text="{Binding LoadNumber, StringFormat='Load: {0}'}" IsVisible="{Binding LoadId, Converter={StaticResource NullToBoolConverter}}" />
+                            <Label IsVisible="{Binding LoadId, Converter={StaticResource NullToBoolConverter}}" Text="{Binding LoadNumber, StringFormat='Load: {0}'}" />
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
