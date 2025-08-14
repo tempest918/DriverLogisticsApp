@@ -8,70 +8,74 @@
     Title="DriverLogisticsApp">
 
     <TabBar>
-        <ShellContent
-            Title="Home"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Route="MainPage">
-            <ShellContent.Icon>
+        <Tab Title="Home" Route="MainPage">
+            <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
                     Glyph="&#xe88a;"
                     Color="{AppThemeBinding Light={StaticResource Primary},
                                             Dark={StaticResource White}}" />
-            </ShellContent.Icon>
-        </ShellContent>
+            </Tab.Icon>
+            <ShellContent
+                Title="Home"
+                ContentTemplate="{DataTemplate local:MainPage}"
+                Route="MainPage"/>
+        </Tab>
 
-        <ShellContent
-            Title="Companies"
-            ContentTemplate="{DataTemplate views:CompanyListPage}"
-            Route="CompanyListPage">
-            <ShellContent.Icon>
+        <Tab Title="Companies" Route="CompanyListPage">
+            <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
                     Glyph="&#xf1d0;"
                     Color="{AppThemeBinding Light={StaticResource Primary},
                                             Dark={StaticResource White}}" />
-            </ShellContent.Icon>
-        </ShellContent>
+            </Tab.Icon>
+            <ShellContent
+                Title="Companies"
+                ContentTemplate="{DataTemplate views:CompanyListPage}"
+                Route="CompanyListPage"/>
+        </Tab>
 
-
-        <ShellContent
-            Title="Reports"
-            ContentTemplate="{DataTemplate views:SettlementReportPage}"
-            Route="SettlementReportPage">
-            <ShellContent.Icon>
+        <Tab Title="Reports" Route="SettlementReportPage">
+            <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
                     Glyph="&#xe26b;"
                     Color="{AppThemeBinding Light={StaticResource Primary},
                                             Dark={StaticResource White}}" />
-            </ShellContent.Icon>
-        </ShellContent>
+            </Tab.Icon>
+            <ShellContent
+                Title="Reports"
+                ContentTemplate="{DataTemplate views:SettlementReportPage}"
+                Route="SettlementReportPage"/>
+        </Tab>
 
-        <ShellContent
-            Title="Profile"
-            ContentTemplate="{DataTemplate views:ProfilePage}"
-            Route="ProfilePage">
-            <ShellContent.Icon>
+        <Tab Title="Profile" Route="ProfilePage">
+            <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
                     Glyph="&#xe853;"
                     Color="{AppThemeBinding Light={StaticResource Primary},
                                             Dark={StaticResource White}}" />
-            </ShellContent.Icon>
-        </ShellContent>
+            </Tab.Icon>
+            <ShellContent
+                Title="Profile"
+                ContentTemplate="{DataTemplate views:ProfilePage}"
+                Route="ProfilePage"/>
+        </Tab>
 
-        <ShellContent
-            Title="Settings"
-            ContentTemplate="{DataTemplate views:SettingsPage}"
-            Route="SettingsPage">
-            <ShellContent.Icon>
+        <Tab Title="Settings" Route="SettingsPage">
+            <Tab.Icon>
                 <FontImageSource
                     FontFamily="MaterialIcons"
                     Glyph="&#xe8b8;"
                     Color="{AppThemeBinding Light={StaticResource Primary},
                                             Dark={StaticResource White}}" />
-            </ShellContent.Icon>
-        </ShellContent>
+            </Tab.Icon>
+            <ShellContent
+                Title="Settings"
+                ContentTemplate="{DataTemplate views:SettingsPage}"
+                Route="SettingsPage"/>
+        </Tab>
     </TabBar>
 </Shell>

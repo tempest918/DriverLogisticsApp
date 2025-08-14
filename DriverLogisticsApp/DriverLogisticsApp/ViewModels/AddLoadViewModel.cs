@@ -240,7 +240,10 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task GoToAddCompanyAsync()
         {
-            await _navigationService.NavigateToAsync(nameof(Views.AddEditCompanyPage));
+            await _navigationService.NavigateToAsync(nameof(Views.AddEditCompanyPage), new Dictionary<string, object>
+            {
+                { "CompanyId", 0 }
+            });
         }
 
     }

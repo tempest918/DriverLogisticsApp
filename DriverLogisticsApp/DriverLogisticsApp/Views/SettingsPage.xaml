@@ -91,6 +91,7 @@
                     FontSize="Large"
                     Text="Information" />
                 <Button Command="{Binding GoToPrivacyPolicyCommand}" Text="Privacy Policy" />
+                <Button Command="{Binding ReplayTutorialCommand}" Text="Replay Tutorial" />
                 <Button Command="{Binding ContactSupportCommand}" Text="Contact Support" />
 
             </VerticalStackLayout>
