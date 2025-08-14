@@ -16,6 +16,8 @@
 
         public string Category { get; set; } = string.Empty;
 
+        public string? LoadNumber { get; set; }
+
         public abstract string FormattedDetails { get; }
     }
 }

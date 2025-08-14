@@ -4,13 +4,26 @@
              xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
              xmlns:models="clr-namespace:DriverLogisticsApp.Models.ExpenseTypes"
              x:Class="DriverLogisticsApp.Views.AllExpensesPage"
-             Title="General Expenses"
+             Title="All Expenses"
              x:DataType="viewmodels:AllExpensesViewModel">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add General Expense" Command="{Binding GoToAddExpenseCommand}" />
+        <ToolbarItem Text="Add Expense" Command="{Binding GoToAddExpenseCommand}" />
     </ContentPage.ToolbarItems>
-    <Grid>
-        <CollectionView ItemsSource="{Binding Expenses}"
+    <Grid RowDefinitions="Auto, *">
+        <VerticalStackLayout Grid.Row="0" Margin="10">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10">
+                <Label Grid.Row="0" Grid.Column="0" Text="Start Date" />
+                <DatePicker Grid.Row="1" Grid.Column="0" Date="{Binding StartDate}" />
+                <Label Grid.Row="0" Grid.Column="1" Text="End Date" />
+                <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding EndDate}" />
+            </Grid>
+            <Picker Title="Expense Type"
+                    ItemsSource="{Binding ExpenseTypes}"
+                    SelectedItem="{Binding SelectedExpenseType}" />
+            <SearchBar Placeholder="Search..." Text="{Binding SearchText}" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Expenses}"
                         IsPullToRefreshEnabled="True"
                         RefreshCommand="{Binding LoadExpensesCommand}"
                         IsRefreshing="{Binding IsBusy, Mode=OneWay}">
@@ -29,6 +42,7 @@
                         <VerticalStackLayout>
                             <Label Text="{Binding FormattedDetails}" FontAttributes="Bold" />
                             <Label Text="{Binding Amount, StringFormat='{0:C}'}" />
+                            <Label Text="{Binding LoadNumber, StringFormat='Load: {0}'}" IsVisible="{Binding LoadId, Converter={StaticResource NullToBoolConverter}}" />
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
@@ -36,7 +50,7 @@
             <CollectionView.EmptyView>
                 <Label
                     HorizontalOptions="Center"
-                    Text="No general expenses found."
+                    Text="No expenses found."
                     VerticalOptions="Center" />
             </CollectionView.EmptyView>
         </CollectionView>

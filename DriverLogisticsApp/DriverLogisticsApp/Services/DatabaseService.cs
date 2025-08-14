@@ -222,6 +222,8 @@ namespace DriverLogisticsApp.Services
             await Init();
             List<Models.Expense> dbExpenses;
 
+            List<Load> allLoads = null;
+
             if (loadId != 0)
             {
                 // get all expenses for the specified load
@@ -231,6 +233,7 @@ namespace DriverLogisticsApp.Services
             {
                 // get all expenses if loadId is 0, including those not associated with a load
                 dbExpenses = await _database!.Table<Models.Expense>().ToListAsync();
+                allLoads = await _database.Table<Load>().ToListAsync();
             }
 
             var expenseList = new List<Models.ExpenseTypes.Expense>();
@@ -260,6 +263,15 @@ namespace DriverLogisticsApp.Services
                 specificExpense.Description = dbExpense.Description;
                 specificExpense.ReceiptImagePath = dbExpense.ReceiptImagePath;
                 specificExpense.Category = dbExpense.Category;
+
+                if (dbExpense.LoadId.HasValue && allLoads != null)
+                {
+                    var load = allLoads.FirstOrDefault(l => l.Id == dbExpense.LoadId.Value);
+                    if (load != null)
+                    {
+                        specificExpense.LoadNumber = load.LoadNumber;
+                    }
+                }
 
                 expenseList.Add(specificExpense);
             }
