@@ -14,6 +14,7 @@ namespace DriverLogisticsApp.ViewModels
     {
         private readonly IDatabaseService _databaseService;
         private readonly INavigationService _navigationService;
+        private readonly IPreferences _preferences;
 
         private List<Load> _allLoads;
         private readonly List<OnboardingStep> _onboardingSteps;
@@ -58,10 +59,11 @@ namespace DriverLogisticsApp.ViewModels
         public IRelayCommand PreviousOnboardingStepCommand { get; }
         public IRelayCommand SkipOnboardingCommand { get; }
 
-        public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService)
+        public MainPageViewModel(IDatabaseService databaseService, INavigationService navigationService, IPreferences preferences)
         {
             _databaseService = databaseService;
             _navigationService = navigationService;
+            _preferences = preferences;
             _loads = new ObservableCollection<Load>();
             _allLoads = new List<Load>();
 
@@ -165,18 +167,21 @@ namespace DriverLogisticsApp.ViewModels
         private void FilterLoads()
         {
             IEnumerable<Load> filteredLoads;
+            var showUninvoicedLoads = _preferences.Get("show_uninvoiced_loads", true);
+
+            var activeLoads = _allLoads.Where(l =>
+                !l.IsCancelled &&
+                (l.Status == "Planned" || l.Status == "In Progress" || (showUninvoicedLoads && l.Status == "Completed")));
 
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
-                filteredLoads = _allLoads.Where(load =>
+                filteredLoads = activeLoads.Where(load =>
                     load.LoadNumber.ToLower().Contains(SearchText.ToLower()) ||
                     load.ShipperName.ToLower().Contains(SearchText.ToLower()));
             }
             else
             {
-                filteredLoads = _allLoads.Where(l =>
-                    !l.IsCancelled &&
-                    (l.Status == "Planned" || l.Status == "In Progress" || l.Status == "Completed"));
+                filteredLoads = activeLoads;
             }
 
             Loads.Clear();

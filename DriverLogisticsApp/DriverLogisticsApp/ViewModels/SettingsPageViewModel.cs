@@ -36,6 +36,9 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isDarkMode;
 
+        [ObservableProperty]
+        private bool _showUninvoicedLoads;
+
         public SettingsPageViewModel(IAlertService alertService, ISecureStorageService secureStorageService, IDatabaseService databaseService, IJsonImportExportService jsonService, INavigationService navigationService, IPreferences preferences)
         {
             _alertService = alertService;
@@ -48,6 +51,7 @@ namespace DriverLogisticsApp.ViewModels
             Load();
             
             IsDarkMode = _preferences.Get("dark_mode", false);
+            ShowUninvoicedLoads = _preferences.Get("show_uninvoiced_loads", true);
         }
 
         private async void Load()
@@ -56,9 +60,14 @@ namespace DriverLogisticsApp.ViewModels
             IsAuthenticationEnabled = !string.IsNullOrWhiteSpace(savedPin);
         }
 
+        partial void OnShowUninvoicedLoadsChanged(bool value)
+        {
+            _preferences.Set("show_uninvoiced_loads", value);
+        }
+
         partial void OnIsDarkModeChanged(bool value)
         {
-            Preferences.Set("dark_mode", value);
+            _preferences.Set("dark_mode", value);
             Application.Current.UserAppTheme = value ? AppTheme.Dark : AppTheme.Light;
         }
 
