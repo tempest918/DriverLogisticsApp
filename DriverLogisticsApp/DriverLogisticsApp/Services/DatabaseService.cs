@@ -229,7 +229,7 @@ namespace DriverLogisticsApp.Services
             }
             else
             {
-                // get all expenses for all loads if loadId is 0
+                // get all expenses if loadId is 0, including those not associated with a load
                 dbExpenses = await _database!.Table<Models.Expense>().ToListAsync();
             }
 

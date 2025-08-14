@@ -20,7 +20,7 @@ namespace DriverLogisticsApp.ViewModels
         private readonly INavigationService _navigationService;
 
         [ObservableProperty]
-        private int _loadId;
+        private int? _loadId;
 
         [ObservableProperty]
         private string _selectedCategory;
@@ -84,6 +84,11 @@ namespace DriverLogisticsApp.ViewModels
             if (value > 0)
             {
                 await LoadExpenseForEditAsync();
+            }
+            else
+            {
+                Title = "Add Expense";
+                LoadId = null;
             }
         }
 

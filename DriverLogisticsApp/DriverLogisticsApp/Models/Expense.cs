@@ -8,7 +8,7 @@ namespace DriverLogisticsApp.Models
         public int Id { get; set; }
 
         [Indexed]
-        public int LoadId { get; set; }
+        public int? LoadId { get; set; }
 
         public string Category { get; set; } = string.Empty;
 

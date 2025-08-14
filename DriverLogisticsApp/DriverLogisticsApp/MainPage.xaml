@@ -49,11 +49,12 @@
                             Grid.Row="2"
                             Grid.Column="0"
                             Text="Total Expenses:" />
-                        <Label
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            HorizontalTextAlignment="End"
-                            Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
+                        <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalOptions="End">
+                            <Label
+                                HorizontalTextAlignment="End"
+                                Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
+                            <Button Text="View" Command="{Binding GoToAllExpensesCommand}" Padding="5,0" Margin="5,0,0,0" />
+                        </StackLayout>
 
                         <Label
                             Grid.Row="3"

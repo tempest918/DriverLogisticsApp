@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        public int LoadId { get; set; }
+        public int? LoadId { get; set; }
 
         public decimal Amount { get; set; }
 
