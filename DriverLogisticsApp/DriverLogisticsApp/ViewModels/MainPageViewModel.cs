@@ -73,10 +73,10 @@ namespace DriverLogisticsApp.ViewModels
             _onboardingSteps = new List<OnboardingStep>
             {
                 new OnboardingStep { Title = "Welcome to Truck Loads!", Description = "This short tour will walk you through the key features of the app." },
-                new OnboardingStep { Title = "Manage Your Loads", Description = "To add a new load, tap the 'Add' button on the top right of the main screen." },
-                new OnboardingStep { Title = "Track Your Expenses", Description = "To add an expense, go to a load's details and tap 'Add Expense'." },
-                new OnboardingStep { Title = "Generate Reports", Description = "You can generate a settlement report from the 'Settlement Report' option in the main menu." },
-                new OnboardingStep { Title = "Secure Your Data", Description = "You can enable PIN lock in the 'Settings' menu." },
+                new OnboardingStep { Title = "Manage Your Loads", Description = "Create, update, and track your loads from planned to completed.\r\n\r\n To add a new load, tap the 'Add' button on the top right of the main screen.\r\n\r\nFrom the Add Load screen you can add all load details as well as create companies to use as shippers and consignees." },
+                new OnboardingStep { Title = "Track Your Expenses", Description = "Log expenses for each load, including fuel, tolls, and maintenance. You can also attach receipt photos to expenses.\r\n\r\nTo add an expense, go to a load's details and tap 'Add Expense'." },
+                new OnboardingStep { Title = "Generate Reports", Description = "Create professional PDF invoices and settlement reports.\r\n\r\nYou can generate invoices from the load details screen of a completed load by tapping the create invoice toolbar item. \r\n\r\nYou can generate a settlement report from the 'Reports' section of the app." },
+                new OnboardingStep { Title = "Secure Your Data", Description = "Use the PIN lock feature to keep your financial data safe.\r\n\r\nYou can enable PIN lock in the 'Settings' menu.\r\n\r\nYou can also import and export data and toggle dark mode in the Settings." },
                 new OnboardingStep { Title = "Get Started!", Description = "You're all set! Tap 'Done' to start using the app." }
             };
         }
