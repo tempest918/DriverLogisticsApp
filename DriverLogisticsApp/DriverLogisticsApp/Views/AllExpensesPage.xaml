@@ -4,34 +4,41 @@
              xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
              xmlns:models="clr-namespace:DriverLogisticsApp.Models.ExpenseTypes"
              x:Class="DriverLogisticsApp.Views.AllExpensesPage"
-             Title="All Expenses"
+             Title="General Expenses"
              x:DataType="viewmodels:AllExpensesViewModel">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add Expense" Command="{Binding GoToAddExpenseCommand}" />
+        <ToolbarItem Text="Add General Expense" Command="{Binding GoToAddExpenseCommand}" />
     </ContentPage.ToolbarItems>
     <Grid>
-        <ListView ItemsSource="{Binding Expenses}"
-                  IsPullToRefreshEnabled="True"
-                  RefreshCommand="{Binding LoadExpensesCommand}"
-                  IsRefreshing="{Binding IsBusy, Mode=OneWay}"
-                  SelectionMode="None">
-            <ListView.ItemTemplate>
+        <CollectionView ItemsSource="{Binding Expenses}"
+                        IsPullToRefreshEnabled="True"
+                        RefreshCommand="{Binding LoadExpensesCommand}"
+                        IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+            <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Expense">
-                    <ViewCell>
-                        <Grid Padding="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <VerticalStackLayout Grid.Column="0">
-                                <Label Text="{Binding FormattedDetails}" FontAttributes="Bold" />
-                                <Label Text="{Binding Amount, StringFormat='{0:C}'}" />
-                            </VerticalStackLayout>
-                            <Button Grid.Column="1" Text="Details" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AllExpensesViewModel}}, Path=GoToExpenseDetailsCommand}" CommandParameter="{Binding .}" />
-                        </Grid>
-                    </ViewCell>
+                    <Border
+                        Margin="10"
+                        Padding="15"
+                        Stroke="LightGray"
+                        StrokeShape="RoundRectangle 10">
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AllExpensesViewModel}}, Path=GoToExpenseDetailsCommand}" CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+
+                        <VerticalStackLayout>
+                            <Label Text="{Binding FormattedDetails}" FontAttributes="Bold" />
+                            <Label Text="{Binding Amount, StringFormat='{0:C}'}" />
+                        </VerticalStackLayout>
+                    </Border>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <Label
+                    HorizontalOptions="Center"
+                    Text="No general expenses found."
+                    VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+        </CollectionView>
     </Grid>
 </ContentPage>

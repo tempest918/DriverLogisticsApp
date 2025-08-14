@@ -293,7 +293,7 @@ namespace DriverLogisticsApp.Services
                     specificExpense = new Models.ExpenseTypes.MaintenanceExpense();
                     break;
                 default:
-                    specificExpense = new Models.ExpenseTypes.MaintenanceExpense { Description = dbExpense.Category };
+                    specificExpense = new GeneralExpense { Category = dbExpense.Category };
                     break;
             }
 

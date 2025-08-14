@@ -36,7 +36,8 @@ namespace DriverLogisticsApp.ViewModels
                 Expenses.Clear();
                 // Passing 0 to get all expenses, including those not associated with a load
                 var expenses = await _databaseService.GetExpensesForLoadAsync(0);
-                foreach (var expense in expenses)
+                var generalExpenses = expenses.Where(e => e is GeneralExpense && !e.LoadId.HasValue);
+                foreach (var expense in generalExpenses)
                 {
                     Expenses.Add(expense);
                 }
