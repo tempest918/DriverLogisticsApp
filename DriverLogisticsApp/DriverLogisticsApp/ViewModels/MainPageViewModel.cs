@@ -91,7 +91,7 @@ namespace DriverLogisticsApp.ViewModels
 
         private void StartOnboarding()
         {
-            if (Preferences.Get("OnboardingComplete", false))
+            if (_preferences.Get("OnboardingComplete", false))
             {
                 return;
             }
@@ -130,7 +130,7 @@ namespace DriverLogisticsApp.ViewModels
         private void SkipOnboarding()
         {
             IsOnboardingVisible = false;
-            Preferences.Set("OnboardingComplete", true);
+            _preferences.Set("OnboardingComplete", true);
         }
 
         partial void OnSearchTextChanged(string value)

@@ -2,7 +2,9 @@
 {
     public interface IPreferences
     {
-        T Get<T>(string key, T defaultValue);
-        void Set<T>(string key, T value);
+        bool Get(string key, bool defaultValue);
+        void Set(string key, bool value);
+        string Get(string key, string defaultValue);
+        void Set(string key, string value);
     }
 }
