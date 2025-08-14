@@ -3,6 +3,7 @@ using DriverLogisticsApp.Models.ExpenseTypes;
 using DriverLogisticsApp.Services;
 using DriverLogisticsApp.ViewModels;
 using Moq;
+using IPreferences = DriverLogisticsApp.Services.IPreferences;
 
 namespace DriverLogisticsApp.Tests
 {
@@ -11,6 +12,7 @@ namespace DriverLogisticsApp.Tests
     {
         private Mock<IDatabaseService> _mockDbService;
         private Mock<INavigationService> _mockNavigationService;
+        private Mock<IPreferences> _mockPreferencesService;
         private MainPageViewModel _viewModel;
 
         [TestInitialize]
@@ -18,9 +20,12 @@ namespace DriverLogisticsApp.Tests
         {
             _mockDbService = new Mock<IDatabaseService>();
             _mockNavigationService = new Mock<INavigationService>();
+            _mockPreferencesService = new Mock<IPreferences>();
             _viewModel = new MainPageViewModel(
                 _mockDbService.Object,
-                _mockNavigationService.Object);
+                _mockNavigationService.Object,
+                _mockPreferencesService.Object
+                );
         }
 
         /// <summary>
@@ -53,12 +58,13 @@ namespace DriverLogisticsApp.Tests
             // ARRANGE
             var allLoads = new List<Load>
             {
-                new Load { Id = 1, LoadNumber = "ABC", ShipperName = "Apple" },
-                new Load { Id = 2, LoadNumber = "DEF", ShipperName = "Banana" },
-                new Load { Id = 3, LoadNumber = "GHI", ShipperName = "Apple Inc" }
+                new Load { Id = 1, LoadNumber = "ABC", ShipperName = "Apple", Status = "Planned" },
+                new Load { Id = 2, LoadNumber = "DEF", ShipperName = "Banana", Status = "Planned" },
+                new Load { Id = 3, LoadNumber = "GHI", ShipperName = "Apple Inc", Status = "Planned" }
             };
             _mockDbService.Setup(db => db.GetLoadsAsync()).ReturnsAsync(allLoads);
             _mockDbService.Setup(db => db.GetExpensesForLoadAsync(0)).ReturnsAsync(new List<Models.ExpenseTypes.Expense>());
+
 
             // ACT
             await _viewModel.GetLoadsCommand.ExecuteAsync(null);
