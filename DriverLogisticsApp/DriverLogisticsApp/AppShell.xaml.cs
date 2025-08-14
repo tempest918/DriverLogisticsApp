@@ -1,4 +1,5 @@
 ﻿using DriverLogisticsApp.Views;
+using System.ComponentModel;
 
 namespace DriverLogisticsApp
 {
@@ -7,6 +8,7 @@ namespace DriverLogisticsApp
         public AppShell()
         {
             InitializeComponent();
+            this.PropertyChanged += AppShell_PropertyChanged;
 
             // routing for navigation
             Routing.RegisterRoute("AddLoadPage", typeof(Views.AddLoadPage));
@@ -21,6 +23,17 @@ namespace DriverLogisticsApp
             Routing.RegisterRoute(nameof(PrivacyPolicyPage), typeof(PrivacyPolicyPage));
             Routing.RegisterRoute(nameof(AllExpensesPage), typeof(AllExpensesPage));
             Routing.RegisterRoute(nameof(LoadsArchivePage), typeof(LoadsArchivePage));
+        }
+
+        private async void AppShell_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CurrentItem))
+            {
+                if (Shell.Current.Navigation.NavigationStack.Count > 1)
+                {
+                    await Shell.Current.Navigation.PopToRootAsync();
+                }
+            }
         }
     }
 }
