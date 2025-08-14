@@ -12,6 +12,7 @@ namespace DriverLogisticsApp.ViewModels
         private readonly ISecureStorageService _secureStorageService;
         private readonly IDatabaseService _databaseService;
         private readonly IJsonImportExportService _jsonService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private bool _isBusy;
@@ -31,12 +32,13 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isDarkMode;
 
-        public SettingsPageViewModel(IAlertService alertService, ISecureStorageService secureStorageService, IDatabaseService databaseService, IJsonImportExportService jsonService)
+        public SettingsPageViewModel(IAlertService alertService, ISecureStorageService secureStorageService, IDatabaseService databaseService, IJsonImportExportService jsonService, INavigationService navigationService)
         {
             _alertService = alertService;
             _secureStorageService = secureStorageService;
             _databaseService = databaseService;
             _jsonService = jsonService;
+            _navigationService = navigationService;
             Load();
             IsDarkMode = Preferences.Get("dark_mode", false);
         }
@@ -108,7 +110,7 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task GoToPrivacyPolicy()
         {
-            await Launcher.OpenAsync(new Uri("https://abarnes.app/"));
+            await _navigationService.NavigateToAsync(nameof(PrivacyPolicyPage));
         }
 
         [RelayCommand]
