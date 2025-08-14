@@ -1,14 +1,13 @@
 ﻿using DriverLogisticsApp.Views;
-using System.ComponentModel;
 
 namespace DriverLogisticsApp
 {
     public partial class AppShell : Shell
     {
+        private bool _isTabChange;
         public AppShell()
         {
             InitializeComponent();
-            this.PropertyChanged += AppShell_PropertyChanged;
 
             // routing for navigation
             Routing.RegisterRoute("AddLoadPage", typeof(Views.AddLoadPage));
@@ -25,14 +24,26 @@ namespace DriverLogisticsApp
             Routing.RegisterRoute(nameof(LoadsArchivePage), typeof(LoadsArchivePage));
         }
 
-        private async void AppShell_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected override void OnNavigating(ShellNavigatingEventArgs args)
         {
-            if (e.PropertyName == nameof(CurrentItem))
+            base.OnNavigating(args);
+            _isTabChange = args.Source == ShellNavigationSource.ShellSectionChanged;
+        }
+
+        protected override void OnNavigated(ShellNavigatedEventArgs args)
+        {
+            base.OnNavigated(args);
+
+            if (_isTabChange)
             {
                 if (Shell.Current.Navigation.NavigationStack.Count > 1)
                 {
-                    await Shell.Current.Navigation.PopToRootAsync();
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Shell.Current.Navigation.PopToRootAsync(false);
+                    });
                 }
+                _isTabChange = false;
             }
         }
     }
