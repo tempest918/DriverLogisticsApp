@@ -83,6 +83,7 @@
                     FontSize="Large"
                     Text="Legal" />
                 <Button Command="{Binding GoToPrivacyPolicyCommand}" Text="Privacy Policy" />
+                <Button Command="{Binding ContactSupportCommand}" Text="Contact Support" />
 
             </VerticalStackLayout>
         </ScrollView>

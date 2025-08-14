@@ -83,6 +83,19 @@ namespace DriverLogisticsApp.ViewModels
         }
 
         [RelayCommand]
+        private async Task ContactSupport()
+        {
+            try
+            {
+                await Launcher.OpenAsync(new Uri("mailto:abarnesdev@gmail.com"));
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", "Could not open email client.", "OK");
+            }
+        }
+
+        [RelayCommand]
         private async Task SetPinAsync()
         {
             if (NewPin != ConfirmPin)
