@@ -21,8 +21,8 @@
 
                 <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto">
                     <VerticalStackLayout>
-                        <Label Text="Show uninvoiced loads in Loads list" VerticalOptions="Center" />
-                        <Label FontSize="Micro" Text="If invoicing loads is not necessary, you can hide loads waiting for an invoice from the active loads list" VerticalOptions="Center" />
+                        <Label Text="Show Completed Loads in Loads List" VerticalOptions="Center" />
+                        <Label FontSize="Micro" Text="Disabling this will hide loads in active loads waiting to be invoiced.  You can still see these loads in the archive." VerticalOptions="Center" />
                     </VerticalStackLayout>
                     <Switch Grid.Column="1" IsToggled="{Binding ShowUninvoicedLoads}" />
                 </Grid>

@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using IPreferences = DriverLogisticsApp.Services.IPreferences;
 
 namespace DriverLogisticsApp.ViewModels
 {
