@@ -29,6 +29,14 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-android'">
+		<AndroidPackageFormat>aab</AndroidPackageFormat>
+		<AndroidUseApkSigner>True</AndroidUseApkSigner>
+		<AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+		<AndroidEnableR8>true</AndroidEnableR8>
+		<AndroidIncludeSymbols>true</AndroidIncludeSymbols>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#1f487e" />
