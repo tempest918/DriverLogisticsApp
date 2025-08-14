@@ -10,7 +10,9 @@
     x:DataType="viewmodels:MainPageViewModel">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding GoToAddLoadCommand}" Text="Add" />
+        <ToolbarItem Command="{Binding GoToLoadsArchiveCommand}" Text="Archive" />
+        <ToolbarItem Command="{Binding GoToAllExpensesCommand}" Text="Expenses" />
+        <ToolbarItem Command="{Binding GoToAddLoadCommand}" Text="Add Load" />
     </ContentPage.ToolbarItems>
 
     <Grid>
@@ -117,9 +119,7 @@
             VerticalOptions="Center"
             Color="{StaticResource Primary}" />
 
-        <views:OnboardingOverlay
-            IsVisible="{Binding IsOnboardingVisible}"
-            BindingContext="{Binding .}"/>
+        <views:OnboardingOverlay BindingContext="{Binding .}" IsVisible="{Binding IsOnboardingVisible}" />
 
     </Grid>
 

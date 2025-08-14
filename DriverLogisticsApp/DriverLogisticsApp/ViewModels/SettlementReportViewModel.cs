@@ -20,10 +20,10 @@ namespace DriverLogisticsApp.ViewModels
         private readonly IAlertService _alertService;
 
         [ObservableProperty]
-        private DateTime _startDate = DateTime.Today.AddDays(-7);
+        private DateTime _startDate;
 
         [ObservableProperty]
-        private DateTime _endDate = DateTime.Today;
+        private DateTime _endDate;
 
         [ObservableProperty]
         private decimal _totalRevenue;
@@ -52,6 +52,10 @@ namespace DriverLogisticsApp.ViewModels
             _pdfService = pdfService;
             _alertService = alertService;
             IsReportGenerated = false;
+
+            var today = DateTime.Today;
+            _startDate = new DateTime(today.Year, today.Month, 1);
+            _endDate = _startDate.AddMonths(1).AddDays(-1);
         }
 
         /// <summary>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DriverLogisticsApp.Views.AllExpensesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:DriverLogisticsApp.Models.ExpenseTypes"
+    xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+    Title="All Expenses"
+    x:DataType="viewmodels:AllExpensesViewModel">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding GoToAddExpenseCommand}" Text="Add General Expense" />
+    </ContentPage.ToolbarItems>
+    <Grid RowDefinitions="Auto, *">
+        <VerticalStackLayout Grid.Row="0" Margin="10">
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10"
+                RowDefinitions="Auto,Auto">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Text="Start Date" />
+                <DatePicker
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Date="{Binding StartDate}" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Text="End Date" />
+                <DatePicker
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Date="{Binding EndDate}" />
+            </Grid>
+            <Picker
+                Title="Category"
+                ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding SelectedCategory}" />
+            <SearchBar Placeholder="Search..." Text="{Binding SearchText}" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Expenses}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Expense">
+                    <Border
+                        Margin="10"
+                        Padding="15"
+                        Stroke="LightGray"
+                        StrokeShape="RoundRectangle 10">
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AllExpensesViewModel}}, Path=GoToExpenseDetailsCommand}" CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+
+                        <VerticalStackLayout>
+                            <Label FontAttributes="Bold" Text="{Binding FormattedDetails}" />
+                            <Label Text="{Binding Amount, StringFormat='{0:C}'}" />
+                            <Label IsVisible="{Binding LoadId, Converter={StaticResource NullToBoolConverter}}" Text="{Binding LoadNumber, StringFormat='Load: {0}'}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <Label
+                    HorizontalOptions="Center"
+                    Text="No expenses found."
+                    VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </Grid>
+</ContentPage>
