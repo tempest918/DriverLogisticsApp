@@ -23,4 +23,20 @@ public partial class PrivacyPolicyPage : ContentPage
             await DisplayAlert("Error", "Could not load the privacy policy.", "OK");
         }
     }
+
+    private async void WebView_Navigating(object sender, WebNavigatingEventArgs e)
+    {
+        if (e.Url.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                await Launcher.OpenAsync(new Uri(e.Url));
+                e.Cancel = true;
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", "Could not open email client.", "OK");
+            }
+        }
+    }
 }

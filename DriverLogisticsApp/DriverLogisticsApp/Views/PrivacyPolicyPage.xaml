@@ -3,5 +3,5 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DriverLogisticsApp.Views.PrivacyPolicyPage"
              Title="Privacy Policy">
-    <WebView x:Name="webView" />
+    <WebView x:Name="webView" Navigating="WebView_Navigating" />
 </ContentPage>
