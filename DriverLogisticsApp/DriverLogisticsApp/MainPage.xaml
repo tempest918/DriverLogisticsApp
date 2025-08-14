@@ -10,7 +10,8 @@
     x:DataType="viewmodels:MainPageViewModel">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding GoToAddLoadCommand}" Text="Add" />
+        <ToolbarItem Text="Manage Expenses" Command="{Binding GoToAllExpensesCommand}" />
+        <ToolbarItem Text="Add Load" Command="{Binding GoToAddLoadCommand}" />
     </ContentPage.ToolbarItems>
 
     <Grid>
@@ -49,12 +50,11 @@
                             Grid.Row="2"
                             Grid.Column="0"
                             Text="Total Expenses:" />
-                        <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalOptions="End">
-                            <Label
-                                HorizontalTextAlignment="End"
-                                Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
-                            <Button Text="View" Command="{Binding GoToAllExpensesCommand}" Padding="5,0" Margin="5,0,0,0" />
-                        </StackLayout>
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
 
                         <Label
                             Grid.Row="3"
