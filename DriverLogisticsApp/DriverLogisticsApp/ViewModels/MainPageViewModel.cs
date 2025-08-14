@@ -216,6 +216,12 @@ namespace DriverLogisticsApp.ViewModels
             await _navigationService.NavigateToAsync(nameof(Views.AllExpensesPage));
         }
 
+        [RelayCommand]
+        private async Task GoToLoadsArchiveAsync()
+        {
+            await _navigationService.NavigateToAsync(nameof(Views.LoadsArchivePage));
+        }
+
         private async Task CalculateKpisAsync()
         {
             var allExpenses = await _databaseService.GetExpensesForLoadAsync(0);

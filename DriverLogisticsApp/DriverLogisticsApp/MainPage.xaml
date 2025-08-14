@@ -10,6 +10,7 @@
     x:DataType="viewmodels:MainPageViewModel">
 
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Loads Archive" Command="{Binding GoToLoadsArchiveCommand}" />
         <ToolbarItem Text="Manage Expenses" Command="{Binding GoToAllExpensesCommand}" />
         <ToolbarItem Text="Add Load" Command="{Binding GoToAddLoadCommand}" />
     </ContentPage.ToolbarItems>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:DriverLogisticsApp.ViewModels"
+             xmlns:models="clr-namespace:DriverLogisticsApp.Models"
+             x:Class="DriverLogisticsApp.Views.LoadsArchivePage"
+             Title="Loads Archive"
+             x:DataType="viewmodels:LoadsArchiveViewModel">
+    <Grid RowDefinitions="Auto, *">
+        <VerticalStackLayout Grid.Row="0" Margin="10">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10">
+                <Label Grid.Row="0" Grid.Column="0" Text="Start Date" />
+                <DatePicker Grid.Row="1" Grid.Column="0" Date="{Binding StartDate}" />
+                <Label Grid.Row="0" Grid.Column="1" Text="End Date" />
+                <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding EndDate}" />
+            </Grid>
+            <Picker Title="Status"
+                    ItemsSource="{Binding Statuses}"
+                    SelectedItem="{Binding SelectedStatus}" />
+            <SearchBar Placeholder="Search..." Text="{Binding SearchText}" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Loads}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Load">
+                    <Border
+                        Margin="10"
+                        Padding="15"
+                        Stroke="LightGray"
+                        StrokeShape="RoundRectangle 10">
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:LoadsArchiveViewModel}}, Path=GoToLoadDetailsCommand}" CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+
+                        <VerticalStackLayout>
+                            <Label Text="{Binding LoadNumber}" FontAttributes="Bold" />
+                            <Label Text="{Binding ShipperName}" />
+                            <Label Text="{Binding Status}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <Label
+                    HorizontalOptions="Center"
+                    Text="No loads found."
+                    VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </Grid>
+</ContentPage>
