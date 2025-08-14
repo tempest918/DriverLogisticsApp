@@ -2,16 +2,20 @@
 using DriverLogisticsApp.Services;
 using DriverLogisticsApp.ViewModels;
 using Moq;
+using IPreferences = DriverLogisticsApp.Services.IPreferences;
 
 namespace DriverLogisticsApp.Tests
 {
     [TestClass]
-    public class ImportExportViewModelTests
+    public class SettingsPageViewModelTests
     {
         private Mock<IDatabaseService> _mockDbService;
         private Mock<IAlertService> _mockAlertService;
         private Mock<IJsonImportExportService> _mockJsonService;
-        private ImportExportViewModel _viewModel;
+        private Mock<ISecureStorageService> _mockSecureStorageService;
+        private Mock<INavigationService> _mockNavigationService;
+        private Mock<IPreferences> _mockPreferences;
+        private SettingsPageViewModel _viewModel;
 
         [TestInitialize]
         public void TestInitialize()
@@ -19,10 +23,18 @@ namespace DriverLogisticsApp.Tests
             _mockDbService = new Mock<IDatabaseService>();
             _mockAlertService = new Mock<IAlertService>();
             _mockJsonService = new Mock<IJsonImportExportService>();
-            _viewModel = new ImportExportViewModel(
-                _mockDbService.Object,
+            _mockSecureStorageService = new Mock<ISecureStorageService>();
+            _mockNavigationService = new Mock<INavigationService>();
+            _mockPreferences = new Mock<IPreferences>();
+
+            _viewModel = new SettingsPageViewModel(
                 _mockAlertService.Object,
-                _mockJsonService.Object);
+                _mockSecureStorageService.Object,
+                _mockDbService.Object,
+                _mockJsonService.Object,
+                _mockNavigationService.Object,
+                _mockPreferences.Object
+                );
         }
 
         [TestMethod]

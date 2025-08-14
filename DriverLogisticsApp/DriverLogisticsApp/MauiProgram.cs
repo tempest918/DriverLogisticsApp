@@ -7,6 +7,7 @@ using DriverLogisticsApp;
 using CommunityToolkit.Maui;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
+using IPreferences = DriverLogisticsApp.Services.IPreferences;
 
 namespace DriverLogisticsApp
 {
@@ -38,6 +39,7 @@ namespace DriverLogisticsApp
             builder.Services.AddSingleton<IJsonImportExportService, JsonImportExportService>();
             builder.Services.AddSingleton<PdfService>();
             builder.Services.AddSingleton<AddressDataService>();
+            builder.Services.AddSingleton<IPreferences, PreferencesService>();
 
             // view models
             builder.Services.AddTransient<MainPageViewModel>();

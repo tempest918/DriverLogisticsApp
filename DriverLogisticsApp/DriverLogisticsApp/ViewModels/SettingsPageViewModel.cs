@@ -4,6 +4,8 @@ using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Threading.Tasks;
 using DriverLogisticsApp.Views;
+using IPreferences = DriverLogisticsApp.Services.IPreferences;
+
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -14,6 +16,7 @@ namespace DriverLogisticsApp.ViewModels
         private readonly IDatabaseService _databaseService;
         private readonly IJsonImportExportService _jsonService;
         private readonly INavigationService _navigationService;
+        private readonly IPreferences _preferences;
 
         [ObservableProperty]
         private bool _isBusy;
@@ -33,15 +36,18 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isDarkMode;
 
-        public SettingsPageViewModel(IAlertService alertService, ISecureStorageService secureStorageService, IDatabaseService databaseService, IJsonImportExportService jsonService, INavigationService navigationService)
+        public SettingsPageViewModel(IAlertService alertService, ISecureStorageService secureStorageService, IDatabaseService databaseService, IJsonImportExportService jsonService, INavigationService navigationService, IPreferences preferences)
         {
             _alertService = alertService;
             _secureStorageService = secureStorageService;
             _databaseService = databaseService;
             _jsonService = jsonService;
             _navigationService = navigationService;
+            _preferences = preferences;
+            
             Load();
-            IsDarkMode = Preferences.Get("dark_mode", false);
+            
+            IsDarkMode = _preferences.Get("dark_mode", false);
         }
 
         private async void Load()

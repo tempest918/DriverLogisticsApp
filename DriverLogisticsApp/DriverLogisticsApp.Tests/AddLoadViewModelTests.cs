@@ -51,8 +51,8 @@ namespace DriverLogisticsApp.Tests
         public void OnPickupDateChanged_WhenNewDateIsLater_AdjustsDeliveryDate()
         {
             // ARRANGE
-            _viewModel.DeliveryDate = new DateTime(2025, 8, 10);
-            var newPickupDate = new DateTime(2025, 8, 11);
+            _viewModel.DeliveryDate = new DateTime(2030, 8, 10);
+            var newPickupDate = new DateTime(2030, 8, 11);
             var expectedDeliveryDate = newPickupDate.AddDays(1);
 
             // ACT
