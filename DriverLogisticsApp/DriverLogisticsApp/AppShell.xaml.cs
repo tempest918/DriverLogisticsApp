@@ -18,6 +18,7 @@ namespace DriverLogisticsApp
             Routing.RegisterRoute("LoginPage", typeof(Views.LoginPage));
             Routing.RegisterRoute("CompanyListPage", typeof(Views.CompanyListPage));
             Routing.RegisterRoute("AddEditCompanyPage", typeof(Views.AddEditCompanyPage));
+            Routing.RegisterRoute(nameof(PrivacyPolicyPage), typeof(PrivacyPolicyPage));
         }
     }
 }

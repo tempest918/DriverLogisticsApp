@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using DriverLogisticsApp.Models;
 using DriverLogisticsApp.Services;
 using System.Threading.Tasks;
+using DriverLogisticsApp.Views;
 
 namespace DriverLogisticsApp.ViewModels
 {
@@ -12,6 +13,7 @@ namespace DriverLogisticsApp.ViewModels
         private readonly ISecureStorageService _secureStorageService;
         private readonly IDatabaseService _databaseService;
         private readonly IJsonImportExportService _jsonService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private bool _isBusy;
@@ -31,12 +33,13 @@ namespace DriverLogisticsApp.ViewModels
         [ObservableProperty]
         private bool _isDarkMode;
 
-        public SettingsPageViewModel(IAlertService alertService, ISecureStorageService secureStorageService, IDatabaseService databaseService, IJsonImportExportService jsonService)
+        public SettingsPageViewModel(IAlertService alertService, ISecureStorageService secureStorageService, IDatabaseService databaseService, IJsonImportExportService jsonService, INavigationService navigationService)
         {
             _alertService = alertService;
             _secureStorageService = secureStorageService;
             _databaseService = databaseService;
             _jsonService = jsonService;
+            _navigationService = navigationService;
             Load();
             IsDarkMode = Preferences.Get("dark_mode", false);
         }
@@ -81,6 +84,19 @@ namespace DriverLogisticsApp.ViewModels
         }
 
         [RelayCommand]
+        private async Task ContactSupport()
+        {
+            try
+            {
+                await Launcher.OpenAsync(new Uri("mailto:abarnesdev@gmail.com"));
+            }
+            catch (Exception ex)
+            {
+                await _alertService.DisplayAlert("Error", "Could not open email client.", "OK");
+            }
+        }
+
+        [RelayCommand]
         private async Task SetPinAsync()
         {
             if (NewPin != ConfirmPin)
@@ -108,7 +124,7 @@ namespace DriverLogisticsApp.ViewModels
         [RelayCommand]
         private async Task GoToPrivacyPolicy()
         {
-            await Launcher.OpenAsync(new Uri("https://abarnes.app/"));
+            await _navigationService.NavigateToAsync(nameof(PrivacyPolicyPage));
         }
 
         [RelayCommand]

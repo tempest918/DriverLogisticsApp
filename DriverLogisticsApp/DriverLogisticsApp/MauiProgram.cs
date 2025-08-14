@@ -65,6 +65,7 @@ namespace DriverLogisticsApp
             builder.Services.AddTransient<CompanyListPage>();
             builder.Services.AddTransient<AddEditCompanyPage>();
             builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<PrivacyPolicyPage>();
 
 
             // popups

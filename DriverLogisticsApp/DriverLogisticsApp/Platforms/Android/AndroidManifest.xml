@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="105" android:versionName="1.0.5" package="com.abarnes.driverlogisticsapp">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="106" android:versionName="1.0.6" package="com.abarnes.driverlogisticsapp">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="Truck Loads">
 		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCz9yeIRFlmdrOeDXEGeoCaKnpsgj1_RSA" />
 	</application>
@@ -19,6 +19,10 @@
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
 			<data android:scheme="geo" />
+		</intent>
+		<intent>
+			<action android:name="android.intent.action.SENDTO" />
+			<data android:scheme="mailto" />
 		</intent>
 	</queries>
 </manifest>

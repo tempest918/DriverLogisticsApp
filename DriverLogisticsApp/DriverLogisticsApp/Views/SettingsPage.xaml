@@ -81,8 +81,9 @@
                     Margin="0,20,0,0"
                     FontAttributes="Bold"
                     FontSize="Large"
-                    Text="Legal" />
+                    Text="Information" />
                 <Button Command="{Binding GoToPrivacyPolicyCommand}" Text="Privacy Policy" />
+                <Button Command="{Binding ContactSupportCommand}" Text="Contact Support" />
 
             </VerticalStackLayout>
         </ScrollView>
