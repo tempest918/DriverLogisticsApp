@@ -23,36 +23,35 @@
             <SearchBar Placeholder="Search..." Text="{Binding SearchText}" />
         </VerticalStackLayout>
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Expenses}"
-                        IsPullToRefreshEnabled="True"
-                        RefreshCommand="{Binding LoadExpensesCommand}"
-                        IsRefreshing="{Binding IsBusy, Mode=OneWay}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Expense">
-                    <Border
-                        Margin="10"
-                        Padding="15"
-                        Stroke="LightGray"
-                        StrokeShape="RoundRectangle 10">
+        <RefreshView Grid.Row="1" Command="{Binding LoadExpensesCommand}" IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+            <CollectionView ItemsSource="{Binding Expenses}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Expense">
+                        <Border
+                            Margin="10"
+                            Padding="15"
+                            Stroke="LightGray"
+                            StrokeShape="RoundRectangle 10">
 
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AllExpensesViewModel}}, Path=GoToExpenseDetailsCommand}" CommandParameter="{Binding .}" />
-                        </Border.GestureRecognizers>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AllExpensesViewModel}}, Path=GoToExpenseDetailsCommand}" CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
 
-                        <VerticalStackLayout>
-                            <Label Text="{Binding FormattedDetails}" FontAttributes="Bold" />
-                            <Label Text="{Binding Amount, StringFormat='{0:C}'}" />
-                            <Label Text="{Binding LoadNumber, StringFormat='Load: {0}'}" IsVisible="{Binding LoadId, Converter={StaticResource NullToBoolConverter}}" />
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <Label
-                    HorizontalOptions="Center"
-                    Text="No expenses found."
-                    VerticalOptions="Center" />
-            </CollectionView.EmptyView>
-        </CollectionView>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding FormattedDetails}" FontAttributes="Bold" />
+                                <Label Text="{Binding Amount, StringFormat='{0:C}'}" />
+                                <Label Text="{Binding LoadNumber, StringFormat='Load: {0}'}" IsVisible="{Binding LoadId, Converter={StaticResource NullToBoolConverter}}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label
+                        HorizontalOptions="Center"
+                        Text="No expenses found."
+                        VerticalOptions="Center" />
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
     </Grid>
 </ContentPage>
